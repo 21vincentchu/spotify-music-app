@@ -22,15 +22,15 @@ def get_spotify_token():
     '''
     credentials = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode()).decode() # - encodes CLIENT_ID:CLIENT_SECRET as base64 for http basic auth format
 
-    response = requests.post('https://accounts.spotify.com/api/token', 
-        headers=
+    response = requests.post('https://accounts.spotify.com/api/token', #post request to spotify token endpoint
+        headers= #sending over form data
         {
             'Authorization': f'Basic {credentials}',
             'Content-Type': 'application/x-www-form-urlencoded'
         },
-        data='grant_type=client_credentials')
+        data='grant_type=client_credentials') #type of token from spotify
         
-    if response.status_code != 200:
+    if response.status_code != 200: #if request did not work
         raise Exception(f"Failed to get token: {response.status_code} - {response.text}")
     
     return response.json()['access_token']
