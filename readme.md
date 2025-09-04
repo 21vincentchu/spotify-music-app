@@ -1,7 +1,25 @@
 # Spotify Music App
 
-## Setup
+## Setup with Docker
 
+1. **Prerequisites**
+   - Start Docker Desktop
+
+2. **Environment Setup**
+   - Create a `.env` file in the project folder:
+     ```
+     SPOTIFY_CLIENT_ID=your_client_id_here
+     SPOTIFY_CLIENT_SECRET=your_client_secret_here
+     ```
+   - DM me for the API keys
+
+3. **Run the Application**
+   ```bash
+   docker-compose up --build
+   ```
+
+
+## Manual Setup
 1. **Create a virtual environment** 
    ```bash
    python -m venv .venv
@@ -21,11 +39,4 @@
      SPOTIFY_CLIENT_SECRET=your_client_secret_here
      ```
    - DM me for the API keys
-
-## Usage
-
-Run the main script:
-```bash
-python spotify.py
-```
 
