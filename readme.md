@@ -1,5 +1,27 @@
 # Spotify Music App
 
+## Manual Setup
+1. **Create a virtual environment** 
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   ```
+
+2. **Install dependencies**
+   ```bash
+   cd spotify-music-app
+   pip install -r requirements.txt
+   ```
+
+3. **Set up environment variables**
+   - Create a `.env` file in the project folder
+   - Add these variables:
+     ```
+     SPOTIFY_CLIENT_ID=your_client_id_here
+     SPOTIFY_CLIENT_SECRET=your_client_secret_here
+     ```
+   - DM me for the API keys
+
 ## Setup with Docker
 
 1. **Prerequisites**
@@ -16,27 +38,7 @@
 3. **Run the Application**
    ```bash
    docker-compose up --build
+   docker-compose up
    ```
 
-
-## Manual Setup
-1. **Create a virtual environment** 
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   ```
-
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Set up environment variables**
-   - Create a `.env` file in the project folder
-   - Add these variables:
-     ```
-     SPOTIFY_CLIENT_ID=your_client_id_here
-     SPOTIFY_CLIENT_SECRET=your_client_secret_here
-     ```
-   - DM me for the API keys
 
