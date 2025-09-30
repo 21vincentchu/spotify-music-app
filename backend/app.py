@@ -2,7 +2,8 @@ from flask import Flask, request, jsonify, redirect
 from dotenv import load_dotenv  # This loads .env files that contain API keys
 import os
 import spotipy
-from spotipy.oauth2 import SpotifyOAuth 
+from spotipy.oauth2 import SpotifyOAuth
+from db import get_db 
 
 load_dotenv()
 
@@ -18,10 +19,10 @@ CACHE = '.spotipyoauthcache' #local file to save their auth token
 
 #initialize spotify oAuth handler for spotify login flow
 sp_oauth = SpotifyOAuth(
-    CLIENT_ID, 
-    CLIENT_SECRET, 
-    SPOTIPY_REDIRECT_URI, 
-    scope=SCOPE, 
+    CLIENT_ID,
+    CLIENT_SECRET,
+    SPOTIPY_REDIRECT_URI,
+    scope=SCOPE,
     cache_path=CACHE
 )
 
@@ -48,7 +49,7 @@ def index():
     sp = spotipy.Spotify(auth=access_token)
     results = sp.current_user()
 
-    #display the html
+    #display the json
     profile_img = results['images'][0]['url'] if results.get('images') else ''
     html = f'''
         <h1>Welcome, {results['display_name']}!</h1>
