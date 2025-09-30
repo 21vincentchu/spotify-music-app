@@ -47,7 +47,16 @@ def index():
     access_token = token_info['access_token']
     sp = spotipy.Spotify(auth=access_token)
     results = sp.current_user()
-    return jsonify(results)
+
+    #display the html
+    profile_img = results['images'][0]['url'] if results.get('images') else ''
+    html = f'''
+        <h1>Welcome, {results['display_name']}!</h1>
+        <img src="{profile_img}" alt="Profile" width="200">
+        <p>Followers: {results['followers']['total']}</p>
+        <p><a href="{results['external_urls']['spotify']}">View on Spotify</a></p>
+    '''
+    return html
 
 @app.route('/callback')
 def callback():
