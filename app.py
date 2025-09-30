@@ -1,7 +1,6 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify, redirect
 from dotenv import load_dotenv  # This loads .env files that contain API keys
-import requests, base64, os
-import sys
+import os
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth 
 
@@ -9,73 +8,60 @@ load_dotenv()
 
 app = Flask(__name__)
 
-port=8080
+# Configuration (NOTE: Make a '.env' file in local folder for API keys)
+PORT=8080
 CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
 CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
-SPOTIPY_REDIRECT_URI = 'http://localhost:8080/callback'
-SCOPE = 'user-library-read'
-CACHE = '.spotipyoauthcache'
+SPOTIPY_REDIRECT_URI = 'http://localhost:8080/callback' #spotify redirect after after login
+SCOPE = 'user-library-read' #permmissions to read users data
+CACHE = '.spotipyoauthcache' #local file to save their auth token
 
-sp_oauth = SpotifyOAuth(CLIENT_ID, CLIENT_SECRET, SPOTIPY_REDIRECT_URI, scope=SCOPE, cache_path=CACHE)
+#initialize spotify oAuth handler for spotify login flow
+sp_oauth = SpotifyOAuth(
+    CLIENT_ID, 
+    CLIENT_SECRET, 
+    SPOTIPY_REDIRECT_URI, 
+    scope=SCOPE, 
+    cache_path=CACHE
+)
 
+# Routes
 @app.route('/')
 def index():
+    '''
+    home endpoint. checks for cached token, which then prompts login or display current users profile
+    
+    returns:
+        str or dict: login link if not authenicated, or their profile
+    '''
+    
+    #Checks for users cached tokens
     token_info = sp_oauth.get_cached_token()
 
+    #redirect user to spotify login page if not token exists
     if not token_info:
         auth_url = sp_oauth.get_authorize_url()
         return f'<a href="{auth_url}">Login with Spotify</a>'
     
+    #if token exists, use for authenticated API calls
     access_token = token_info['access_token']
     sp = spotipy.Spotify(auth=access_token)
     results = sp.current_user()
-    return results
-
+    return jsonify(results)
 
 @app.route('/callback')
 def callback():
+    '''
+    Spotify oAuth callback endpoint, exchanges auth cod from spotify for an access token and return users profile
+    
+    Returns:
+        redirect: redirect to home page after authentication
+    '''
     code = request.args.get('code')
     token_info = sp_oauth.get_access_token(code)
     sp = spotipy.Spotify(auth=token_info['access_token'])
     results = sp.current_user()
-    return results
-   
+    return redirect('/')
 
-
-def get_spotify_token():
-    '''
-    https://developer.spotify.com/documentation/web-api/tutorials/client-credentials-flow
-    Get Spotify API access token using Client Credentials flow.
-    
-    Returns:
-        str: Access token
-        
-    Raises:
-        Exception: If authentication fails
-    '''
-    credentials = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode()).decode() # - encodes CLIENT_ID:CLIENT_SECRET as base64 for http basic auth format
-
-    response = requests.post('https://accounts.spotify.com/api/token', #post request to spotify token endpoint
-        headers= #sending over form data
-        {
-            'Authorization': f'Basic {credentials}',
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data='grant_type=client_credentials') #type of token from spotify
-        
-    if response.status_code != 200: #if request did not work
-        raise Exception(f"Failed to get token: {response.status_code} - {response.text}")
-    
-    return response.json()['access_token']
-
-    # Get song
-    song_response = requests.get('https://api.spotify.com/v1/tracks/0Q9kIg9o8w1XKepXWmDUmT',
-        headers={'Authorization': f'Bearer {token}'})
-    song = song_response.json()
-
-    print(f"{song['name']} by {song['artists'][0]['name']}")
-
-
-app.run(debug=True, host='0.0.0.0', port=port)
-
-
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=PORT)
