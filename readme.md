@@ -19,8 +19,11 @@
      ```
      SPOTIFY_CLIENT_ID=your_client_id_here
      SPOTIFY_CLIENT_SECRET=your_client_secret_here
+     
+     MYSQL_ROOT_PASSWORD=password_here
+     MYSQL_DATABASE=database_name_here
      ```
-   - DM me for the API keys
+   - check pinned discord project message
 
 ## Setup with Docker
 
