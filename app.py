@@ -1,13 +1,46 @@
-from flask import Flask
+from flask import Flask, request
 from dotenv import load_dotenv  # This loads .env files that contain API keys
 import requests, base64, os
+import sys
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth 
 
 load_dotenv()
 
 app = Flask(__name__)
 
+port=8080
 CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
 CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
+SPOTIPY_REDIRECT_URI = 'http://localhost:8080/callback'
+SCOPE = 'user-library-read'
+CACHE = '.spotipyoauthcache'
+
+sp_oauth = SpotifyOAuth(CLIENT_ID, CLIENT_SECRET, SPOTIPY_REDIRECT_URI, scope=SCOPE, cache_path=CACHE)
+
+@app.route('/')
+def index():
+    token_info = sp_oauth.get_cached_token()
+
+    if not token_info:
+        auth_url = sp_oauth.get_authorize_url()
+        return f'<a href="{auth_url}">Login with Spotify</a>'
+    
+    access_token = token_info['access_token']
+    sp = spotipy.Spotify(auth=access_token)
+    results = sp.current_user()
+    return results
+
+
+@app.route('/callback')
+def callback():
+    code = request.args.get('code')
+    token_info = sp_oauth.get_access_token(code)
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    results = sp.current_user()
+    return results
+   
+
 
 def get_spotify_token():
     '''
@@ -35,15 +68,14 @@ def get_spotify_token():
     
     return response.json()['access_token']
 
-
-if __name__ == '__main__':
-    token = get_spotify_token()
-
     # Get song
     song_response = requests.get('https://api.spotify.com/v1/tracks/0Q9kIg9o8w1XKepXWmDUmT',
         headers={'Authorization': f'Bearer {token}'})
     song = song_response.json()
 
     print(f"{song['name']} by {song['artists'][0]['name']}")
-    
-    app.run(debug=True, host='0.0.0.0', port=8000)
+
+
+app.run(debug=True, host='0.0.0.0', port=port)
+
+
