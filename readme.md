@@ -51,7 +51,7 @@ git clone [url] #creates copy of a remoate repo on your machine
 git status #shows current branch and directory you're in
 git add . #adds all new and modified files
 git commit -m "insert message here" #records the changes in the repo
-git push origin [branch] $uploads your commits to the remote repo. check using git status. EXAMPLE: git push origin main
+git push origin [branch] / git push $uploads your commits to the remote repo. check using git status. EXAMPLE: git push origin main
 git pull origin [branch] #downloads any changes from the remote repo. check using git status.EXAMPLE: git pull origin main
 
 ```
