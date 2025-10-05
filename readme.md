@@ -10,6 +10,7 @@ A social music analytics platform that transforms your Spotify listening data in
 - Kevin Lee - Backend
 
 ## Manual Setup
+
 1. **Create a virtual environment** 
    ```bash
    python -m venv .venv
@@ -32,7 +33,7 @@ A social music analytics platform that transforms your Spotify listening data in
      MYSQL_ROOT_PASSWORD=password_here
      MYSQL_DATABASE=database_name_here
      ```
-   - check pinned discord project message
+   - Check pinned Discord project message for credentials
 
 ## Setup with Docker
 
@@ -45,7 +46,7 @@ A social music analytics platform that transforms your Spotify listening data in
      SPOTIFY_CLIENT_ID=your_client_id_here
      SPOTIFY_CLIENT_SECRET=your_client_secret_here
      ```
-   - DM me for the API keys
+   - DM team for API keys
 
 3. **Run the Application**
    ```bash
@@ -53,30 +54,42 @@ A social music analytics platform that transforms your Spotify listening data in
    docker-compose up
    ```
 
-## BRANCH HIEARCHY / MERGING
+## Branch Structure & Merging
+
+### Branch Hierarchy
+```
 main
 ├── frontend
 │   ├── frontend/amanda
 │   └── frontend/julie
 └── backend
     └── backend/feature/person
+```
 
+### Workflow
+
+1. **Create your feature branch**
+   ```bash
    # For frontend work
-      git checkout frontend
-      git pull origin frontend
-      git checkout -b frontend/your-name
-      
+   git checkout frontend
+   git pull origin frontend
+   git checkout -b frontend/your-name
+   
    # For backend work
-      git checkout backend
-      git pull origin backend
-      git checkout -b backend/feature/your-name
+   git checkout backend
+   git pull origin backend
+   git checkout -b backend/feature/your-name
+   ```
 
-   # Work on feature
+2. **Work on your feature**
+   ```bash
    git add .
    git commit -m "descriptive message about your changes"
    git push origin your-branch-name
+   ```
 
-## Merging
+3. **Merge your feature into parent branch (frontend/backend)**
+   ```bash
    # Switch to parent branch
    git checkout frontend  # or backend
    
@@ -88,51 +101,46 @@ main
    
    # Push to remote
    git push origin frontend  # or backend
+   ```
 
-## git commands references
-### Tracking changes 
-```
-git clone [url] 
-- creates copy of a remoate repo on your machine
+## Git Commands Reference
 
-git add . 
-- adds all new and modified files
+### Tracking Changes
+```bash
+git clone [url]
+# Creates copy of a remote repo on your machine
 
-git commit -m "insert message here" 
-- records the changes in the repo
+git add .
+# Adds all new and modified files
 
-git push origin [branch] / git push 
-- uploads your commits to the remote repo
+git commit -m "insert message here"
+# Records the changes in the repo
 
-git pull origin [branch] / git pull 
-- downloads any changes from the remote repo. check using git status.EXAMPLE: git pull origin main
+git push origin [branch] / git push
+# Uploads your commits to the remote repo
 
-```
-
-### Make git branch and push to github
-```
-git branch 
-- list the current branches
-
-git status 
-- shows current branch and directory you're in
-
-git checkout -b your-branch-name 
-- create a new branch and switch to it. make sure its one word, use slashes
+git pull origin [branch] / git pull
+# Downloads changes from remote. EXAMPLE: git pull origin main
 ```
 
-### Merging your branch into the main
+### Branch Management
+```bash
+git branch
+# List current branches
+
+git status
+# Shows current branch and directory status
+
+git checkout -b your-branch-name
+# Create a new branch and switch to it
 ```
-git checkout main 
-- switching to the main branch
 
-git pull origin main 
-- making sure main is up to date
+### Checking Branch Status
+```bash
+git status
+# Shows which branch you're on and any changes
 
-git merge your-branch-name -m "message here" 
-- merge your branch into main
-
-git push origin main 
-- push the merged changes to GitHub
-
+git branch -a
+# Shows all local and remote branches
 ```
+
