@@ -44,33 +44,100 @@
    docker-compose up
    ```
 
-## git commands references
-### Tracking changes 
-```
-git clone [url] #creates copy of a remoate repo on your machine
-git status #shows current branch and directory you're in
-git add . #adds all new and modified files
-git commit -m "insert message here" #records the changes in the repo
-git push origin [branch] / git push $uploads your commits to the remote repo. check using git status. EXAMPLE: git push origin main
-git pull origin [branch] #downloads any changes from the remote repo. check using git status.EXAMPLE: git pull origin main
+# Git Commands Reference
 
+## Tracking Changes
+
+### Clone a repository
+```bash
+git clone [url]
+```
+Creates a copy of a remote repo on your machine
+
+### Check status
+```bash
+git status
+```
+Shows current branch and directory you're in
+
+### Stage changes
+```bash
+git add .
+```
+Adds all new and modified files
+
+### Commit changes
+```bash
+git commit -m "insert message here"
+```
+Records the changes in the repo
+
+### Push to remote
+```bash
+git push origin [branch]
+```
+or simply
+```bash
+git push
+```
+Uploads your commits to the remote repo
+
+Example: `git push origin main`
+
+### Pull from remote
+```bash
+git pull origin [branch]
+```
+or simply
+```bash
+git pull
+```
+Downloads any changes from the remote repo
+
+Example: `git pull origin main`
+
+---
+
+## Creating and Pushing a Branch
+
+### List branches
+```bash
+git branch
 ```
 
-### Make git branch and push to github
+### Create and switch to new branch
+```bash
+git checkout -b your-branch-name
 ```
-git branch #list the current branches
-git checkout -b your-branch-name #create a new branch and switch to it. make sure its one word, use hyphens
-git add . #stage your changes
-git commit -m [xyz's branch] #commit
-git push -u origin [branch name] #push
-'''
+Make sure it's one word, use hyphens
+
+### Stage, commit, and push
+```bash
+git add .
+git commit -m "xyz's branch"
+git push -u origin [branch-name]
 ```
 
-### Merging your branch into the main
-```
-git checkout main #switching to the main branch
-git pull origin main #making sure main is up to date
-git merge your-branch-name -m "message here" #merge your branch into main
-git push origin main #push the merged changes to GitHub
+---
 
+## Merging Branch into Main
+
+### Switch to main
+```bash
+git checkout main
+```
+
+### Update main
+```bash
+git pull origin main
+```
+
+### Merge your branch
+```bash
+git merge your-branch-name -m "message here"
+```
+
+### Push merged changes
+```bash
+git push origin main
 ```
