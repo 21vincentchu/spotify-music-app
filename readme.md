@@ -1,4 +1,13 @@
-# Spotify Music App
+# Reverb - Social Music Analytics Platform
+
+A social music analytics platform that transforms your Spotify listening data into shareable insights and community-driven experiences through music ratings and reviews.
+
+## Team: Auralytics
+- Amanda Ngo - Team Leader, Frontend
+- Julie To - Frontend
+- Vincent Chu - Backend
+- Esther Brandwein - Backend
+- Kevin Lee - Backend
 
 ## Manual Setup
 1. **Create a virtual environment** 
@@ -44,6 +53,42 @@
    docker-compose up
    ```
 
+## BRANCH HIEARCHY / MERGING
+main
+├── frontend
+│   ├── frontend/amanda
+│   └── frontend/julie
+└── backend
+    └── backend/feature/person
+
+   # For frontend work
+      git checkout frontend
+      git pull origin frontend
+      git checkout -b frontend/your-name
+      
+   # For backend work
+      git checkout backend
+      git pull origin backend
+      git checkout -b backend/feature/your-name
+
+   # Work on feature
+   git add .
+   git commit -m "descriptive message about your changes"
+   git push origin your-branch-name
+
+## Merging
+   # Switch to parent branch
+   git checkout frontend  # or backend
+   
+   # Pull latest changes
+   git pull origin frontend  # or backend
+   
+   # Merge your feature branch
+   git merge your-branch-name -m "merge: description of feature"
+   
+   # Push to remote
+   git push origin frontend  # or backend
+
 ## git commands references
 ### Tracking changes 
 ```
@@ -66,13 +111,14 @@ git pull origin [branch] / git pull
 
 ### Make git branch and push to github
 ```
-git branch #
+git branch 
 - list the current branches
-git status #
+
+git status 
 - shows current branch and directory you're in
+
 git checkout -b your-branch-name 
-- create a new branch and switch to it. make sure its one word, use hyphens or slases
-'''
+- create a new branch and switch to it. make sure its one word, use slashes
 ```
 
 ### Merging your branch into the main
