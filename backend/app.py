@@ -1,20 +1,23 @@
-from flask import Flask, request, jsonify, redirect
+from flask import Flask, request, jsonify, redirect, session
 from dotenv import load_dotenv  # This loads .env files that contain API keys
 import os
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from db import get_db 
+from stats import stats_bp
 
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = "your-secret-key"
+app.register_blueprint(stats_bp)
 
 # Configuration (NOTE: Make a '.env' file in local folder for API keys)
 PORT=8080
 CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
 CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
 SPOTIPY_REDIRECT_URI = 'http://localhost:8080/callback' #spotify redirect after after login
-SCOPE = 'user-library-read' #permmissions to read users data
+SCOPE = 'user-read-private user-read-email user-top-read user-read-recently-played user-read-playback-state user-read-currently-playing user-read-playback-position user-library-read user-library-modify playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-follow-read user-follow-modify user-modify-playback-state streaming app-remote-control ugc-image-upload' #permmissions to read users data
 CACHE = '.spotipyoauthcache' #local file to save their auth token
 
 #initialize spotify oAuth handler for spotify login flow
@@ -44,6 +47,7 @@ def index():
         auth_url = sp_oauth.get_authorize_url()
         return f'<a href="{auth_url}">Login with Spotify</a>'
     
+    session['token_info'] = token_info
     #if token exists, use for authenticated API calls
     access_token = token_info['access_token']
     sp = spotipy.Spotify(auth=access_token)
@@ -55,6 +59,7 @@ def index():
         <h1>Welcome, {results['display_name']}!</h1>
         <img src="{profile_img}" alt="Profile" width="200">
         <p>Followers: {results['followers']['total']}</p>
+        <p><a href="/stats">View Your Spotify Stats</a></p>
         <p><a href="{results['external_urls']['spotify']}">View on Spotify</a></p>
     '''
     return html
@@ -70,6 +75,7 @@ def callback():
     code = request.args.get('code')
     token_info = sp_oauth.get_access_token(code)
     sp = spotipy.Spotify(auth=token_info['access_token'])
+    session['token_info'] = token_info
     results = sp.current_user()
     return redirect('/')
 
