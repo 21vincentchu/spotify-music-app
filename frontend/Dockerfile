@@ -1,15 +1,29 @@
-FROM node:18-slim
+# FROM node:18-slim
+
+# WORKDIR /reverb-client
+
+# # Copy package files if they exist
+# COPY package*.json ./
+
+# # Install dependencies if package.json exists
+# RUN npm install
+
+# COPY . .
+
+# EXPOSE 3000
+
+# CMD ["npm", "start"]
+FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files if they exist
-COPY package*.json ./
+# Copy the package files from the correct path
+COPY reverb-client/package*.json ./
+RUN npm install
 
-# Install dependencies if package.json exists
-RUN if [ -f package.json ]; then npm install; fi
-
-COPY . .
+# Copy the rest of the React source
+COPY frontend/reverb-client/ ./
 
 EXPOSE 3000
-
 CMD ["npm", "start"]
+
