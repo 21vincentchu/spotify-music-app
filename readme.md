@@ -144,3 +144,9 @@ git branch -a
 # Shows all local and remote branches
 ```
 
+### Updating Local Folder from Remote Branch
+```bash
+git fetch origin frontend && git checkout origin/frontend -- frontend
+# Updates your local frontend folder to match the remote frontend branch
+```
+
