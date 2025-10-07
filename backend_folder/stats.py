@@ -52,9 +52,9 @@ def stats():
     offset3 = 0
 
     while True:
-        batch3 = sp.current_user_top_tracks(limit=batch_size3, offset=offset2, time_range='medium_term')
+        batch3 = sp.current_user_top_tracks(limit=batch_size3, offset=offset3, time_range='medium_term')
         top_tracks_month.extend(batch3['items'])
-        if len(batch2['items']) < batch_size3:
+        if len(batch3['items']) < batch_size3:
             break
         offset3 += batch_size3
 
