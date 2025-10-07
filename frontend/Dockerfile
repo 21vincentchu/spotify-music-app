@@ -2,14 +2,16 @@ FROM node:18-slim
 
 WORKDIR /app
 
-# Copy package files if they exist
-COPY package*.json ./
+# Copy package files from reverb-client subdirectory
+COPY reverb-client/package*.json ./
 
-# Install dependencies if package.json exists
-RUN if [ -f package.json ]; then npm install; fi
+# Install dependencies
+RUN npm install
 
-COPY . .
+# Copy all application files from reverb-client subdirectory
+COPY reverb-client/ .
 
 EXPOSE 3000
 
+# Start the development server
 CMD ["npm", "start"]
