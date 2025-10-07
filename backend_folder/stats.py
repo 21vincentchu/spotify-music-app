@@ -72,8 +72,6 @@ def stats():
             break
         offset2 += batch_size2
 
-
-
     ##current artists the user follows
     followed_artists = sp.current_user_followed_artists(limit=20, after=None)
     print(followed_artists)
