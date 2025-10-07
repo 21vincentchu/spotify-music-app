@@ -6,7 +6,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend/reverb-client:/app
+      - ./frontend/reverb-client/src:/app/src
+      - ./frontend/reverb-client/public:/app/public
 
   backend:
     build: ./backend

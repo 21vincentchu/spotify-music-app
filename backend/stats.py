@@ -5,12 +5,11 @@ import os
 
 stats_bp = Blueprint('stats', __name__)
 
-
-@stats_bp.route('/stats')
-def stats():
+def get_authenticated_spotify_client():
+    """Get authenticated Spotify client, refreshing token if needed."""
     token_info = session.get('token_info')
     if not token_info:
-        return redirect('/')
+        return None, None
 
     sp_oauth = SpotifyOAuth(
         client_id=os.getenv("SPOTIFY_CLIENT_ID"),
@@ -24,67 +23,67 @@ def stats():
         session['token_info'] = token_info
 
     sp = spotipy.Spotify(auth=token_info['access_token'])
+    return sp, token_info
 
-    user_profile = sp.current_user()
+def fetch_all_top_tracks(sp: spotipy.Spotify, time_range: str, batch_size: int = 50) -> list:
+    """
+    Fetch all top tracks for a given time range using pagination.
 
-    ##top 50 artists and songs of week
+    Args:
+        sp: Authenticated Spotify client instance
+        time_range: 'short_term' (4 weeks), 'medium_term' (6 months), or 'long_term' (several years)
+        batch_size: Number of items to fetch per request (default 50, max 50)
 
-    top_artists_week = sp.current_user_top_artists(limit=50, time_range='short_term')
-
-
-    top_tracks_week = []
-    batch_size = 50
+    Returns:
+        List of track objects from Spotify API
+    """
+    tracks = []
     offset = 0
 
     while True:
-        batch = sp.current_user_top_tracks(limit=batch_size, offset=offset, time_range='short_term')
-        top_tracks_week.extend(batch['items'])
+        batch = sp.current_user_top_tracks(limit=batch_size, offset=offset, time_range=time_range)
+        tracks.extend(batch['items'])
+
         if len(batch['items']) < batch_size:
             break
+
         offset += batch_size
 
+    return tracks
 
-    ##top 50 artists and songs of month
+@stats_bp.route('/stats')
+def stats():
+    sp, token_info = get_authenticated_spotify_client()
+    if not sp:
+        return redirect('/')
+
+    user_profile = sp.current_user()
+
+    # ========== TOP ARTISTS AND TRACKS (LAST 4 WEEKS) ==========
+    # Fetch top 50 artists from the past ~4 weeks
+    top_artists_week = sp.current_user_top_artists(limit=50, time_range='short_term')
+
+    # Fetch ALL top tracks from the past ~4 weeks using pagination
+    top_tracks_week = fetch_all_top_tracks(sp, 'short_term')
+
+    # ========== TOP ARTISTS AND TRACKS (LAST 6 MONTHS) ==========
+    # Fetch top 50 artists from the past ~6 months
     top_artists_month = sp.current_user_top_artists(limit=50, time_range='medium_term')
-   
-    top_tracks_month = []
-    batch_size3 = 50
-    offset3 = 0
 
-    while True:
-        batch3 = sp.current_user_top_tracks(limit=batch_size3, offset=offset3, time_range='medium_term')
-        top_tracks_month.extend(batch3['items'])
-        if len(batch3['items']) < batch_size3:
-            break
-        offset3 += batch_size3
+    # Fetch ALL top tracks from the past ~6 months using pagination
+    top_tracks_month = fetch_all_top_tracks(sp, 'medium_term')
 
-    ##top 50 artists and songs for last year
+    # ========== TOP ARTISTS AND TRACKS (ALL TIME / SEVERAL YEARS) ==========
+    # Fetch top 50 artists from the past several years
     top_artists_year = sp.current_user_top_artists(limit=50, time_range='long_term')
-    
-    top_tracks_year = []
-    batch_size2 = 50
-    offset2 = 0
 
-    while True:
-        batch2 = sp.current_user_top_tracks(limit=batch_size2, offset=offset2, time_range='long_term')
-        top_tracks_year.extend(batch2['items'])
-        if len(batch2['items']) < batch_size2:
-            break
-        offset2 += batch_size2
+    # Fetch ALL top tracks from the past several years using pagination
+    top_tracks_year = fetch_all_top_tracks(sp, 'long_term')
 
-    ##current artists the user follows
-    followed_artists = sp.current_user_followed_artists(limit=20, after=None)
-    print(followed_artists)
-
-    ##current user saved albums
-
-    ##list user playlists
-
-    playlist = sp.user_playlists(user_profile['id'], limit=50, offset=0)
-
+    # ========== BUILD HTML RESPONSE ==========
     html = "<h1>Your Spotify Stats</h1>"
 
-    # Top Artists
+    # Display top artists from the past 4 weeks
     html += "<h2>Top Artists (Week)</h2><ul>"
     for artist in top_artists_week['items']:
         html += f"<li>{artist['name']}</li>"
@@ -113,18 +112,6 @@ def stats():
     html += "<h2>Top Tracks (Year)</h2><ul>"
     for track in top_tracks_year:
         html += f"<li>{track['name']} by {track['artists'][0]['name']}</li>"
-    html += "</ul>"
-
-    # Followed Artists
-    html += "<h2>Followed Artists</h2><ul>"
-    for artist in followed_artists['artists']['items']:
-        html += f"<li>{artist['name']}</li>"
-    html += "</ul>"
-
-    # User Playlists
-    html += "<h2>Your Playlists</h2><ul>"
-    for pl in playlist['items']:
-        html += f"<li>{pl['name']}</li>"
     html += "</ul>"
 
     html += "<p><a href='/'>Back to Profile</a></p>"
