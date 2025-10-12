@@ -2,8 +2,39 @@ from flask import Blueprint, session, redirect
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import os
+from db import get_db
 
 stats_bp = Blueprint('stats', __name__)
+
+def create_stats_record(userName, timeframe='short_term'):
+    """
+    Create a new Stats record for a user.
+
+    Args:
+        userName: The userName (Spotify ID)
+        timeframe: 'short_term', 'medium_term', or 'long_term'
+
+    Returns:
+        stats_id: The uniqueID of the created Stats record
+    """
+    conn = get_db()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            INSERT INTO Stats (userName, timeframe, totalMinutes)
+            VALUES (%s, %s, 0)
+        """, (userName, timeframe))
+
+        conn.commit()
+        stats_id = cursor.lastrowid
+        return stats_id
+    except Exception as e:
+        conn.rollback()
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
 
 def get_authenticated_spotify_client():
     """Get authenticated Spotify client, refreshing token if needed."""
@@ -98,41 +129,41 @@ def fetch_all_top_songs(sp: spotipy.Spotify, time_range: str, batch_size: int = 
 
     return songs
 
-# def insert_top_songs_to_db(stats_id: int, songs: list) -> None:
-#     """
-#     Insert top songs data into the TopSong table.
+def insert_top_songs_to_db(stats_id: int, songs: list) -> None:
+    """
+    Insert top songs data into the TopSong table.
 
-#     Args:
-#         stats_id: The statsID foreign key from the Stats table
-#         songs: List of song dictionaries from fetch_all_top_songs()
-#     """
-#     from db import get_db
+    Args:
+        stats_id: The statsID foreign key from the Stats table
+        songs: List of song dictionaries from fetch_all_top_songs()
+    """
+    from db import get_db
 
-#     conn = get_db()
-#     cursor = conn.cursor()
+    conn = get_db()
+    cursor = conn.cursor()
 
-#     try:
-#         for song in songs:
-#             cursor.execute("""
-#                 INSERT INTO TopSong (statsID, songName, artistName, spotifyTrackId, rank, playCount, imageUrl)
-#                 VALUES (%s, %s, %s, %s, %s, %s, %s)
-#             """, (
-#                 stats_id,
-#                 song['songName'],
-#                 song['artistName'],
-#                 song['spotifyTrackId'],
-#                 song['rank'],
-#                 song['playCount'],
-#                 song['imageUrl']
-#             ))
+    try:
+        for song in songs:
+            cursor.execute("""
+                INSERT INTO TopSong (statsID, songName, artistName, spotifyTrackId, `rank`, playCount, imageUrl)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (
+                stats_id,
+                song['songName'],
+                song['artistName'],
+                song['spotifyTrackId'],
+                song['rank'],
+                song['playCount'],
+                song['imageUrl']
+            ))
 
-#         conn.commit()
-#     except Exception as e:
-#         conn.rollback()
-#         raise e
-#     finally:
-#         cursor.close()
-#         conn.close()
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
 
 @stats_bp.route('/stats')
 def stats():
@@ -141,6 +172,7 @@ def stats():
         return redirect('/')
 
     user_profile = sp.current_user()
+    userName = session.get('userName')
 
     # ========== TOP ARTISTS AND TRACKS (LAST 4 WEEKS) ==========
     # Fetch top 50 artists from the past ~4 weeks
@@ -149,8 +181,19 @@ def stats():
     # Fetch ALL top tracks from the past ~4 weeks using pagination
     top_tracks_week = fetch_all_top_tracks(sp, 'short_term')
 
-    # TEST: Fetch formatted song data for database
+    # Fetch formatted song data for database
     top_songs_week = fetch_all_top_songs(sp, 'short_term')
+
+    # Create a Stats record for this user and timeframe
+    try:
+        stats_id = create_stats_record(userName, timeframe='short_term')
+        print(f"Created Stats record with ID: {stats_id}", flush=True)
+
+        # Insert songs into database using the new stats_id
+        insert_top_songs_to_db(stats_id=stats_id, songs=top_songs_week)
+        print(f"Successfully inserted {len(top_songs_week)} songs into database!", flush=True)
+    except Exception as e:
+        print(f"Error creating stats or inserting songs: {e}", flush=True)
 
     # ========== TOP ARTISTS AND TRACKS (LAST 6 MONTHS) ==========
     # Fetch top 50 artists from the past ~6 months

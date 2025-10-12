@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS UserFriends (
 );
 
 -- Stats table
+-- REVISE THIS, CHANGE TIME, total minutes is a function
 CREATE TABLE IF NOT EXISTS Stats (
     uniqueID INT AUTO_INCREMENT PRIMARY KEY,
     userName VARCHAR(255) NOT NULL,
@@ -32,7 +33,7 @@ CREATE TABLE IF NOT EXISTS TopArtist (
     statsID INT NOT NULL,
     artistName VARCHAR(255),
     spotifyArtistId VARCHAR(255),
-    rank INT,
+    `rank` INT,
     playCount INT DEFAULT 0,
     imageUrl VARCHAR(512),
     FOREIGN KEY (statsID) REFERENCES Stats(uniqueID) ON DELETE CASCADE
@@ -45,7 +46,7 @@ CREATE TABLE IF NOT EXISTS TopAlbum (
     albumName VARCHAR(255),
     artistName VARCHAR(255),
     spotifyAlbumId VARCHAR(255),
-    rank INT,
+    `rank` INT,
     playCount INT DEFAULT 0,
     imageUrl VARCHAR(512),
     FOREIGN KEY (statsID) REFERENCES Stats(uniqueID) ON DELETE CASCADE
@@ -58,7 +59,7 @@ CREATE TABLE IF NOT EXISTS TopSong (
     songName VARCHAR(255),
     artistName VARCHAR(255),
     spotifyTrackId VARCHAR(255),
-    rank INT,
+    `rank` INT,
     playCount INT DEFAULT 0,
     imageUrl VARCHAR(512),
     FOREIGN KEY (statsID) REFERENCES Stats(uniqueID) ON DELETE CASCADE
