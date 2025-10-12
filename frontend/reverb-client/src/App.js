@@ -2,21 +2,25 @@
 import './App.css';
 
 import React from "react";
-import {Routes, Route, BrowserRouter} from 'react-router-dom'
+import { useState, useEffect } from "react";
 
-import SignInPage from './pages/SignInPage';
+import MobileLayout from './layouts/MobileLayout';
+import DesktopLayout from './layouts/DesktopLayout';
+
+// import SignInPage from './pages/SignInPage';
 
 
 function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<SignInPage />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
-  );
+  
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return isMobile ? <MobileLayout /> : <DesktopLayout />;
 }
 
 export default App;
