@@ -9,11 +9,12 @@ import StatisticsPage from "../pages/shared/StatisticsPage";
 import RecommendationsPage from "../pages/shared/RecommendationsPage";
 import FriendsPage from "../pages/shared/FriendsPage";
 
+import '../styles/Desktop.css'
 
 function DesktopLayout(){
 
     return(
-        <div>
+        <div className="desktop-layout">
             <h1>Desktop Layout</h1>
             <NavbarDesktop  />
             <Routes>

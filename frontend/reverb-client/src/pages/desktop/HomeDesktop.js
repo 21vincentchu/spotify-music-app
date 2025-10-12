@@ -3,7 +3,7 @@ import SongComponent from "../../components/shared/SongComponent";
 function HomeDesktop() {
   return (
     <div>
-        <div>
+        <div className="home-recommended">
             <h2>Recommended</h2>
             <SongComponent />
             <SongComponent />
