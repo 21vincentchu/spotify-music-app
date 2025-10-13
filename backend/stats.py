@@ -168,7 +168,7 @@ def insert_top_songs_to_db(stats_id: int, songs: list) -> None:
 
 def fetch_all_top_artists(sp: spotipy.Spotify, time_range: str, batch_size: int = 50) -> list:
     """
-    Fetch all top songs for a given time range and extract data for TopSong table.
+    Fetch all top artists for a given time range and extract data for TopArtist table.
 
     Args:
         sp: Authenticated Spotify client instance
@@ -178,7 +178,6 @@ def fetch_all_top_artists(sp: spotipy.Spotify, time_range: str, batch_size: int 
     Returns:
         List of dictionaries containing song data formatted for database insertion:
         {
-            'songName': str,
             'artistName': str,
             'spotifyTrackId': str,
             'rank': int,
@@ -195,10 +194,10 @@ def fetch_all_top_artists(sp: spotipy.Spotify, time_range: str, batch_size: int 
 
         for artist in batch['items']:
             song_data = {
-                'artistName': artist['name'] if artist.get('artists') else 'Unknown Artist',
-                'spotifyTrackId': artist['id'],
+                'artistName': artist['name'],
+                'spotifyArtistId': artist['id'],
                 'rank': rank,
-                'imageUrl': artist['images'][0]['url'] if artist.get('album', {}).get('images') else None,
+                'imageUrl': artist['images'][0]['url'] if artist.get('images') else None,
                 'playCount': 0  # Spotify API doesn't provide play counts for top tracks
             }
             artists.append(song_data)
@@ -214,11 +213,11 @@ def fetch_all_top_artists(sp: spotipy.Spotify, time_range: str, batch_size: int 
 
 def insert_top_artists_to_db(stats_id: int, artists: list) -> None:
     """
-    Insert top songs data into the TopSong table.
+    Insert top artists data into the TopSong table.
 
     Args:
         stats_id: The statsID foreign key from the Stats table
-        songs: List of song dictionaries from fetch_all_top_songs()
+        Artists: List of artist dictionaries from fetch_all_top_artists()
     """
     from db import get_db
 
@@ -228,8 +227,8 @@ def insert_top_artists_to_db(stats_id: int, artists: list) -> None:
     try:
         for artist in artists:
                 cursor.execute("""
-                    INSERT INTO TopArtist (statsID, artistName, spotifyArtistId, rank, playCount, imageUrl)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO TopArtist (statsID, artistName, spotifyArtistId, `rank`, playCount, imageUrl)
+                VALUES (%s, %s, %s, %s, %s, %s)
             """, (
                     stats_id,
                     artist['artistName'],
@@ -259,7 +258,8 @@ def stats():
 
     # ========== TOP ARTISTS AND TRACKS (LAST 4 WEEKS) ==========
     # Fetch top 50 artists from the past ~4 weeks
-    top_artists_week = sp.current_user_top_artists(limit=50, time_range='short_term')
+    top_artists_week = fetch_all_top_artists(sp, 'short_term')
+
 
     # Fetch ALL top tracks from the past ~4 weeks using pagination
     top_tracks_week = fetch_all_top_tracks(sp, 'short_term')
@@ -273,7 +273,9 @@ def stats():
 
         # Insert songs into database using the new stats_id
         insert_top_songs_to_db(stats_id=stats_id, songs=top_songs_week)
+        insert_top_artists_to_db(stats_id=stats_id, artists=top_artists_week)
         print(f"Successfully inserted {len(top_songs_week)} songs into database!", flush=True)
+        print(f"Successfully inserted {len(top_artists_week)} artists into database!", flush=True)
     except Exception as e:
         print(f"Error creating stats or inserting songs: {e}", flush=True)
 
@@ -298,8 +300,8 @@ def stats():
 
     # Display top artists from the past 4 weeks
     html += "<h2>Top Artists (Week)</h2><ul>"
-    for artist in top_artists_week['items']:
-        html += f"<li>{artist['name']}</li>"
+    for artist in top_artists_week:
+        html += f"<li>{artist['artistName']}</li>"
     html += "</ul>"
 
     html += "<h2>Top Tracks (Week)</h2><ul>"
@@ -338,6 +340,12 @@ def stats():
         print(f"Successfully inserted {len(top_songs_week)} songs into database!", flush=True)
     except Exception as e:
         print(f"Error inserting songs: {e}", flush=True)
+
+    try:
+        insert_top_artists_to_db(stats_id=4, artists=top_artists_week)
+        print(f"Successfully inserted {len(top_artists_week)} songs into database!", flush=True)
+    except Exception as e:
+        print(f"Error inserting artists: {e}", flush=True)
 
 
     # html += "<h2>Top Tracks (Year)</h2><ul>"
