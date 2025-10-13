@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS UserFriends (
 );
 
 -- Stats table
+-- REVISE THIS, CHANGE TIME, total minutes is a function
 CREATE TABLE IF NOT EXISTS Stats (
     uniqueID INT AUTO_INCREMENT PRIMARY KEY,
     userName VARCHAR(255) NOT NULL,

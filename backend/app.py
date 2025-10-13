@@ -3,8 +3,45 @@ from dotenv import load_dotenv  # This loads .env files that contain API keys
 import os
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-from db import get_db 
+from db import get_db
 from stats import stats_bp
+from stats_recently_played import stats_weekly_bp
+
+def upsert_user(spotify_user_data):
+    """
+    Insert or update user in database from Spotify OAuth data.
+
+    Args:
+        spotify_user_data: Dictionary from Spotify API current_user() call
+
+    Returns:
+        userName: The userName (Spotify ID) of the user
+    """
+    conn = get_db()
+    cursor = conn.cursor()
+
+    try:
+        userName = spotify_user_data['id']
+        displayName = spotify_user_data.get('display_name', '')
+        profilePicture = spotify_user_data['images'][0]['url'] if spotify_user_data.get('images') else None
+
+        # Insert or update user (ON DUPLICATE KEY UPDATE handles existing users)
+        cursor.execute("""
+            INSERT INTO User (userName, spotifyId, displayName, profilePicture)
+            VALUES (%s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE
+                displayName = VALUES(displayName),
+                profilePicture = VALUES(profilePicture)
+        """, (userName, userName, displayName, profilePicture))
+
+        conn.commit()
+        return userName
+    except Exception as e:
+        conn.rollback()
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
 
 def upsert_user(spotify_user_data):
     """
@@ -47,6 +84,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = "your-secret-key"
 app.register_blueprint(stats_bp)
+app.register_blueprint(stats_weekly_bp)
 
 # Configuration (NOTE: Make a '.env' file in local folder for API keys)
 PORT=5000
@@ -116,8 +154,8 @@ def callback():
     token_info = sp_oauth.get_access_token(code)
     sp = spotipy.Spotify(auth=token_info['access_token'])
     session['token_info'] = token_info
-    results = sp.current_user()
 
+    # Get user data and insert/update in database
     results = sp.current_user()
     userName = upsert_user(results)
     session['userName'] = userName
