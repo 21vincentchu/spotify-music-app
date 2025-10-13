@@ -5,6 +5,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from db import get_db
 from stats import stats_bp
+from stats_recently_played import stats_weekly_bp
 
 def upsert_user(spotify_user_data):
     """
@@ -47,6 +48,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = "your-secret-key"
 app.register_blueprint(stats_bp)
+app.register_blueprint(stats_weekly_bp)
 
 # Configuration (NOTE: Make a '.env' file in local folder for API keys)
 PORT=5000
