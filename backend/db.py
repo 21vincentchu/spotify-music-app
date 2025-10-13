@@ -27,3 +27,6 @@ def get_db():
             print("ERROR: Service not available")
             exit()
     return mydb
+
+
+
