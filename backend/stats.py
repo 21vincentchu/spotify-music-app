@@ -249,6 +249,9 @@ def get_recent_stats(userName: str, timeframe: str, max_age_hours: int = 24):
         cursor.close()
         conn.close()
 
+# Flask route decorators: map URLs to this function
+# /stats -> uses default timeframe='short_term'
+# /stats/<timeframe> -> uses the timeframe from the URL (e.g., /stats/long_term)
 @stats_bp.route('/stats')
 @stats_bp.route('/stats/<timeframe>')
 def stats(timeframe='short_term'):
