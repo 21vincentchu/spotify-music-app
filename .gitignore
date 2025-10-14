@@ -4,3 +4,4 @@ __pycache__/
 .venv/
 .spotipyoauthcache
 .cache
+node_modules
