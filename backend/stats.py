@@ -2,38 +2,9 @@ from flask import Blueprint, session, redirect
 import spotipy
 from db import get_db
 from auth import get_authenticated_spotify_client
+from db_insert import *
 
 stats_bp = Blueprint('stats', __name__)
-
-def create_stats_record(userName, timeframe='short_term'):
-    """
-    Create a new Stats record for a user.
-
-    Args:
-        userName: The userName (Spotify ID)
-        timeframe: 'short_term', 'medium_term', or 'long_term'
-
-    Returns:
-        stats_id: The uniqueID of the created Stats record
-    """
-    conn = get_db()
-    cursor = conn.cursor()
-
-    try:
-        cursor.execute("""
-            INSERT INTO Stats (userName, timeframe, totalMinutes)
-            VALUES (%s, %s, 0)
-        """, (userName, timeframe))
-
-        conn.commit()
-        stats_id = cursor.lastrowid
-        return stats_id
-    except Exception as e:
-        conn.rollback()
-        raise e
-    finally:
-        cursor.close()
-        conn.close()
 
 def fetch_all_top_songs(sp: spotipy.Spotify, time_range: str, batch_size: int = 50) -> list:
     """
@@ -81,78 +52,6 @@ def fetch_all_top_songs(sp: spotipy.Spotify, time_range: str, batch_size: int = 
         offset += batch_size
 
     return songs
-
-def insert_top_songs_to_db(stats_id: int, songs: list) -> None:
-    """
-    Insert top songs data into the TopSong table.
-
-    Args:
-        stats_id: The statsID foreign key from the Stats table
-        songs: List of song dictionaries from fetch_all_top_songs()
-    """
-    from db import get_db
-
-    conn = get_db()
-    cursor = conn.cursor()
-
-    try:
-        for song in songs:
-            cursor.execute("""
-                INSERT INTO TopSong (statsID, songName, artistName, spotifyTrackId, `rank`, playCount, imageUrl)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-            """, (
-                stats_id,
-                song['songName'],
-                song['artistName'],
-                song['spotifyTrackId'],
-                song['rank'],
-                song['playCount'],
-                song['imageUrl']
-            ))
-
-        conn.commit()
-    except Exception as e:
-        conn.rollback()
-        raise e
-    finally:
-        cursor.close()
-        conn.close()
-
-def insert_top_albums_to_db(stats_id: int, albums: list) -> None:
-    """
-    Insert top albums data into the TopAlbum table.
-
-    Args:
-        stats_id: The statsID foreign key from the Stats table
-        albums: List of album dictionaries from fetch_all_top_albums()
-    """
-    from db import get_db
-
-    conn = get_db()
-    cursor = conn.cursor()
-
-    try:
-        for album in albums:
-            cursor.execute("""
-                INSERT INTO TopAlbum (statsID, albumName, artistName, spotifyAlbumId, `rank`, playCount, imageUrl)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-            """, (
-                stats_id,
-                album['albumName'],
-                album['artistName'],
-                album['spotifyAlbumId'],
-                album['rank'],
-                album['playCount'],
-                album['imageUrl']
-            ))
-
-        conn.commit()
-    except Exception as e:
-        conn.rollback()
-        raise e
-    finally:
-        cursor.close()
-        conn.close()
 
 def fetch_all_top_albums(sp: spotipy.Spotify, time_range: str, batch_size: int = 50) -> list:
     """
@@ -217,17 +116,24 @@ def fetch_all_top_albums(sp: spotipy.Spotify, time_range: str, batch_size: int =
 
     return albums
 
-def get_recent_stats(userName: str, timeframe: str, max_age_hours: int = 24):
+def get_cached_stats_id(userName: str, timeframe: str, max_age_hours: int = 24):
     """
-    Check if there's a recent Stats record for this user and timeframe.
+    Check if a cached Stats record exists for this user and timeframe combination.
+
+    This function prevents duplicate database inserts by checking if we've already
+    fetched and stored this user's stats for the given timeframe within the specified
+    time window. If a recent record exists, we can reuse its stats_id instead of
+    creating a new Stats record and re-inserting all the data.
 
     Args:
-        userName: The userName to check
-        timeframe: The timeframe to check ('short_term', 'medium_term', 'long_term')
-        max_age_hours: Maximum age in hours (default 24)
+        userName: The user's Spotify ID (userName)
+        timeframe: The Spotify timeframe ('short_term', 'medium_term', 'long_term')
+        max_age_hours: Maximum age of cached record in hours (default 24)
+                       Records older than this are considered stale
 
     Returns:
-        stats_id if recent record exists, None otherwise
+        int: The uniqueID (stats_id) of the cached Stats record if found
+        None: If no valid cached record exists within the time window
     """
     conn = get_db()
     cursor = conn.cursor()
@@ -294,41 +200,6 @@ def fetch_all_top_artists(sp: spotipy.Spotify, time_range: str, batch_size: int 
 
     return artists
 
-def insert_top_artists_to_db(stats_id: int, artists: list) -> None:
-    """
-    Insert top artists data into the TopSong table.
-
-    Args:
-        stats_id: The statsID foreign key from the Stats table
-        Artists: List of artist dictionaries from fetch_all_top_artists()
-    """
-    from db import get_db
-
-    conn = get_db()
-    cursor = conn.cursor()
-
-    try:
-        for artist in artists:
-                cursor.execute("""
-                    INSERT INTO TopArtist (statsID, artistName, spotifyArtistId, `rank`, playCount, imageUrl)
-                VALUES (%s, %s, %s, %s, %s, %s)
-            """, (
-                    stats_id,
-                    artist['artistName'],
-                    artist['spotifyArtistId'],
-                    artist['rank'],
-                    artist['playCount'],
-                    artist['imageUrl']
-                ))
-
-        conn.commit()
-    except Exception as e:
-            conn.rollback()
-            raise e
-    finally:
-        cursor.close()
-        conn.close()
-
 
 @stats_bp.route('/stats')
 @stats_bp.route('/stats/<timeframe>')
@@ -367,8 +238,8 @@ def stats(timeframe='short_term'):
     # Fetch top artists for the selected timeframe
     top_artists = sp.current_user_top_artists(limit=50, time_range=timeframe)
 
-    # Check if we have recent stats (within last 24 hours)
-    existing_stats_id = get_recent_stats(userName, timeframe=timeframe, max_age_hours=24)
+    # Check if we have cached stats (within last 24 hours)
+    existing_stats_id = get_cached_stats_id(userName, timeframe=timeframe, max_age_hours=24)
 
     if existing_stats_id:
         print(f"Found recent stats (ID: {existing_stats_id}), skipping fetch and insert", flush=True)
@@ -385,7 +256,7 @@ def stats(timeframe='short_term'):
 
         # Create a Stats record for this user and timeframe
         try:
-            stats_id = create_stats_record(userName, timeframe=timeframe)
+            stats_id = insert_stats_record(userName, timeframe=timeframe)
             print(f"Created Stats record with ID: {stats_id}", flush=True)
 
             # Insert songs and albums into database using the new stats_id

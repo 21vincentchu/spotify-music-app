@@ -1,49 +1,30 @@
 from flask import Blueprint, session, redirect
 import spotipy
-from datetime import datetime, timedelta
 from collections import Counter
 from db import get_db
 from auth import get_authenticated_spotify_client
 
-stats_weekly_bp = Blueprint('stats_weekly', __name__)
+stats_recently_played_bp = Blueprint('stats_recently_played', __name__)
 
-def fetch_recently_played_tracks(sp: spotipy.Spotify, days_ago: int = 7) -> list:
+def fetch_recently_played_tracks(sp: spotipy.Spotify) -> list:
     """
-    Fetch all recently played tracks from the last N days.
+    Fetch recently played tracks (limited to last 50 tracks by Spotify API).
+
+    Note: Spotify's API only stores and returns the last 50 recently played tracks maximum,
+    regardless of time range. This typically represents 1-2 days of listening history.
 
     Args:
         sp: Authenticated Spotify client instance
-        days_ago: Number of days to look back (default 7 for weekly)
 
     Returns:
         List of play items with 'track' and 'played_at' timestamp
     """
-    all_tracks = []
-
-    # Calculate start time in milliseconds (Unix timestamp)
-    start_time = int((datetime.now() - timedelta(days=days_ago)).timestamp() * 1000)
-    after_cursor = start_time
-
-    while True:
-        try:
-            results = sp.current_user_recently_played(limit=50, after=after_cursor)
-
-            if not results or not results.get('items'):
-                break
-
-            all_tracks.extend(results['items'])
-
-            # Check if there's more data to fetch
-            if results.get('cursors', {}).get('after'):
-                after_cursor = results['cursors']['after']
-            else:
-                break
-
-        except Exception as e:
-            print(f"Error fetching recently played: {e}", flush=True)
-            break
-
-    return all_tracks
+    try:
+        results = sp.current_user_recently_played(limit=50)
+        return results.get('items', []) if results else []
+    except Exception as e:
+        print(f"Error fetching recently played: {e}", flush=True)
+        return []
 
 def calculate_listening_minutes(recent_tracks: list) -> dict:
     """
@@ -80,13 +61,12 @@ def calculate_listening_minutes(recent_tracks: list) -> dict:
         'avg_track_length_minutes': round(avg_track_length, 2)
     }
 
-def fetch_weekly_top_songs(sp: spotipy.Spotify, days_ago: int = 7) -> list:
+def fetch_recently_played_top_songs(sp: spotipy.Spotify) -> list:
     """
-    Fetch top songs from the last N days based on play count.
+    Fetch top songs from recently played tracks (last ~50 tracks) based on play count.
 
     Args:
         sp: Authenticated Spotify client instance
-        days_ago: Number of days to look back (default 7 for weekly)
 
     Returns:
         List of dictionaries containing song data formatted for database insertion:
@@ -99,8 +79,8 @@ def fetch_weekly_top_songs(sp: spotipy.Spotify, days_ago: int = 7) -> list:
             'playCount': int (actual play count from recently played)
         }
     """
-    # Fetch recently played tracks
-    recent_tracks = fetch_recently_played_tracks(sp, days_ago)
+    # Fetch recently played tracks (max 50)
+    recent_tracks = fetch_recently_played_tracks(sp)
 
     # Count plays per track
     track_play_count = Counter()
@@ -137,13 +117,12 @@ def fetch_weekly_top_songs(sp: spotipy.Spotify, days_ago: int = 7) -> list:
 
     return songs
 
-def fetch_weekly_top_artists(sp: spotipy.Spotify, days_ago: int = 7) -> list:
+def fetch_recently_played_top_artists(sp: spotipy.Spotify) -> list:
     """
-    Fetch top artists from the last N days based on play count.
+    Fetch top artists from recently played tracks (last ~50 tracks) based on play count.
 
     Args:
         sp: Authenticated Spotify client instance
-        days_ago: Number of days to look back (default 7 for weekly)
 
     Returns:
         List of dictionaries containing artist data formatted for database insertion:
@@ -155,8 +134,8 @@ def fetch_weekly_top_artists(sp: spotipy.Spotify, days_ago: int = 7) -> list:
             'imageUrl': str (optional)
         }
     """
-    # Fetch recently played tracks
-    recent_tracks = fetch_recently_played_tracks(sp, days_ago)
+    # Fetch recently played tracks (max 50)
+    recent_tracks = fetch_recently_played_tracks(sp)
 
     # Count plays per artist
     artist_play_count = Counter()
@@ -199,13 +178,12 @@ def fetch_weekly_top_artists(sp: spotipy.Spotify, days_ago: int = 7) -> list:
 
     return artists
 
-def fetch_weekly_top_albums(sp: spotipy.Spotify, days_ago: int = 7) -> list:
+def fetch_recently_played_top_albums(sp: spotipy.Spotify) -> list:
     """
-    Fetch top albums from the last N days based on play count.
+    Fetch top albums from recently played tracks (last ~50 tracks) based on play count.
 
     Args:
         sp: Authenticated Spotify client instance
-        days_ago: Number of days to look back (default 7 for weekly)
 
     Returns:
         List of dictionaries containing album data formatted for database insertion:
@@ -218,8 +196,8 @@ def fetch_weekly_top_albums(sp: spotipy.Spotify, days_ago: int = 7) -> list:
             'imageUrl': str
         }
     """
-    # Fetch recently played tracks
-    recent_tracks = fetch_recently_played_tracks(sp, days_ago)
+    # Fetch recently played tracks (max 50)
+    recent_tracks = fetch_recently_played_tracks(sp)
 
     # Count plays per album
     album_play_count = Counter()
@@ -260,7 +238,7 @@ def fetch_weekly_top_albums(sp: spotipy.Spotify, days_ago: int = 7) -> list:
 
     return albums
 
-@stats_weekly_bp.route('/stats/recently-played')
+@stats_recently_played_bp.route('/stats/recently-played')
 def stats_recently_played():
     """Route to display stats based on recently played tracks (last ~50 plays)."""
     sp, token_info = get_authenticated_spotify_client()
@@ -270,16 +248,16 @@ def stats_recently_played():
     user_profile = sp.current_user()
     userName = session.get('userName')
 
-    # Fetch raw recently played data
-    recent_tracks = fetch_recently_played_tracks(sp, days_ago=7)
+    # Fetch raw recently played data (max 50 tracks)
+    recent_tracks = fetch_recently_played_tracks(sp)
 
     # Calculate listening statistics
     listening_stats = calculate_listening_minutes(recent_tracks)
 
-    # Fetch weekly data (last 7 days)
-    top_songs_weekly = fetch_weekly_top_songs(sp, days_ago=7)
-    top_artists_weekly = fetch_weekly_top_artists(sp, days_ago=7)
-    top_albums_weekly = fetch_weekly_top_albums(sp, days_ago=7)
+    # Fetch top songs/artists/albums from recently played tracks
+    top_songs_recent = fetch_recently_played_top_songs(sp)
+    top_artists_recent = fetch_recently_played_top_artists(sp)
+    top_albums_recent = fetch_recently_played_top_albums(sp)
 
     # Build HTML response
     html = "<h1>Your Recently Played Stats</h1>"
@@ -295,19 +273,19 @@ def stats_recently_played():
 
     # Display top songs
     html += "<h2>Top Songs</h2><ul>"
-    for song in top_songs_weekly[:10]:  # Show top 10
+    for song in top_songs_recent[:10]:  # Show top 10
         html += f"<li>{song['rank']}. {song['songName']} by {song['artistName']} ({song['playCount']} plays)</li>"
     html += "</ul>"
 
     # Display top artists
     html += "<h2>Top Artists</h2><ul>"
-    for artist in top_artists_weekly[:10]:  # Show top 10
+    for artist in top_artists_recent[:10]:  # Show top 10
         html += f"<li>{artist['rank']}. {artist['artistName']} ({artist['playCount']} plays)</li>"
     html += "</ul>"
 
     # Display top albums
     html += "<h2>Top Albums</h2><ul>"
-    for album in top_albums_weekly[:10]:  # Show top 10
+    for album in top_albums_recent[:10]:  # Show top 10
         html += f"<li>{album['rank']}. {album['albumName']} by {album['artistName']} ({album['playCount']} plays)</li>"
     html += "</ul>"
 
