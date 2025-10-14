@@ -24,12 +24,6 @@ function DesktopLayout(){
                 <Route path="/statistics" element={< StatisticsPage/>} />
                 <Route path="/recommendations" element={<RecommendationsPage />} />
                 <Route path="/friends" element={<FriendsPage />} />
-                
-                
-
-
-
-
             </Routes>
         </div>
     )
