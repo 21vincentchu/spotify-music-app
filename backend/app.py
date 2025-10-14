@@ -1,11 +1,12 @@
 from flask import Flask, request, jsonify, redirect, session
-from dotenv import load_dotenv  # This loads .env files that contain API keys
+from flask_cors import CORS
 import os
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from db import get_db
 from stats import stats_bp
 from stats_recently_played import stats_recently_played_bp
+from config import Config
 
 def upsert_user(spotify_user_data):
     """
@@ -42,65 +43,23 @@ def upsert_user(spotify_user_data):
     finally:
         cursor.close()
         conn.close()
-
-def upsert_user(spotify_user_data):
-    """
-    Insert or update user in database from Spotify OAuth data.
-
-    Args:
-        spotify_user_data: Dictionary from Spotify API current_user() call
-
-    Returns:
-        userName: The userName (Spotify ID) of the user
-    """
-    conn = get_db()
-    cursor = conn.cursor()
-
-    try:
-        userName = spotify_user_data['id']
-        displayName = spotify_user_data.get('display_name', '')
-        profilePicture = spotify_user_data['images'][0]['url'] if spotify_user_data.get('images') else None
-
-        # Insert or update user (ON DUPLICATE KEY UPDATE handles existing users)
-        cursor.execute("""
-            INSERT INTO User (userName, spotifyId, displayName, profilePicture)
-            VALUES (%s, %s, %s, %s)
-            ON DUPLICATE KEY UPDATE
-                displayName = VALUES(displayName),
-                profilePicture = VALUES(profilePicture)
-        """, (userName, userName, displayName, profilePicture))
-
-        conn.commit()
-        return userName
-    except Exception as e:
-        conn.rollback()
-        raise e
-    finally:
-        cursor.close()
-        conn.close()
-
-load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "your-secret-key"
+app.secret_key = Config.SECRET_KEY
+
+# Enable CORS for frontend
+CORS(app, supports_credentials=True)
+
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
 
-# Configuration (NOTE: Make a '.env' file in local folder for API keys)
-PORT=5000
-CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
-CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
-SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:8000/callback' #spotify redirect after after login
-SCOPE = 'user-read-private user-read-email user-top-read user-read-recently-played user-read-playback-state user-read-currently-playing user-read-playback-position user-library-read user-library-modify playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-follow-read user-follow-modify user-modify-playback-state streaming app-remote-control ugc-image-upload' #permmissions to read users data
-CACHE = '.spotipyoauthcache' #local file to save their auth token
-
-#initialize spotify oAuth handler for spotify login flow
+# Initialize Spotify OAuth handler for spotify login flow
 sp_oauth = SpotifyOAuth(
-    CLIENT_ID,
-    CLIENT_SECRET,
-    SPOTIPY_REDIRECT_URI,
-    scope=SCOPE,
-    cache_path=CACHE
+    Config.SPOTIFY_CLIENT_ID,
+    Config.SPOTIFY_CLIENT_SECRET,
+    Config.SPOTIPY_REDIRECT_URI,
+    scope=Config.SPOTIFY_SCOPE,
+    cache_path=Config.CACHE_PATH
 )
 
 # Routes
@@ -163,4 +122,4 @@ def callback():
     return redirect('/')
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=PORT)
+    app.run(debug=(Config.FLASK_ENV == 'development'), host='0.0.0.0', port=Config.PORT)

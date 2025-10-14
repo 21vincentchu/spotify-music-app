@@ -1,29 +1,28 @@
 import mysql.connector
 from mysql.connector import errorcode
-import os
-
-# MySQL Configuration
-MYSQL_HOST = os.getenv('MYSQL_HOST', 'db')
-MYSQL_USER = os.getenv('MYSQL_USER', 'root')
-MYSQL_PASSWORD = os.getenv('MYSQL_ROOT_PASSWORD')
-MYSQL_DATABASE = os.getenv('MYSQL_DATABASE')
+from config import Config
 
 def get_db():
+    """
+    Get database connection using configuration.
+    Supports both local Docker setup and DigitalOcean managed database.
+    """
     try:
         mydb = mysql.connector.connect(
-            host=MYSQL_HOST,
-            user=MYSQL_USER,
-            password=MYSQL_PASSWORD,
-            database=MYSQL_DATABASE
+            host=Config.MYSQL_HOST,
+            port=Config.MYSQL_PORT,
+            user=Config.MYSQL_USER,
+            password=Config.MYSQL_PASSWORD,
+            database=Config.MYSQL_DATABASE
         )
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print("something is wrong with your username or password.")
+            print("ERROR: Database access denied - check credentials")
         elif err.errno == errorcode.ER_BAD_DB_ERROR:
-            print("Database does not exist.")
+            print(f"ERROR: Database '{Config.MYSQL_DATABASE}' does not exist")
             exit()
         else:
-            print(err)
+            print(f"ERROR: Database connection failed: {err}")
             print("ERROR: Service not available")
             exit()
     return mydb
