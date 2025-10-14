@@ -90,7 +90,7 @@ app.register_blueprint(stats_recently_played_bp)
 PORT=5000
 CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
 CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
-SPOTIPY_REDIRECT_URI = 'http://localhost:8000/callback' #spotify redirect after after login
+SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:8000/callback' #spotify redirect after after login
 SCOPE = 'user-read-private user-read-email user-top-read user-read-recently-played user-read-playback-state user-read-currently-playing user-read-playback-position user-library-read user-library-modify playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-follow-read user-follow-modify user-modify-playback-state streaming app-remote-control ugc-image-upload' #permmissions to read users data
 CACHE = '.spotipyoauthcache' #local file to save their auth token
 
