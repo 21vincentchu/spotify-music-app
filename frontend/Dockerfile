@@ -22,7 +22,7 @@ COPY reverb-client/package*.json ./
 RUN npm install
 
 # Copy the rest of the React source
-COPY frontend/reverb-client/ ./
+COPY reverb-client/ ./
 
 EXPOSE 3000
 CMD ["npm", "start"]

@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   frontend:
-    build: ./frontend
+    build: ./frontend/reverb-client
     ports:
       - "3000:3000"
     volumes:
@@ -28,6 +28,7 @@ services:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./backend/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     ports:
       - "3306:3306"
 
