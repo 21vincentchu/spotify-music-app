@@ -52,9 +52,6 @@ app.secret_key = Config.SECRET_KEY
 if Config.FLASK_ENV == 'development':
     CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
 
-app.register_blueprint(stats_bp)
-app.register_blueprint(stats_recently_played_bp)
-
 # Initialize Spotify OAuth handler - use session-based cache instead of file
 def get_sp_oauth():
     """Get SpotifyOAuth instance with session-based cache"""
@@ -125,14 +122,18 @@ def callback():
 
     return redirect('/')
 
-# Serve React App - catch-all route (must be last)
+# Register blueprints AFTER all specific routes
+app.register_blueprint(stats_bp)
+app.register_blueprint(stats_recently_played_bp)
+
+# Serve React App - catch-all route (MUST be absolutely last)
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_react(path):
     '''
     Serve React app for all non-API routes
     '''
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(app.static_folder, path)
     else:
         return send_from_directory(app.static_folder, 'index.html')
