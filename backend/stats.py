@@ -1,4 +1,4 @@
-from flask import Blueprint, session, redirect
+from flask import Blueprint, session, redirect, jsonify
 import spotipy
 from db import get_db
 from auth import get_authenticated_spotify_client
