@@ -126,17 +126,33 @@ def callback():
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
 
-# Serve React App - catch-all route (MUST be absolutely last)
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve_react(path):
+# Root endpoint - show available API endpoints
+@app.route('/')
+def index():
     '''
-    Serve React app for all non-API routes
+    API Documentation - list available endpoints
     '''
-    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
-        return send_from_directory(app.static_folder, path)
-    else:
-        return send_from_directory(app.static_folder, 'index.html')
+    return jsonify({
+        'message': 'Reverb API',
+        'endpoints': {
+            'auth': '/api/auth - Check authentication status',
+            'callback': '/callback - Spotify OAuth callback',
+            'stats': '/stats or /stats/<timeframe> - Get user stats',
+            'recently_played': '/stats/recently-played - Get recently played tracks'
+        }
+    })
+
+# Serve React App - catch-all route (COMMENTED OUT FOR NOW)
+# @app.route('/', defaults={'path': ''})
+# @app.route('/<path:path>')
+# def serve_react(path):
+#     '''
+#     Serve React app for all non-API routes
+#     '''
+#     if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+#         return send_from_directory(app.static_folder, path)
+#     else:
+#         return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == '__main__':
     app.run(debug=(Config.FLASK_ENV == 'development'), host='0.0.0.0', port=Config.PORT)
