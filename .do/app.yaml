@@ -1,13 +1,11 @@
 name: spotify-music-app
 region: nyc
 
-# Database - add this later when ready
-# databases:
-#   - name: spotify-db
-#     engine: MYSQL
-#     version: "8"
-#     production: true
-#     cluster_name: spotify-db-cluster
+# Database
+databases:
+  - name: reverb-db
+    engine: MYSQL
+    production: true
 
 # Backend API
 services:
@@ -36,19 +34,16 @@ services:
         type: SECRET
       - key: SPOTIPY_REDIRECT_URI
         value: ${backend.PUBLIC_URL}/callback
-      # Database env vars - add when database is created
-      # - key: DATABASE_URL
-      #   value: ${spotify-db.DATABASE_URL}
-      # - key: MYSQL_HOST
-      #   value: ${spotify-db.HOSTNAME}
-      # - key: MYSQL_PORT
-      #   value: ${spotify-db.PORT}
-      # - key: MYSQL_USER
-      #   value: ${spotify-db.USERNAME}
-      # - key: MYSQL_PASSWORD
-      #   value: ${spotify-db.PASSWORD}
-      # - key: MYSQL_DATABASE
-      #   value: ${spotify-db.DATABASE}
+      - key: MYSQL_HOST
+        value: ${reverb-db.HOSTNAME}
+      - key: MYSQL_PORT
+        value: ${reverb-db.PORT}
+      - key: MYSQL_USER
+        value: ${reverb-db.USERNAME}
+      - key: MYSQL_PASSWORD
+        value: ${reverb-db.PASSWORD}
+      - key: MYSQL_DATABASE
+        value: defaultdb
 
 # Frontend
   - name: frontend
