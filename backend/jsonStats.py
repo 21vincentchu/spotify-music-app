@@ -1,6 +1,7 @@
-
 import json
-def fetch_all_top_albums(sp: spotipy.Spotify, time_range: str, batch_size: int = 50) -> list:
+import spotipy
+
+def fetch_all_top_albums(sp: spotipy.Spotify, time_range: str, batch_size: int = 50) -> str:
     """
     Derive top albums for a given time range based on user's top tracks.
     Ranks albums by the number of top tracks they contain.
@@ -11,7 +12,7 @@ def fetch_all_top_albums(sp: spotipy.Spotify, time_range: str, batch_size: int =
         batch_size: Number of tracks to fetch per batch (default 50)
 
     Returns:
-       List of album dictionaries formatted for database insertion, ranked by track count
+       JSON string of album dictionaries formatted for React frontend, ranked by track count
     """
     # Fetch all top tracks using pagination
     tracks = []
@@ -61,10 +62,9 @@ def fetch_all_top_albums(sp: spotipy.Spotify, time_range: str, batch_size: int =
         album_data['rank'] = rank
         albums.append(album_data)
 
+    # Convert to JSON string for React frontend
     json_string = json.dumps(albums)
 
-
-
-    return albums
+    return json_string
 
 
