@@ -5,13 +5,13 @@ FROM python:3.13-slim
 WORKDIR /app
 
 # Copy requirements first (for better caching)
-COPY backend/requirements.txt .
+COPY requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code from backend directory
-COPY backend/ .
+COPY . .
 
 # Expose port 5000
 EXPOSE 5000

@@ -18,11 +18,11 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copy the package files from the correct path
-COPY frontend/reverb-client/package*.json ./
+COPY reverb-client/package*.json ./
 RUN npm install
 
 # Copy the rest of the React source
-COPY frontend/reverb-client/ ./
+COPY reverb-client/ ./
 
 EXPOSE 3000
 CMD ["npm", "start"]
