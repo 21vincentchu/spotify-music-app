@@ -53,25 +53,42 @@ CORS(app, supports_credentials=True)
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
 
-# Initialize Spotify OAuth handler for spotify login flow
-sp_oauth = SpotifyOAuth(
-    Config.SPOTIFY_CLIENT_ID,
-    Config.SPOTIFY_CLIENT_SECRET,
-    Config.SPOTIPY_REDIRECT_URI,
-    scope=Config.SPOTIFY_SCOPE,
-    cache_path=Config.CACHE_PATH
-)
+# Initialize Spotify OAuth handler - use session-based cache instead of file
+def get_sp_oauth():
+    """Get SpotifyOAuth instance with session-based cache"""
+    from spotipy.cache_handler import CacheFileHandler
+    import tempfile
+    import hashlib
+
+    # Create a unique cache file per session
+    session_id = session.get('session_id')
+    if not session_id:
+        session_id = os.urandom(16).hex()
+        session['session_id'] = session_id
+
+    # Use a unique cache file for each session
+    cache_path = os.path.join(tempfile.gettempdir(), f'.spotipyoauthcache-{session_id}')
+
+    return SpotifyOAuth(
+        Config.SPOTIFY_CLIENT_ID,
+        Config.SPOTIFY_CLIENT_SECRET,
+        Config.SPOTIPY_REDIRECT_URI,
+        scope=Config.SPOTIFY_SCOPE,
+        cache_path=cache_path
+    )
 
 # Routes
 @app.route('/')
 def index():
     '''
     home endpoint. checks for cached token, which then prompts login or display current users profile
-    
+
     returns:
         str or dict: login link if not authenicated, or their profile
     '''
-    
+
+    sp_oauth = get_sp_oauth()
+
     #Checks for users cached tokens
     token_info = sp_oauth.get_cached_token()
 
@@ -105,10 +122,12 @@ def index():
 def callback():
     '''
     Spotify oAuth callback endpoint, exchanges auth cod from spotify for an access token and return users profile
-    
+
     Returns:
         redirect: redirect to home page after authentication
     '''
+    sp_oauth = get_sp_oauth()
+
     code = request.args.get('code')
     token_info = sp_oauth.get_access_token(code)
     sp = spotipy.Spotify(auth=token_info['access_token'])
