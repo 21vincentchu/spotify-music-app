@@ -7,9 +7,9 @@ databases:
     engine: MYSQL
     production: true
 
-# Backend API
+# Combined Backend + Frontend (Flask serves React build)
 services:
-  - name: backend
+  - name: web
     github:
       repo: 21vincentchu/spotify-music-app
       branch: backend-vinny
@@ -31,7 +31,7 @@ services:
         scope: RUN_TIME
         type: SECRET
       - key: SPOTIPY_REDIRECT_URI
-        value: ${backend.PUBLIC_URL}/callback
+        value: ${web.PUBLIC_URL}/callback
       - key: MYSQL_HOST
         value: ${reverb-db.HOSTNAME}
       - key: MYSQL_PORT
@@ -42,19 +42,3 @@ services:
         value: ${reverb-db.PASSWORD}
       - key: MYSQL_DATABASE
         value: defaultdb
-      - key: FRONTEND_URL
-        value: ${frontend.PUBLIC_URL}
-
-# Frontend
-  - name: frontend
-    github:
-      repo: 21vincentchu/spotify-music-app
-      branch: backend-vinny
-      deploy_on_push: true
-    dockerfile_path: frontend/Dockerfile
-    http_port: 3000
-    instance_count: 1
-    instance_size_slug: basic-xxs
-    envs:
-      - key: REACT_APP_API_URL
-        value: ${backend.PUBLIC_URL}

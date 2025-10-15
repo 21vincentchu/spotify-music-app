@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, redirect, session
+from flask import Flask, request, jsonify, redirect, session, send_from_directory
 from flask_cors import CORS
 import os
 import spotipy
@@ -44,14 +44,13 @@ def upsert_user(spotify_user_data):
         cursor.close()
         conn.close()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../frontend/reverb-client/build', static_url_path='')
 app.secret_key = Config.SECRET_KEY
 
-# Enable CORS for frontend - restrict to frontend domain only
-frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:3000')
-CORS(app,
-     origins=[frontend_url],
-     supports_credentials=True)
+# No CORS needed when serving frontend from same origin
+# CORS only needed in development when React runs on localhost:3000
+if Config.FLASK_ENV == 'development':
+    CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
 
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
@@ -80,28 +79,20 @@ def get_sp_oauth():
         cache_path=cache_path
     )
 
-# Routes
-@app.route('/')
-def index():
+# API Routes (prefixed to avoid conflicts with React routes)
+@app.route('/api/auth')
+def auth_check():
     '''
-    home endpoint. checks for cached token, which then prompts login or display current users profile
-
-    returns:
-        str or dict: login link if not authenicated, or their profile
+    Check if user is authenticated
     '''
-
     sp_oauth = get_sp_oauth()
-
-    #Checks for users cached tokens
     token_info = sp_oauth.get_cached_token()
 
-    #redirect user to spotify login page if not token exists
     if not token_info:
         auth_url = sp_oauth.get_authorize_url()
-        return f'<a href="{auth_url}">Login with Spotify</a>'
-    
+        return jsonify({'authenticated': False, 'auth_url': auth_url})
+
     session['token_info'] = token_info
-    #if token exists, use for authenticated API calls
     access_token = token_info['access_token']
     sp = spotipy.Spotify(auth=access_token)
     results = sp.current_user()
@@ -110,16 +101,7 @@ def index():
     userName = upsert_user(results)
     session['userName'] = userName
 
-    #display the json
-    profile_img = results['images'][0]['url'] if results.get('images') else ''
-    html = f'''
-        <h1>Welcome, {results['display_name']}!</h1>
-        <img src="{profile_img}" alt="Profile" width="200">
-        <p>Followers: {results['followers']['total']}</p>
-        <p><a href="/stats">View Your Spotify Stats</a></p>
-        <p><a href="{results['external_urls']['spotify']}">View on Spotify</a></p>
-    '''
-    return html
+    return jsonify({'authenticated': True, 'user': results})
 
 @app.route('/callback')
 def callback():
@@ -142,6 +124,18 @@ def callback():
     session['userName'] = userName
 
     return redirect('/')
+
+# Serve React App - catch-all route (must be last)
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_react(path):
+    '''
+    Serve React app for all non-API routes
+    '''
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == '__main__':
     app.run(debug=(Config.FLASK_ENV == 'development'), host='0.0.0.0', port=Config.PORT)
