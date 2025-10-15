@@ -12,7 +12,7 @@ services:
   - name: backend
     github:
       repo: 21vincentchu/spotify-music-app
-      branch: backend-vinny
+      branch: reverb-production
       deploy_on_push: true
     dockerfile_path: backend/Dockerfile
     http_port: 5000
@@ -44,19 +44,3 @@ services:
         value: ${reverb-db.PASSWORD}
       - key: MYSQL_DATABASE
         value: defaultdb
-
-# Frontend
-  - name: frontend
-    github:
-      repo: 21vincentchu/spotify-music-app
-      branch: backend-vinny
-      deploy_on_push: true
-    dockerfile_path: frontend/Dockerfile
-    http_port: 3000
-    instance_count: 1
-    instance_size_slug: basic-xxs
-    routes:
-      - path: /
-    envs:
-      - key: REACT_APP_API_URL
-        value: ${backend.PUBLIC_URL}
