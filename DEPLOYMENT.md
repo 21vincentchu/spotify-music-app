@@ -22,11 +22,12 @@ Before deploying, update your Spotify app redirect URIs:
    ```bash
    git add .
    git commit -m "Prepare for DigitalOcean deployment"
-   git push origin main
+   git push origin backend-vinny
    ```
 
-2. Update `.do/app.yaml`:
-   - Replace `YOUR_GITHUB_USERNAME/YOUR_REPO_NAME` with your actual repo
+2. The `.do/app.yaml` is already configured for:
+   - Repository: `21vincentchu/spotify-music-app`
+   - Branch: `backend-vinny`
 
 ## Step 3: Deploy to DigitalOcean
 
@@ -35,9 +36,9 @@ Before deploying, update your Spotify app redirect URIs:
 1. Go to https://cloud.digitalocean.com/apps
 2. Click "Create App"
 3. Choose "GitHub" as source
-4. Authorize GitHub and select your repository
-5. Select branch: `main`
-6. DigitalOcean will detect the app spec file
+4. Authorize GitHub and select your repository: `21vincentchu/spotify-music-app`
+5. Select branch: `backend-vinny`
+6. DigitalOcean will detect the app spec file (`.do/app.yaml`)
 7. Click "Next" and review the configuration
 
 ### Option B: Deploy via CLI
@@ -141,7 +142,7 @@ To rollback a deployment:
 
 ## Auto-Deploy
 
-With `deploy_on_push: true` in app.yaml, every push to `main` automatically deploys.
+With `deploy_on_push: true` in app.yaml, every push to `backend-vinny` automatically deploys.
 
 To disable:
 1. Edit `.do/app.yaml`
