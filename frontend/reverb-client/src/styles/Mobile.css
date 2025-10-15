@@ -1,26 +1,30 @@
 .mobile-layout {
 }
 
-.home-page{
-    display: flex;
+.home-page {
+  display: flex;
+  flex-direction: column; /* stack children vertically */
+  align-items: center; /* center horizontally */
+  gap: 20px; /* spacing between sections */
 
-    h2{
-        padding: 0 3%;
-    }
+  h2 {
+    padding: 0 3%;
+  }
 }
 
 nav a {
-    margin-right: 20px; 
-    text-decoration: none; 
-    color: inherit;
+  margin-right: 20px;
+  text-decoration: none;
+  color: inherit;
 }
 
 nav a:last-child {
-    margin-right: 0;
+  margin-right: 0;
 }
 
 
-.home-recommended {
+.home-featured {
+    text-align: center;
     width: 40vw;
     max-height: 70vh;
     margin: 5%;
@@ -28,40 +32,52 @@ nav a:last-child {
     overflow: hidden;
 }
 
+/* Featured header styles */
+.home-featured h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+}
+
+/* Subtext below Featured header */
+.subtext {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 0.95rem;
+  color: #666;
+  margin-top: 0;
+}
+
+/* Featured stats section */
+.home-featured-stats {
+  flex: 1;
+  overflow: visible;
+  width: 90%;
+  height: 100%;
+}
+
+/* =========================
+   🎵 RECOMMENDED SECTION
+   ========================= */
+.home-featured-recs {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+  width: 90%;
+  height: 100%;
+}
+
 .home-recommended h2 {
-    flex-shrink: 0; /* prevents header from being compressed or scrolled */
-    margin: 0 0 10px 0;
+  flex-shrink: 0;
+  margin: 0 0 10px 0;
 }
 
-.home-recommended-songs {
-    flex: 1; /* fills remaining space under the h2 */
-    overflow-y: auto; /* makes only the song list scrollable */
-    padding-right: 8px; /* optional: avoids scrollbar overlap */
-    width: 90%;
-    height: 100%;
-}
-/*   
-.home-recommended{
-    width: 40vw;
-    max-height: 70vh;
-    margin: 5%;
-    display: flex;
-    flex-direction: column;
-    
-    h2{
-        flex-shrink: 0;
-    }
-    .home-recommended-song{
-        flex: 1;
-        width: 90%;
-        height: 70%;
-        overflow-y: auto;
-    }
-} */
-
-.home-stats{
-    width: 40vw;
-    max-height: 70vh;
-    margin: 5%;
-
+/* =========================
+   📊 STATS SECTION
+   ========================= */
+.home-stats {
+  width: 40vw;
+  max-height: 70vh;
+  margin: 5%;
 }

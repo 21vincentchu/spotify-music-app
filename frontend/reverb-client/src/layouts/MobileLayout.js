@@ -15,7 +15,7 @@ function MobileLayout(){
 
     return(
         <div className="mobile-layout">
-            <h1>Mobile Layout</h1>
+            <h1>Mobile</h1>
             <NavbarMobile  />
             <Routes>
                 <Route path="/" element={<SignInPage />} />
