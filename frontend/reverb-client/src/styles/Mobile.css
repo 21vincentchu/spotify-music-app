@@ -1,83 +1,128 @@
-.mobile-layout {
-}
-
-.home-page {
-  display: flex;
-  flex-direction: column; /* stack children vertically */
-  align-items: center; /* center horizontally */
-  gap: 20px; /* spacing between sections */
-
-  h2 {
-    padding: 0 3%;
+/* =========================
+   📱 MOBILE LAYOUT
+   ========================= */
+   .mobile-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
   }
-}
-
-nav a {
-  margin-right: 20px;
-  text-decoration: none;
-  color: inherit;
-}
-
-nav a:last-child {
-  margin-right: 0;
-}
-
-
-.home-featured {
+  
+  .mobile-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 60px; /* ensures content isn’t hidden behind navbar */
+  }
+  
+  /* =========================
+     🏠 HOME PAGE
+     ========================= */
+  .home-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  
+    h2 {
+      padding: 0 3%;
+    }
+  }
+  
+  /* =========================
+     🌟 FEATURED SECTION
+     ========================= */
+  .home-featured {
     text-align: center;
     width: 40vw;
     max-height: 70vh;
     margin: 5%;
     padding: 10px;
     overflow: hidden;
-}
-
-/* Featured header styles */
-.home-featured h2 {
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 1.5rem;
-  margin-bottom: 5px;
-}
-
-/* Subtext below Featured header */
-.subtext {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 400;
-  font-size: 0.95rem;
-  color: #666;
-  margin-top: 0;
-}
-
-/* Featured stats section */
-.home-featured-stats {
-  flex: 1;
-  overflow: visible;
-  width: 90%;
-  height: 100%;
-}
-
-/* =========================
-   🎵 RECOMMENDED SECTION
-   ========================= */
-.home-featured-recs {
-  flex: 1;
-  overflow-y: auto;
-  padding-right: 8px;
-  width: 90%;
-  height: 100%;
-}
-
-.home-recommended h2 {
-  flex-shrink: 0;
-  margin: 0 0 10px 0;
-}
-
-/* =========================
-   📊 STATS SECTION
-   ========================= */
-.home-stats {
-  width: 40vw;
-  max-height: 70vh;
-  margin: 5%;
-}
+  }
+  
+  /* Featured header */
+  .home-featured h2 {
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+  }
+  
+  /* Subtext below Featured header */
+  .subtext {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-size: 0.95rem;
+    color: #666;
+    margin-top: 0;
+  }
+  
+  /* Featured stats section */
+  .home-featured-stats {
+    flex: 1;
+    overflow: visible;
+    width: 90%;
+    height: 100%;
+  }
+  
+  /* =========================
+     🎵 RECOMMENDED SECTION
+     ========================= */
+  .home-featured-recs {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+    width: 90%;
+    height: 100%;
+  }
+  
+  .home-recommended h2 {
+    flex-shrink: 0;
+    margin: 0 0 10px 0;
+  }
+  
+  /* =========================
+     📊 STATS SECTION
+     ========================= */
+  .home-stats {
+    width: 40vw;
+    max-height: 70vh;
+    margin: 5%;
+  }
+  
+  /* =========================
+     🧭 NAVBAR (fixed bottom)
+     ========================= */
+  nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #034078;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 14px 0;
+    z-index: 1000;
+  }
+  
+  nav a {
+    text-decoration: none;
+    color: white;
+    font-family: "Inter", sans-serif;
+    font-size: 0.9rem;
+  }
+  
+  nav a:hover{
+    opacity: 0.8;
+  }
+  
+  .nav-icon {
+    width: 28px;  /* adjust icon size */
+    height: 28px;
+    object-fit: contain;
+    filter: brightness(0) invert(1); /* makes icons white if they’re dark */
+    transition: transform 0.2s ease;
+  }

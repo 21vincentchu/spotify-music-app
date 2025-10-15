@@ -1,5 +1,4 @@
-
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 import SignInPage from '../pages/shared/SignInPage';
 import NavbarMobile from "../components/mobile/NavbarMobile";
@@ -9,24 +8,32 @@ import StatisticsPage from "../pages/shared/StatisticsPage";
 import RecommendationsPage from "../pages/shared/RecommendationsPage";
 import FriendsPage from "../pages/shared/FriendsPage";
 
-import '../styles/Mobile.css'
+import '../styles/Mobile.css';
 
-function MobileLayout(){
+function MobileLayout() {
+    const location = useLocation();
+    const hideNavbar = location.pathname === "/"; // hide navbar on login page
 
-    return(
+    return (
         <div className="mobile-layout">
-            <h1>Mobile</h1>
-            <NavbarMobile  />
-            <Routes>
-                <Route path="/" element={<SignInPage />} />
-                <Route path="/home" element={<HomeMobile />} />
-                <Route path="/ratings" element={<RatingsPage />} />
-                <Route path="/statistics" element={< StatisticsPage/>} />
-                <Route path="/recommendations" element={<RecommendationsPage />} />
-                <Route path="/friends" element={<FriendsPage />} />
-            </Routes>
+            {/* optional header can go here */}
+
+            {/* main content container */}
+            <div className="mobile-content">
+                <Routes>
+                    <Route path="/" element={<SignInPage />} />
+                    <Route path="/home" element={<HomeMobile />} />
+                    <Route path="/ratings" element={<RatingsPage />} />
+                    <Route path="/statistics" element={<StatisticsPage />} />
+                    <Route path="/recommendations" element={<RecommendationsPage />} />
+                    <Route path="/friends" element={<FriendsPage />} />
+                </Routes>
+            </div>
+
+            {/* only show navbar if NOT on login page */}
+            {!hideNavbar && <NavbarMobile />}
         </div>
-    )
+    );
 }
 
 export default MobileLayout;
