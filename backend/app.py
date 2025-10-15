@@ -47,8 +47,11 @@ def upsert_user(spotify_user_data):
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
 
-# Enable CORS for frontend
-CORS(app, supports_credentials=True)
+# Enable CORS for frontend - restrict to frontend domain only
+frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:3000')
+CORS(app,
+     origins=[frontend_url],
+     supports_credentials=True)
 
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
