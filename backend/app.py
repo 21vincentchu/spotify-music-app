@@ -44,7 +44,7 @@ def upsert_user(spotify_user_data):
         cursor.close()
         conn.close()
 
-app = Flask(__name__, static_folder='../frontend/reverb-client/build', static_url_path='')
+app = Flask(__name__, static_folder='frontend/reverb-client/build', static_url_path='')
 app.secret_key = Config.SECRET_KEY
 
 # No CORS needed when serving frontend from same origin
