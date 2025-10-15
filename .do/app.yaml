@@ -12,7 +12,7 @@ services:
   - name: web
     github:
       repo: 21vincentchu/spotify-music-app
-      branch: backend-vinny
+      branch: reverb-production
       deploy_on_push: true
     dockerfile_path: backend/Dockerfile
     http_port: 5000
