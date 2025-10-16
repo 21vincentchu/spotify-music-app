@@ -126,3 +126,19 @@
     filter: brightness(0) invert(1); /* makes icons white if they’re dark */
     transition: transform 0.2s ease;
   }
+
+  .top-right-image {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+    padding: 8px; /* space between image and circle border */
+    border: 1px solid black; /* black stroke */
+    border-radius: 50%; /* makes it a circle */
+    background-color: transparent; /* no fill */
+    object-fit: contain;
+    cursor: pointer;
+    z-index: 10;
+  }
+  

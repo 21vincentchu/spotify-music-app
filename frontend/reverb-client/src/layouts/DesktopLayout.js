@@ -8,6 +8,8 @@ import RatingsPage from "../pages/shared/RatingsPage";
 import StatisticsPage from "../pages/shared/StatisticsPage";
 import RecommendationsPage from "../pages/shared/RecommendationsPage";
 import FriendsPage from "../pages/shared/FriendsPage";
+import UserPage from "../pages/shared/UserPage";
+
 
 import '../styles/Desktop.css'
 
@@ -23,7 +25,7 @@ function DesktopLayout(){
                 <Route path="/ratings" element={<RatingsPage />} />
                 <Route path="/statistics" element={< StatisticsPage/>} />
                 <Route path="/recommendations" element={<RecommendationsPage />} />
-                <Route path="/friends" element={<FriendsPage />} />
+                <Route path="/user" element={<UserPage />} />
             </Routes>
         </div>
     )

@@ -6,6 +6,8 @@ import graphStats from "../../icons/StatsIcon.png"
 import houseButton from "../../icons/HomeIcon.png"
 import friendButton from "../../icons/FriendsIcon.png"
 import ratingsButton from "../../icons/RatingsIcon.png"
+import profileButton from "../../icons/UserIcon.png"
+
 
 
 function NavbarMobile() {
@@ -26,6 +28,7 @@ function NavbarMobile() {
         <Link to="/ratings">
             <img src={ratingsButton} alt="Ratings" className="nav-icon"/>
         </Link>
+        
 
     </nav>
     );

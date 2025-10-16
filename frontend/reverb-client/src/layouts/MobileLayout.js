@@ -1,4 +1,5 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Link } from "react-router-dom";
+
 
 import SignInPage from '../pages/shared/SignInPage';
 import NavbarMobile from "../components/mobile/NavbarMobile";
@@ -7,18 +8,30 @@ import RatingsPage from "../pages/shared/RatingsPage";
 import StatisticsPage from "../pages/shared/StatisticsPage";
 import RecommendationsPage from "../pages/shared/RecommendationsPage";
 import FriendsPage from "../pages/shared/FriendsPage";
+import profileButton from "../icons/UserIcon.png";
+
 
 import '../styles/Mobile.css';
+import UserPage from "../pages/shared/UserPage";
 
 function MobileLayout() {
     const location = useLocation();
     const hideNavbar = location.pathname === "/"; // hide navbar on login page
 
-    return (
-        <div className="mobile-layout">
-            {/* optional header can go here */}
 
-            {/* main content container */}
+      return (
+        <div className="mobile-layout">
+          {/* ✅ clickable top-right image */}
+          {!hideNavbar && (
+            <Link to="/profile">
+              <img
+                src={profileButton}
+                alt="Profile"
+                className="top-right-image"
+              />
+            </Link>
+          )}
+    
             <div className="mobile-content">
                 <Routes>
                     <Route path="/" element={<SignInPage />} />
@@ -27,6 +40,7 @@ function MobileLayout() {
                     <Route path="/statistics" element={<StatisticsPage />} />
                     <Route path="/recommendations" element={<RecommendationsPage />} />
                     <Route path="/friends" element={<FriendsPage />} />
+                    <Route path="/user" element={<UserPage />} />
                 </Routes>
             </div>
 
