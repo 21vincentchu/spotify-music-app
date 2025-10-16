@@ -144,6 +144,18 @@ def index():
     '''
     return html
 
+@app.route('/api/login')
+def api_login():
+    """
+    Returns Spotify authorization URL for frontend to redirect user to.
+
+    Returns:
+        JSON: {'auth_url': 'https://accounts.spotify.com/authorize?...'}
+    """
+    sp_oauth = get_sp_oauth()
+    auth_url = sp_oauth.get_authorize_url()
+    return jsonify({'auth_url': auth_url})
+
 @app.route('/api/top-songs/<time_range>')
 def top_songs(time_range):
     token_info = session.get('token_info')
@@ -169,7 +181,7 @@ def callback():
     Spotify oAuth callback endpoint, exchanges auth cod from spotify for an access token and return users profile
 
     Returns:
-        redirect: redirect to home page after authentication
+        redirect: redirect to frontend after authentication
     '''
     sp_oauth = get_sp_oauth()
 
@@ -183,7 +195,9 @@ def callback():
     userName = upsert_user(results)
     session['userName'] = userName
 
-    return redirect('/')
+    # Redirect to frontend (adjust URL based on where frontend is running)
+    frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:3000')
+    return redirect(frontend_url)
 
 if __name__ == '__main__':
     app.run(debug=(Config.FLASK_ENV == 'development'), host='0.0.0.0', port=Config.PORT)
