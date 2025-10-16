@@ -147,6 +147,11 @@ def index():
 def top_songs(sp, time_range):
     return stat_Conversions.fetch_all_top_songs_Josnify(sp, time_range)
 
+@app.route('/api/top-artists/<time_range>')
+def top_songs(sp, time_range):
+    return stat_Conversions.fetch_all_top_artists_Jsonify(sp, time_range)
+
+
 @app.route('/callback')
 def callback():
     '''

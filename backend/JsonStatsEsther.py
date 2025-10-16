@@ -94,39 +94,4 @@ class stat_Conversions:
 
         return artists
 
-    def insert_top_artists_to_db(stats_id: int, artists: list) -> None:
-        """
-        Insert top artists data into the TopSong table.
-
-        Args:
-            stats_id: The statsID foreign key from the Stats table
-            Artists: List of artist dictionaries from fetch_all_top_artists()
-        """
-        from db import get_db
-
-        conn = get_db()
-        cursor = conn.cursor()
-
-        try:
-            for artist in artists:
-                    cursor.execute("""
-                        INSERT INTO TopArtist (statsID, artistName, spotifyArtistId, `rank`, playCount, imageUrl)
-                    VALUES (%s, %s, %s, %s, %s, %s)
-                """, (
-                        stats_id,
-                        artist['artistName'],
-                        artist['spotifyArtistId'],
-                        artist['rank'],
-                        artist['playCount'],
-                        artist['imageUrl']
-                    ))
-
-            conn.commit()
-        except Exception as e:
-                conn.rollback()
-                raise e
-        finally:
-            cursor.close()
-            conn.close()
-
-        return jsonify(artists)
+   
