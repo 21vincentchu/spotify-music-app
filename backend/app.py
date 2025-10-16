@@ -4,6 +4,7 @@ import os
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from db import get_db
+from JsonStatsEsther import stat_Conversions
 from stats import stats_bp
 from stats_recently_played import stats_weekly_bp
 
@@ -141,6 +142,10 @@ def index():
         <p><a href="{results['external_urls']['spotify']}">View on Spotify</a></p>
     '''
     return html
+
+@app.route('/api/top-songs/<time_range>')
+def top_songs(sp, time_range):
+    return stat_Conversions.fetch_all_top_songs_Josnify(sp, time_range)
 
 @app.route('/callback')
 def callback():
