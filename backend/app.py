@@ -4,7 +4,7 @@ import os
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from db import get_db
-from JsonStatsEsther import stat_Conversions
+from jsonStats import stat_Conversions
 from stats import stats_bp
 from stats_recently_played import stats_recently_played_bp
 from config import Config
@@ -145,11 +145,21 @@ def index():
     return html
 
 @app.route('/api/top-songs/<time_range>')
-def top_songs(sp, time_range):
-    return stat_Conversions.fetch_all_top_songs_Josnify(sp, time_range)
+def top_songs(time_range):
+    token_info = session.get('token_info')
+    if not token_info:
+        return jsonify({'error': 'Not authenticated'}), 401
+
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    return stat_Conversions.fetch_all_top_songs_Jsonify(sp, time_range)
 
 @app.route('/api/top-artists/<time_range>')
-def top_songs(sp, time_range):
+def top_artists(time_range):
+    token_info = session.get('token_info')
+    if not token_info:
+        return jsonify({'error': 'Not authenticated'}), 401
+
+    sp = spotipy.Spotify(auth=token_info['access_token'])
     return stat_Conversions.fetch_all_top_artists_Jsonify(sp, time_range)
 
 
