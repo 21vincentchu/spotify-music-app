@@ -7,10 +7,54 @@ body {
   font-family: "Montserrat", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: red;
 }
 
 h1{
   font-family: 'Inter', sans-serif;
 }
 
+.round-outline{
+  border: 1px solid black;
+  border-radius: 8px;
+}
+
+.blue-box-shadow{
+  box-shadow: 10px 10px 0 #1282A280;
+  border-radius: 8px;
+}
+
+.circle {
+  width: 70px; /* Or any other equal value */
+  height: 70px; /* Must be equal to width */
+  background-color: #3498db; /* Example background color */
+  border-radius: 50%;
+  margin: 3% 3% 3% 6%; 
+}
+
+.song-component{
+  display: flex;
+  flex-direction: row;
+
+
+  .song-info{
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 2%;
+
+
+    .song-name{
+      color:#034078;
+      font-size: 1em;
+      margin: 0;
+    }
+
+    .artist-name{
+      font-size: 0.75em;
+      margin: 0;
+    }
+  }
+
+  
+}

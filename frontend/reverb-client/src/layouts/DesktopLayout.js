@@ -14,23 +14,19 @@ import '../styles/Desktop.css'
 function DesktopLayout(){
 
     return(
-        <div className="desktop-layout">
-            <h1>Desktop Layout</h1>
+        <div>
             <NavbarDesktop  />
-            <Routes>
+            <div className="desktop-layout">
+               <Routes>
                 <Route path="/" element={<SignInPage />} />
                 <Route path="/home" element={<HomeDesktop />} />
                 <Route path="/ratings" element={<RatingsPage />} />
                 <Route path="/statistics" element={< StatisticsPage/>} />
                 <Route path="/recommendations" element={<RecommendationsPage />} />
                 <Route path="/friends" element={<FriendsPage />} />
-                
-                
-
-
-
-
-            </Routes>
+            </Routes> 
+            </div>
+            
         </div>
     )
 }
