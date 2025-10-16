@@ -1,14 +1,24 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 
 function NavbarDesktop() {
   return (
     <nav>
-        <Link to="/home">Home</Link>
-        <Link to="/ratings">Ratings</Link>
-        <Link to="/statistics">Statistics</Link>
-        <Link to="/recommendations">Recommendation</Link>
-        <Link to="/friends">Friends</Link>
+        <NavLink to="/home" className={({ isActive }) => (isActive ? "active" : "")}>
+        Home
+      </NavLink>
+      <NavLink to="/ratings" className={({ isActive }) => (isActive ? "active" : "")}>
+        Ratings
+      </NavLink>
+      <NavLink to="/statistics" className={({ isActive }) => (isActive ? "active" : "")}>
+        Statistics
+      </NavLink>
+      <NavLink to="/recommendations" className={({ isActive }) => (isActive ? "active" : "")}>
+        Recommendation
+      </NavLink>
+      <NavLink to="/friends" className={({ isActive }) => (isActive ? "active" : "")}>
+        Friends
+      </NavLink>
     </nav>
   );
 }
