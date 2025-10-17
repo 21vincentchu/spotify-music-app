@@ -12,7 +12,7 @@
   .mobile-content {
     flex: 1;
     overflow-y: auto;
-    padding-bottom: 60px; /* ensures content isn’t hidden behind navbar */
+    padding-bottom: 60px; /* prevents content from hiding behind navbar */
   }
   
   /* =========================
@@ -21,27 +21,16 @@
   .home-page {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 20px;
-  
-    h2 {
-      padding: 0 3%;
-    }
+    padding: 16px;
   }
   
-  /* =========================
-     🌟 FEATURED SECTION
-     ========================= */
   .home-featured {
-    text-align: center;
-    width: 40vw;
-    max-height: 70vh;
-    margin: 5%;
-    padding: 10px;
-    overflow: hidden;
+    width: 100%;
+    margin-bottom: 24px;
+    text-align: left;
   }
   
-  /* Featured header */
   .home-featured h2 {
     font-family: "Inter", sans-serif;
     font-weight: 700;
@@ -49,50 +38,85 @@
     margin-bottom: 5px;
   }
   
-  /* Subtext below Featured header */
   .subtext {
     font-family: "Montserrat", sans-serif;
-    font-weight: 400;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: #666;
-    margin-top: 0;
-  }
-  
-  /* Featured stats section */
-  .home-featured-stats {
-    flex: 1;
-    overflow: visible;
-    width: 90%;
-    height: 100%;
+    margin-bottom: 12px;
   }
   
   /* =========================
-     🎵 RECOMMENDED SECTION
+     🎵 FEATURED STATS (CIRCLE + BOX)
+     ========================= */
+  .home-featured-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* spacing between songs */
+  }
+  
+  /* One song row (circle + text box) */
+  .featured-song {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  /* Circle only from SongComponent */
+  .song-component.avatar-only {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Circle styling */
+  .circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #000; /* placeholder or album art */
+    object-fit: cover;
+  }
+  
+  /* Boxed text next to circle */
+  .song-info-box {
+    flex: 1;
+    border: 2px solid black;
+    border-radius: 12px;
+    padding: 8px 12px;
+    background-color: transparent; /* or use white if preferred */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  /* Text inside box */
+  .song-title {
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+  }
+  
+  .song-artist,
+  .song-genre {
+    margin: 2px 0;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  /* =========================
+     🎧 FEATURED RECS
      ========================= */
   .home-featured-recs {
-    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     overflow-y: auto;
-    padding-right: 8px;
-    width: 90%;
-    height: 100%;
-  }
-  
-  .home-recommended h2 {
-    flex-shrink: 0;
-    margin: 0 0 10px 0;
+    width: 100%;
   }
   
   /* =========================
-     📊 STATS SECTION
-     ========================= */
-  .home-stats {
-    width: 40vw;
-    max-height: 70vh;
-    margin: 5%;
-  }
-  
-  /* =========================
-     🧭 NAVBAR (fixed bottom)
+     🧭 NAVBAR
      ========================= */
   nav {
     position: fixed;
@@ -115,30 +139,61 @@
     font-size: 0.9rem;
   }
   
-  nav a:hover{
+  nav a:hover {
     opacity: 0.8;
   }
   
   .nav-icon {
-    width: 28px;  /* adjust icon size */
+    width: 28px;
     height: 28px;
     object-fit: contain;
-    filter: brightness(0) invert(1); /* makes icons white if they’re dark */
+    filter: brightness(0) invert(1);
     transition: transform 0.2s ease;
   }
-
+  
+  /* =========================
+     🖼️ TOP RIGHT IMAGE ICON
+     ========================= */
   .top-right-image {
     position: absolute;
     top: 10px;
     right: 10px;
     width: 35px;
     height: 35px;
-    padding: 8px; /* space between image and circle border */
-    border: 1px solid black; /* black stroke */
-    border-radius: 50%; /* makes it a circle */
-    background-color: transparent; /* no fill */
+    padding: 8px;
+    border: 1px solid black;
+    border-radius: 50%;
+    background-color: transparent;
     object-fit: contain;
     cursor: pointer;
     z-index: 10;
+  }
+  
+  /* =========================
+     📱 RESPONSIVENESS
+     ========================= */
+  @media (min-width: 769px) {
+    .home-featured-stats {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .home-page {
+      padding: 12px;
+    }
+  
+    .song-info-box {
+      padding: 6px 10px;
+    }
+  
+    .song-title {
+      font-size: 0.95rem;
+    }
+  
+    .song-artist,
+    .song-genre {
+      font-size: 0.85rem;
+    }
   }
   
