@@ -1,9 +1,10 @@
 function UserPage() {
     return (
-      <div>
+    <div>
         <h1>User Profile</h1>
-      </div>
+        <p>This is the user profile page content.</p>
+    </div>
     );
-  }
-  
-  export default UserPage;
+}
+
+export default UserPage;

@@ -40,7 +40,7 @@ function MobileLayout() {
                     <Route path="/statistics" element={<StatisticsPage />} />
                     <Route path="/recommendations" element={<RecommendationsPage />} />
                     <Route path="/friends" element={<FriendsPage />} />
-                    <Route path="/user" element={<UserPage />} />
+                    <Route path="/profile" element={<UserPage />} />
                 </Routes>
             </div>
 
