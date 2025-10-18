@@ -156,6 +156,17 @@ def api_login():
     auth_url = sp_oauth.get_authorize_url()
     return jsonify({'auth_url': auth_url})
 
+@app.route('/api/auth/status')
+def auth_status():
+    """Check if user is authenticated"""
+    token_info = session.get('token_info')
+    if token_info:
+        return jsonify({
+            'authenticated': True,
+            'userName': session.get('userName')
+        })
+    return jsonify({'authenticated': False}), 401
+
 @app.route('/api/top-songs/<time_range>')
 def top_songs(time_range):
     token_info = session.get('token_info')
