@@ -1,7 +1,16 @@
 ho# Spotify OAuth Authentication Flow
 
-## Overview
+# Overview
+## Important: localhost vs 127.0.0.1
 
+**CRITICAL:** Browsers treat `localhost` and `127.0.0.1` as different domains for cookies.
+
+- Spotify callback uses `http://127.0.0.1:8000/callback`, you MUST access:
+  - Backend at `http://127.0.0.1:8000`
+  - Frontend at `http://127.0.0.1:3000`
+
+
+got
 This application uses Spotify's OAuth 2.0 authorization flow to authenticate users and access their Spotify data.
 
 ## Authentication Flow
