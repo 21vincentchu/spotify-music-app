@@ -48,10 +48,22 @@ def upsert_user(spotify_user_data):
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
 
+# Session configuration for cross-origin cookies
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'   # Allow cookies to be sent on top-level navigation
+app.config['SESSION_COOKIE_SECURE'] = False     # Set to True in production with HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = False   # Allow JavaScript to read cookie for debugging
+app.config['SESSION_COOKIE_DOMAIN'] = None      # Don't set domain, uses current domain
+
 # Enable CORS (Cross-Origin Resource Sharing) to allow frontend requests from different origin
 # Without this, browsers block requests from frontend (e.g., localhost:3000) to backend (localhost:5000)
 # supports_credentials=True allows cookies/sessions to be sent with cross-origin requests
-CORS(app, supports_credentials=True)
+# origins specifies which domains can make requests with credentials
+CORS(app, supports_credentials=True, origins=[
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000"
+])
 
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
