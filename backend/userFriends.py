@@ -101,6 +101,8 @@ def get_friend(userName: str) -> List[Dict]:
 
 ## check friendship 
 
+
+##gets friend count 
 def get_user_friend_count(userName: str) -> int:
     """
     Gets total number of friend for a user:
@@ -126,6 +128,19 @@ def get_user_friend_count(userName: str) -> int:
         cursor.close()
         conn.close()
 ##get friend top songs
+def get_top_songs(friendUserName: str, timeframe: str = 'short_term', limit: int =10) -> List[Dict]:
+    """
+    Get a friend's top songs for a specific timeframe
+
+    Args:
+        friendUserName: The friend's userName
+        timeframe: the timeframe of the top songs
+        limit: max number of songs that are returned           
+    Return: 
+        A list of song dictionaries
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
 ##get friend top artists
 ##get friend top albums
 ##get friends recently played
