@@ -10,10 +10,10 @@ function SignInPage() {
     }, [loggedIn]);
 
 
-    const checkStatus = async () => {       
+    const checkStatus = async () => {
         try{
-            const res = await axios.get('http://localhost:8000/api/auth/status', { 
-                withCredentials: true 
+            const res = await axios.get('http://localhost:8000/api/auth/status', {
+                withCredentials: true
             });
         }catch (err){
             console.error('Error checking login status:', err);
@@ -22,8 +22,8 @@ function SignInPage() {
 
     const handleLogin = async () => {
         try {
-            const res = await axios.get('http://localhost:8000/api/login', { 
-                withCredentials: true 
+            const res = await axios.get('http://localhost:8000/api/login', {
+                withCredentials: true
             });
             
             // Redirect user to Spotify's authorization page
