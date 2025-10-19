@@ -74,7 +74,32 @@ def delete_friend(userName: str, friendUserName: str):
         conn.close()
 
 ##get user friend
+
 ##check if friends
+def get_user_friend_count(userName: str) -> int:
+    """
+    Gets total number of friend for a user:
+
+    Args:
+        userName: User's username
+    
+    Returns:
+        int: number of friends
+    """
+    conn = get_db()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+           SELECT COUNT(*) as friendCount
+                       From UserFriends
+                       Where userName = %s             
+                       """,(userName,))
+        result = cursor.fetchone()
+        return result[0]
+    finally:
+        cursor.close()
+        conn.close()
 ##get friend top songs
 ##get friend top artists
 ##get friend top albums
