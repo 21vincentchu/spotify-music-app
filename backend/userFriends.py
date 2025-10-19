@@ -10,7 +10,7 @@ def insert_friend(userName: str, friendUserName: str):
     friendusername: user being added
 
     Args: 
-    turns true if accepted, false if not 
+    returns true if accepted, false if not 
     '''
     
     conn = get_db()
@@ -40,10 +40,39 @@ def insert_friend(userName: str, friendUserName: str):
         cursor.close()
         conn.close()
 
-
-
-
 ##delete user friend
+def delete_friend(userName: str, friendUserName: str):
+    '''
+    deletes a friend from user
+
+    Params:
+    username: user adding friend
+    friendusername: user being added
+
+    Args: 
+    returns true if accepted, false if not 
+    '''
+    
+    conn = get_db()
+    cursor = conn.cursor()
+
+        
+    ##delete from a relationship
+    try:
+        cursor.execute("""
+    Delete from userFriends WHERE (userFriends = %s AND friendUserName = %s) OR (userFriends = %s AND friendUserName = %s)
+                """, (userName, friendUserName, friendUserName, userName))
+
+        conn.commit()
+        return True
+
+    except Exception as e:
+        conn.rollback
+        raise e 
+    finally:
+        cursor.close()
+        conn.close()
+
 ##get user friend
 ##check if friends
 ##get friend top songs
