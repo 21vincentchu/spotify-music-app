@@ -1,5 +1,7 @@
 ##insert user friend into database
 from db import get_db
+from typing import List, Dict
+
 
 def insert_friend(userName: str, friendUserName: str):
     '''
@@ -73,9 +75,32 @@ def delete_friend(userName: str, friendUserName: str):
         cursor.close()
         conn.close()
 
-##get user friend
+##get user friends
+def get_friend(userName: str) -> List[Dict]:
+    """
+    Get all user friends with their profile info
+    Args:
+    userName: User's userName 
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
 
-##check if friends
+    try:
+        cursor.execute("""
+                        SELECT u.userName. u.spotifyId, u.profilePic, u.displayName FROM userFriends uf JOIN User u on uf.friendUserName = u.userName
+                        LEFT JOIN RecentlyPlayed rp ON u.userName = rp.userName
+                        WHERE uf.userName = %s
+                        GROUP BY u.userName, u.displayName, u.profilePicture, u.spotifyId
+                        ORDER BY lastActive DESC, u.displayName
+                    """, (userName,))
+        
+        return cursor.fetchall()
+    except:
+        cursor.close()
+        conn.close()
+
+## check friendship 
+
 def get_user_friend_count(userName: str) -> int:
     """
     Gets total number of friend for a user:
