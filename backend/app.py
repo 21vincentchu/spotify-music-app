@@ -49,11 +49,12 @@ def upsert_user(spotify_user_data):
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
 
-# # Session configuration for cross-origin cookies
-app.config['SESSION_COOKIE_SAMESITE'] = 'None'   # Allow cookies to be sent on top-level navigation
-app.config['SESSION_COOKIE_SECURE'] = True     # Set to True in production with HTTPS
-app.config['SESSION_COOKIE_HTTPONLY'] = True   # Allow JavaScript to read cookie for debugging
-app.config['SESSION_COOKIE_DOMAIN'] = None      # Don't set domain, uses current domain
+# # Session configuration for cross-origin (different ports)
+app.config['SESSION_COOKIE_SAMESITE'] = None     # None required for cross-origin
+app.config['SESSION_COOKIE_SECURE'] = False      # False for local HTTP (normally True required with None)
+app.config['SESSION_COOKIE_HTTPONLY'] = False    # False to allow JS access for debugging
+app.config['SESSION_COOKIE_PATH'] = '/'
+app.config['SESSION_COOKIE_DOMAIN'] = 'localhost' # Share across all localhost ports
 
 # Enable CORS (Cross-Origin Resource Sharing) to allow frontend requests from different origin
 # Without this, browsers block requests from frontend (e.g., localhost:3000) to backend (localhost:5000)
@@ -63,7 +64,7 @@ CORS(app, supports_credentials=True, origins=[
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:8000",
-    "http://127.0.0.1:8000"
+    "http://127.0.0.1:8000",
 ])
 
 app.config["SESSION_PERMANENT"] = False     # Sessions expire when the browser is closed
@@ -177,14 +178,21 @@ def api_login():
 @app.route('/api/auth/status')
 def auth_status():
     """Check if user is authenticated"""
+    print(f"=== AUTH STATUS CHECK ===")
+    print(f"Request from: {request.remote_addr}")
+    print(f"Session ID: {session.get('session_id')}")
+    print(f"Session contents: {dict(session)}")
+
     token_info = session.get('token_info')
-    print("SESSION",token_info)
 
     if token_info:
+        print(f"✓ Authenticated as: {session.get('userName')}")
         return jsonify({
             'authenticated': True,
             'userName': session.get('userName')
         })
+
+    print("✗ Not authenticated - no token_info in session")
     return jsonify({'authenticated': False})
 
 @app.route('/api/top-songs/<time_range>')
@@ -209,22 +217,18 @@ def top_artists(time_range):
 @app.route('/callback')
 def callback():
     '''
-    Spotify oAuth callback endpoint, exchanges auth cod from spotify for an access token and return users profile
-
-    Returns:
-        redirect: redirect to frontend after authentication
+    Spotify oAuth callback endpoint - saves auth and redirects with session established
     '''
     print("=== CALLBACK ROUTE HIT ===")
+    print(f"Request from: {request.remote_addr}")
 
     sp_oauth = get_sp_oauth()
-    print(f"SP_OAUTH created: {sp_oauth}")
-    print(f"Session BEFORE: {dict(session)}")
-    
     code = request.args.get('code')
-    print("AUTH CODE:",code)
+
     token_info = sp_oauth.get_access_token(code)
-    # print("TOKEN INFO:",token_info)
     sp = spotipy.Spotify(auth=token_info['access_token'])
+
+    # Store in session
     session['token_info'] = token_info
 
     # Get user data and insert/update in database
@@ -232,11 +236,12 @@ def callback():
     userName = upsert_user(results)
     session['userName'] = userName
 
-    print(f"Session AFTER: {dict(session)}")
+    print(f"Session ID: {session.get('session_id')}")
+    print(f"Session saved: {userName}")
 
-    # Redirect to frontend (adjust URL based on where frontend is running)
-    frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:3000')
-    return redirect(frontend_url)
+    # Redirect to frontend
+    from flask import redirect
+    return redirect('http://localhost:3000/callback?auth=success')
 
 
 if __name__ == '__main__':
