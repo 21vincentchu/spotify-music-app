@@ -1,14 +1,31 @@
 """
 Shared authentication utilities for Spotify API.
+
+This module provides helper functions for routes that need to make authenticated
+Spotify API calls. It handles token management and automatic refresh.
+
+Purpose:
+    - Provides authenticated Spotify clients for API routes (e.g., /api/top-songs)
+    - Automatically refreshes expired tokens without manual intervention
+    - Centralizes token validation and refresh logic
+
+Note:
+    The initial OAuth login flow (user authorization) is handled in app.py.
+    This module is used AFTER the user has already logged in and we have a token.
 """
 from flask import session
 import spotipy
-from spotipy.oauth2 import SpotifyOAuth
-import os
 
 def get_authenticated_spotify_client():
     """
     Get authenticated Spotify client, refreshing token if needed.
+
+    Flow:
+        1. Retrieves token_info from Flask session
+        2. Uses the same SpotifyOAuth config as app.py (via get_sp_oauth)
+        3. Checks if token is expired
+        4. If expired, automatically refreshes it using the refresh_token
+        5. Returns authenticated spotipy.Spotify client
 
     Returns:
         tuple: (spotipy.Spotify client, token_info dict) or (None, None) if not authenticated
@@ -17,12 +34,8 @@ def get_authenticated_spotify_client():
     if not token_info:
         return None, None
 
-    sp_oauth = SpotifyOAuth(
-        client_id=os.getenv("SPOTIFY_CLIENT_ID"),
-        client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
-        redirect_uri="http://127.0.0.1:8080/callback",
-        scope='user-read-private user-read-email user-top-read user-read-recently-played user-read-playback-state user-read-currently-playing user-read-playback-position user-library-read user-library-modify playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-follow-read user-follow-modify user-modify-playback-state streaming app-remote-control ugc-image-upload'
-    )
+    from app import get_sp_oauth
+    sp_oauth = get_sp_oauth()
 
     if sp_oauth.is_token_expired(token_info):
         token_info = sp_oauth.refresh_access_token(token_info['refresh_token'])

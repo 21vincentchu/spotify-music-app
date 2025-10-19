@@ -49,8 +49,8 @@ app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
 
 # Session configuration for cross-origin cookies
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'   # Allow cookies to be sent on top-level navigation
-app.config['SESSION_COOKIE_SECURE'] = False     # Set to True in production with HTTPS
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Allow cookies across different origins (localhost:8000 -> localhost:3000)
+app.config['SESSION_COOKIE_SECURE'] = True      # Required when SameSite=None (even in dev with localhost)
 app.config['SESSION_COOKIE_HTTPONLY'] = False   # Allow JavaScript to read cookie for debugging
 app.config['SESSION_COOKIE_DOMAIN'] = None      # Don't set domain, uses current domain
 
@@ -73,14 +73,20 @@ def get_sp_oauth():
     """
     Create and return a SpotifyOAuth instance with per-session token caching.
 
-    This function manages Spotify OAuth authentication by creating a unique cache file
-    for each user session. This approach prevents token conflicts when multiple users
-    access the application simultaneously.
+    PURPOSE:
+        This function is used for the OAuth login flow (initial user authorization).
+        Routes like /api/login and /callback use this to handle the Spotify authorization process.
 
-    1. Checks if the current Flask session has a session_id
-    2. If no session_id exists, generates a new random 16-byte hex string
-    3. Creates a unique cache file path in the system temp directory using the session_id
-    4. Returns a configured SpotifyOAuth instance that will store tokens in that cache file
+
+    IMPLEMENTATION:
+        This function manages Spotify OAuth authentication by creating a unique cache file
+        for each user session.
+
+    FLOW:
+        1. Checks if the current Flask session has a session_id
+        2. If no session_id exists, generates a new random 16-byte hex string
+        3. Creates a unique cache file path in the system temp directory using the session_id
+        4. Returns a configured SpotifyOAuth instance that will store tokens in that cache file
 
     The cache file stores the OAuth access token, refresh token, and expiry information
     so users don't have to re-authenticate on every request.
@@ -89,7 +95,8 @@ def get_sp_oauth():
         SpotifyOAuth: Configured OAuth handler with session-specific cache file
 
     Note:
-        Uses Flask's session object to persist session_id across requests for the same user
+        Uses Flask's session object to persist session_id across requests for the same user.
+        This function is imported by auth.py to ensure both files use identical OAuth config.
     """
     import tempfile
 
@@ -161,6 +168,18 @@ def api_login():
     """
     Returns Spotify authorization URL for frontend to redirect user to.
 
+    This is the ENTRY POINT for the OAuth login flow.
+    Frontend calls this endpoint to get the Spotify authorization URL,
+    then redirects the user to that URL to authorize the app.
+
+    Flow:
+        1. Frontend calls GET /api/login
+        2. Backend generates Spotify auth URL with required scopes
+        3. Backend returns {'auth_url': 'https://accounts.spotify.com/authorize?...'}
+        4. Frontend redirects user to that URL
+        5. User authorizes on Spotify
+        6. Spotify redirects back to /callback
+
     Returns:
         JSON: {'auth_url': 'https://accounts.spotify.com/authorize?...'}
     """
@@ -218,7 +237,7 @@ def callback():
     userName = upsert_user(results)
     session['userName'] = userName
 
-    # Redirect to frontend (adjust URL based on where frontend is running)
+    # Redirect to frontend
     frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:3000')
     return redirect(frontend_url)
 
