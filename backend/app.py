@@ -5,7 +5,7 @@ import os
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from db import get_db
-from jsonStats import stat_Conversions
+from stats_json import stat_Conversions
 from stats import stats_bp
 from stats_recently_played import stats_recently_played_bp
 from config import Config
