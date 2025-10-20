@@ -12,7 +12,7 @@ import { useAuth } from "../context/AuthContext";
 import '../styles/Desktop.css';
 
 function DesktopLayout() {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, userName } = useAuth();
 
     return (
         <div>
@@ -25,7 +25,7 @@ function DesktopLayout() {
                     {/* Protected Routes */}
                     <Route path="/home" element={
                         <ProtectedRoute>
-                            <HomeDesktop />
+                            <HomeDesktop username={userName} />
                         </ProtectedRoute>
                     } />
                     <Route path="/ratings" element={
