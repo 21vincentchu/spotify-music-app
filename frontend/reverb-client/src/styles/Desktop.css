@@ -43,7 +43,7 @@ nav{
 
 .home-recommended {
     width: 40vw;
-    max-height: 80vh;
+    height: 80vh;
     margin: 5%;
     padding: 10px;
     overflow: hidden;
