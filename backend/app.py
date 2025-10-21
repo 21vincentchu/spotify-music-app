@@ -12,20 +12,25 @@ from config import Config
 
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
-
-# Session configuration for cross-origin (different ports)
-# Using 'Lax' instead of None for Safari compatibility in development
-# Safari blocks SameSite=None cookies without HTTPS
+### ------ APP CONFIGURATIONS ---- ####
+""" 
+Session configuration for cross-origin (different ports)
+Using 'Lax' instead of None for Safari compatibility in development
+Safari blocks SameSite=None cookies without HTTPS
+"""
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'    # Lax allows cookies on top-level navigation (like OAuth redirects)
 app.config['SESSION_COOKIE_SECURE'] = False      # False for local HTTP development
 app.config['SESSION_COOKIE_HTTPONLY'] = False    # False to allow JS access for debugging
 app.config['SESSION_COOKIE_PATH'] = '/'
 app.config['SESSION_COOKIE_DOMAIN'] = 'localhost' # Share across all localhost ports
 
-# Enable CORS (Cross-Origin Resource Sharing) to allow frontend requests from different origin
-# Without this, browsers block requests from frontend (e.g., localhost:3000) to backend (localhost:5000)
-# supports_credentials=True allows cookies/sessions to be sent with cross-origin requests
-# origins specifies which domains can make requests with credentials
+### ----- CORS CONFIGURATION ----- ###
+""" 
+Enable CORS (Cross-Origin Resource Sharing) to allow frontend requests from different origin
+Without this, browsers block requests from frontend (e.g., localhost:3000) to backend (localhost:5000)
+supports_credentials=True allows cookies/sessions to be sent with cross-origin requests
+origins specifies which domains can make requests with credentials
+"""
 CORS(app, supports_credentials=True, origins=[
     "http://localhost:3000",
     "http://127.0.0.1:3000",
@@ -33,15 +38,16 @@ CORS(app, supports_credentials=True, origins=[
     "http://127.0.0.1:8000",
 ])
 
+### ----- SESSION CONFIGURATION ----- ###
 app.config["SESSION_PERMANENT"] = False     # Sessions expire when the browser is closed
 app.config["SESSION_TYPE"] = "filesystem"     # Store session data in files
-
 Session(app)
 
+### ----- REGISTER BLUEPRINTS ----- ###
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
 
-# Initialize Spotify OAuth handler - use session-based cache instead of file
+### ----- SPOTIFY OAUTH HANDLER ----- ###
 def get_sp_oauth():
     """
     Create and return a SpotifyOAuth instance with per-session token caching.
@@ -88,7 +94,7 @@ def get_sp_oauth():
         cache_path=cache_path          # Where to cache the OAuth tokens
     )
 
-# Routes
+### ----- FLASK ROUTES ----- ###
 @app.route('/')
 def index():
     '''

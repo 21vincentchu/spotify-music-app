@@ -1,6 +1,5 @@
 """
 Database insertion functions for Spotify stats data.
-
 This module contains all functions related to inserting data into the database,
 including stats records, top songs, albums, and artists.
 """
@@ -37,9 +36,9 @@ def upsert_user(spotify_user_data):
 
         conn.commit()
         return userName
-    except Exception as e:
+    except:
         conn.rollback()
-        raise e
+        raise
     finally:
         cursor.close()
         conn.close()
@@ -68,9 +67,9 @@ def insert_stats_record(userName, timeframe='short_term'):
         conn.commit()
         stats_id = cursor.lastrowid
         return stats_id
-    except Exception as e:
+    except:
         conn.rollback()
-        raise e
+        raise
     finally:
         cursor.close()
         conn.close()
@@ -102,9 +101,9 @@ def insert_top_songs_to_db(stats_id: int, songs: list) -> None:
             ))
 
         conn.commit()
-    except Exception as e:
+    except:
         conn.rollback()
-        raise e
+        raise
     finally:
         cursor.close()
         conn.close()
@@ -136,9 +135,9 @@ def insert_top_albums_to_db(stats_id: int, albums: list) -> None:
             ))
 
         conn.commit()
-    except Exception as e:
+    except:
         conn.rollback()
-        raise e
+        raise
     finally:
         cursor.close()
         conn.close()
@@ -169,9 +168,9 @@ def insert_top_artists_to_db(stats_id: int, artists: list) -> None:
             ))
 
         conn.commit()
-    except Exception as e:
+    except:
         conn.rollback()
-        raise e
+        raise
     finally:
         cursor.close()
         conn.close()
@@ -199,26 +198,24 @@ def get_cached_stats_id(userName: str, timeframe: str, max_age_hours: int = 24):
     conn = get_db()
     cursor = conn.cursor()
 
-    try:
-        # Check if a recent Stats record exists AND has associated data (at least 1 song)
-        cursor.execute("""
-            SELECT s.uniqueID
-            FROM Stats s
-            INNER JOIN TopSong ts ON s.uniqueID = ts.statsID
-            WHERE s.userName = %s
-            AND s.timeframe = %s
-            AND s.createdAt >= NOW() - INTERVAL %s HOUR
-            GROUP BY s.uniqueID
-            HAVING COUNT(ts.id) > 0
-            ORDER BY s.createdAt DESC
-            LIMIT 1
-        """, (userName, timeframe, max_age_hours))
+    # Check if a recent Stats record exists AND has associated data (at least 1 song)
+    cursor.execute("""
+        SELECT s.uniqueID
+        FROM Stats s
+        INNER JOIN TopSong ts ON s.uniqueID = ts.statsID
+        WHERE s.userName = %s
+        AND s.timeframe = %s
+        AND s.createdAt >= NOW() - INTERVAL %s HOUR
+        GROUP BY s.uniqueID
+        HAVING COUNT(ts.id) > 0
+        ORDER BY s.createdAt DESC
+        LIMIT 1
+    """, (userName, timeframe, max_age_hours))
 
-        result = cursor.fetchone()
-        return result[0] if result else None
-    finally:
-        cursor.close()
-        conn.close()
+    result = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return result[0] if result else None
 
 def get_top_songs_from_db(stats_id: int) -> list:
     """
@@ -233,28 +230,26 @@ def get_top_songs_from_db(stats_id: int) -> list:
     conn = get_db()
     cursor = conn.cursor()
 
-    try:
-        cursor.execute("""
-            SELECT songName, artistName, spotifyTrackId, `rank`, playCount, imageUrl
-            FROM TopSong
-            WHERE statsID = %s
-            ORDER BY `rank`
-        """, (stats_id,))
+    cursor.execute("""
+        SELECT songName, artistName, spotifyTrackId, `rank`, playCount, imageUrl
+        FROM TopSong
+        WHERE statsID = %s
+        ORDER BY `rank`
+    """, (stats_id,))
 
-        songs = []
-        for row in cursor.fetchall():
-            songs.append({
-                'songName': row[0],
-                'artistName': row[1],
-                'spotifyTrackId': row[2],
-                'rank': row[3],
-                'playCount': row[4],
-                'imageUrl': row[5]
-            })
-        return songs
-    finally:
-        cursor.close()
-        conn.close()
+    songs = []
+    for row in cursor.fetchall():
+        songs.append({
+            'songName': row[0],
+            'artistName': row[1],
+            'spotifyTrackId': row[2],
+            'rank': row[3],
+            'playCount': row[4],
+            'imageUrl': row[5]
+        })
+    cursor.close()
+    conn.close()
+    return songs
 
 def get_top_albums_from_db(stats_id: int) -> list:
     """
@@ -269,28 +264,26 @@ def get_top_albums_from_db(stats_id: int) -> list:
     conn = get_db()
     cursor = conn.cursor()
 
-    try:
-        cursor.execute("""
-            SELECT albumName, artistName, spotifyAlbumId, `rank`, playCount, imageUrl
-            FROM TopAlbum
-            WHERE statsID = %s
-            ORDER BY `rank`
-        """, (stats_id,))
+    cursor.execute("""
+        SELECT albumName, artistName, spotifyAlbumId, `rank`, playCount, imageUrl
+        FROM TopAlbum
+        WHERE statsID = %s
+        ORDER BY `rank`
+    """, (stats_id,))
 
-        albums = []
-        for row in cursor.fetchall():
-            albums.append({
-                'albumName': row[0],
-                'artistName': row[1],
-                'spotifyAlbumId': row[2],
-                'rank': row[3],
-                'playCount': row[4],
-                'imageUrl': row[5]
-            })
-        return albums
-    finally:
-        cursor.close()
-        conn.close()
+    albums = []
+    for row in cursor.fetchall():
+        albums.append({
+            'albumName': row[0],
+            'artistName': row[1],
+            'spotifyAlbumId': row[2],
+            'rank': row[3],
+            'playCount': row[4],
+            'imageUrl': row[5]
+        })
+    cursor.close()
+    conn.close()
+    return albums
 
 def get_top_artists_from_db(stats_id: int) -> list:
     """
@@ -305,27 +298,25 @@ def get_top_artists_from_db(stats_id: int) -> list:
     conn = get_db()
     cursor = conn.cursor()
 
-    try:
-        cursor.execute("""
-            SELECT artistName, spotifyArtistId, `rank`, playCount, imageUrl
-            FROM TopArtist
-            WHERE statsID = %s
-            ORDER BY `rank`
-        """, (stats_id,))
+    cursor.execute("""
+        SELECT artistName, spotifyArtistId, `rank`, playCount, imageUrl
+        FROM TopArtist
+        WHERE statsID = %s
+        ORDER BY `rank`
+    """, (stats_id,))
 
-        artists = []
-        for row in cursor.fetchall():
-            artists.append({
-                'artistName': row[0],
-                'spotifyArtistId': row[1],
-                'rank': row[2],
-                'playCount': row[3],
-                'imageUrl': row[4]
-            })
-        return artists
-    finally:
-        cursor.close()
-        conn.close()
+    artists = []
+    for row in cursor.fetchall():
+        artists.append({
+            'artistName': row[0],
+            'spotifyArtistId': row[1],
+            'rank': row[2],
+            'playCount': row[3],
+            'imageUrl': row[4]
+        })
+    cursor.close()
+    conn.close()
+    return artists
 
 ### ----- HIGH-LEVEL FUNCTIONS ----- ###
 def fetch_and_insert_all_stats(userName: str, timeframe: str, sp: spotipy.Spotify):
@@ -396,14 +387,7 @@ def cleanup_old_stats(userName: str, timeframe: str, max_age_days: int = 1) -> N
         old_stats_ids = [row[0] for row in cursor.fetchall()]
 
         if old_stats_ids:
-            # Delete associated data (foreign keys should handle this with ON DELETE CASCADE if set,
-            # but we'll be explicit here)
-            for stats_id in old_stats_ids:
-                cursor.execute("DELETE FROM TopSong WHERE statsID = %s", (stats_id,))
-                cursor.execute("DELETE FROM TopAlbum WHERE statsID = %s", (stats_id,))
-                cursor.execute("DELETE FROM TopArtist WHERE statsID = %s", (stats_id,))
-
-            # Delete the Stats records
+            # Delete the Stats records (CASCADE will automatically delete TopSong, TopAlbum, TopArtist)
             cursor.execute("""
                 DELETE FROM Stats
                 WHERE uniqueID IN (%s)
@@ -411,9 +395,9 @@ def cleanup_old_stats(userName: str, timeframe: str, max_age_days: int = 1) -> N
 
             conn.commit()
             print(f"Deleted {len(old_stats_ids)} old stats records for {userName}/{timeframe}", flush=True)
-    except Exception as e:
+    except:
         conn.rollback()
-        raise e
+        raise
     finally:
         cursor.close()
         conn.close()

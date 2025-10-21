@@ -58,7 +58,7 @@ function StatisticsPage() {
               {loading ? (
             <LoadingSpinner message="Loading statistics..." />
             ) : (
-            songs.slice(0, 3).map((song, index) => (
+            songs.slice(0, 10).map((song, index) => (
                 <SongComponent key={song.id || index} songData={song} />
             ))
             )}
