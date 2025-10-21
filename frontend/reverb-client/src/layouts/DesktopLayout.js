@@ -8,6 +8,8 @@ import RatingsPage from "../pages/shared/RatingsPage";
 import StatisticsPage from "../pages/shared/StatisticsPage";
 import RecommendationsPage from "../pages/shared/RecommendationsPage";
 import FriendsPage from "../pages/shared/FriendsPage";
+import UserPage from "../pages/shared/UserPage";
+
 
 import '../styles/Desktop.css'
 
