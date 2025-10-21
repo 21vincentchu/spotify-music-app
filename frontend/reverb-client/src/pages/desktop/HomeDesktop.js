@@ -9,48 +9,79 @@ import { useEffect, useState } from 'react';
 
 function HomeDesktop() {
     const { userName, isAuthenticated, loading } = useAuth();
-    const [isLoadingSongs, setIsLoadingSongs] = useState(true);
+    const [isLoadingTopSongs, setIsLoadingTopSongs] = useState(true);
+    const [isLoadingRecentSongs, setIsLoadingRecentSongs] = useState(true);
     const [topSongs, setTopSongs] = useState([]);
+    const [recentSongs, setRecentSongs] = useState([]);
 
     useEffect(() => {   
         getTopSongs();      
+        getRecentSongs();
     }, []);
 
     const getTopSongs = async () => {
-        setIsLoadingSongs(true);
+        setIsLoadingTopSongs(true);
         axios.get('http://localhost:8000/api/top-songs/short_term', {
           withCredentials: true
         })
         .then((response) => {
-        //   console.log('Top Songs:', response.data);
+          console.log('Top Songs:', response.data);
           setTopSongs(response.data);
         })
         .catch((error) => {
           console.error('Error fetching top songs:', error);
         })
         .finally(() => {
-          setIsLoadingSongs(false);
+          setIsLoadingTopSongs(false);
         });
+    }
+
+    const getRecentSongs = async () => {
+        setIsLoadingRecentSongs(true);
+        axios.get('http://localhost:8000/api/recently-played', {
+            withCredentials: true
+          })
+          .then((response) => {
+            console.log('Recent Songs:', response.data);
+            setRecentSongs(response.data);
+          })
+          .catch((error) => {
+            console.error('Error fetching recent songs:', error);
+          })
+          .finally(() => {
+            setIsLoadingRecentSongs(false);
+          });
     }
     
 
   return (
     <div className="home-page">
         <div className="home-recommended round-outline blue-box-shadow">
-            <h2>Recommended</h2>
+            <h2>Recently Played</h2>
             <div className="home-recommended-songs">
-          
+            {isLoadingRecentSongs ? (
+            <LoadingSpinner message="Loading statistics..." />
+            ) : (
+                <h1></h1>
+            // recentSongs.slice(0, 3).map((song, index) => (
+            //     <div>
+            //     {/* <p>{song.rank}</p> */}
+            //     {/* <SongComponent key={song.id || index} songData={song} /> */}
+            //     </div>
+            // ))
+            )}
             </div>
-        
-
         </div>
         <div className="home-stats round-outline blue-box-shadow">
             <h2>Statistics</h2>
-            {isLoadingSongs ? (
+            {isLoadingTopSongs ? (
             <LoadingSpinner message="Loading statistics..." />
             ) : (
             topSongs.slice(0, 3).map((song, index) => (
+                <div>
+                {/* <p>{song.rank}</p> */}
                 <SongComponent key={song.id || index} songData={song} />
+                </div>
             ))
             )}
         </div>

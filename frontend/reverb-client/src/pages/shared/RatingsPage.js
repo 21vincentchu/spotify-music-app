@@ -1,7 +1,8 @@
 function RatingsPage() {
   return (
-    <div>
+    <div className="ratings-page">
         <h1>Ratings Page</h1>
+        <p>Site under Construction</p>
     </div>
   )
 }
