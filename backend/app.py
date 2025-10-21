@@ -206,6 +206,7 @@ def api_recently_played():
 
     # Return everything as JSON
     return jsonify({
+        'recent_tracks': recent_tracks,
         'listening_stats': listening_stats,
         'top_songs': top_songs_recent,
         'top_artists': top_artists_recent,
