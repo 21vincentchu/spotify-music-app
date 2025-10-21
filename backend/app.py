@@ -1,57 +1,23 @@
-from flask import Flask, request, jsonify, redirect, session
+from flask import Flask, request, jsonify, session
 from flask_session import Session
 from flask_cors import CORS
 import os
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-from db import get_db
+from db_functions import upsert_user
 from stats_json import stat_Conversions
 from stats import stats_bp
-from stats_recently_played import stats_recently_played_bp
+from stats_recently_played import *
 from config import Config
-
-def upsert_user(spotify_user_data):
-    """
-    Insert or update user in database from Spotify OAuth data. Checks for duplicates
-
-    Args:
-        spotify_user_data: Dictionary from Spotify API current_user() call
-
-    Returns:
-        userName: The userName (Spotify ID) of the user
-    """
-    conn = get_db()
-    cursor = conn.cursor()
-
-    try:
-        userName = spotify_user_data['id']
-        displayName = spotify_user_data.get('display_name', '')
-        profilePicture = spotify_user_data['images'][0]['url'] if spotify_user_data.get('images') else None
-
-        # Insert or update user (ON DUPLICATE KEY UPDATE handles existing users)
-        cursor.execute("""
-            INSERT INTO User (userName, spotifyId, displayName, profilePicture)
-            VALUES (%s, %s, %s, %s)
-            ON DUPLICATE KEY UPDATE
-                displayName = VALUES(displayName),
-                profilePicture = VALUES(profilePicture)
-        """, (userName, userName, displayName, profilePicture))
-
-        conn.commit()
-        return userName
-    except Exception as e:
-        conn.rollback()
-        raise e
-    finally:
-        cursor.close()
-        conn.close()
 
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
 
-# # Session configuration for cross-origin (different ports)
-app.config['SESSION_COOKIE_SAMESITE'] = None     # None required for cross-origin
-app.config['SESSION_COOKIE_SECURE'] = False      # False for local HTTP (normally True required with None)
+# Session configuration for cross-origin (different ports)
+# Using 'Lax' instead of None for Safari compatibility in development
+# Safari blocks SameSite=None cookies without HTTPS
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'    # Lax allows cookies on top-level navigation (like OAuth redirects)
+app.config['SESSION_COOKIE_SECURE'] = False      # False for local HTTP development
 app.config['SESSION_COOKIE_HTTPONLY'] = False    # False to allow JS access for debugging
 app.config['SESSION_COOKIE_PATH'] = '/'
 app.config['SESSION_COOKIE_DOMAIN'] = 'localhost' # Share across all localhost ports
@@ -213,6 +179,33 @@ def top_artists(time_range):
     sp = spotipy.Spotify(auth=token_info['access_token'])
     return stat_Conversions.fetch_all_top_artists_Jsonify(sp, time_range)
 
+@app.route('/api/recently-played')
+def api_recently_played():
+    """API route to return all recently played stats as JSON."""
+    token_info = session.get('token_info')
+    if not token_info:
+        return jsonify({'error': 'Not authenticated'}), 401
+
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+
+    # Fetch raw recently played data (max 50 tracks)
+    recent_tracks = fetch_recently_played_tracks(sp)
+
+    # Calculate listening statistics
+    listening_stats = calculate_listening_minutes(recent_tracks)
+
+    # Fetch top songs/artists/albums from recently played tracks
+    top_songs_recent = fetch_recently_played_top_songs(sp)
+    top_artists_recent = fetch_recently_played_top_artists(sp)
+    top_albums_recent = fetch_recently_played_top_albums(sp)
+
+    # Return everything as JSON
+    return jsonify({
+        'listening_stats': listening_stats,
+        'top_songs': top_songs_recent,
+        'top_artists': top_artists_recent,
+        'top_albums': top_albums_recent
+    })
 
 @app.route('/callback')
 def callback():
