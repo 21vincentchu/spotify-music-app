@@ -9,6 +9,7 @@ from stats_json import stat_Conversions
 from stats import stats_bp
 from stats_recently_played import *
 from config import Config
+from auth import get_authenticated_spotify_client
 
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
@@ -188,11 +189,9 @@ def top_artists(time_range):
 @app.route('/api/recently-played')
 def api_recently_played():
     """API route to return all recently played stats as JSON."""
-    token_info = session.get('token_info')
-    if not token_info:
+    sp, token_info = get_authenticated_spotify_client()
+    if not sp:
         return jsonify({'error': 'Not authenticated'}), 401
-
-    sp = spotipy.Spotify(auth=token_info['access_token'])
 
     # Fetch raw recently played data (max 50 tracks)
     recent_tracks = fetch_recently_played_tracks(sp)
