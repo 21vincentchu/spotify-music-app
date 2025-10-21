@@ -67,19 +67,19 @@ function StatisticsPage() {
         </div>
         <div className="stats-timeframe">
           <button 
-            className={timeframe === 'week' ? 'active' : ''}
+            className={timeframe === 'short_term' ? 'active' : ''}
             onClick={() => setTimeframe('short_term')}
           >
             4 Weeks
           </button>
           <button 
-            className={timeframe === 'month' ? 'active' : ''}
+            className={timeframe === 'medium_term' ? 'active' : ''}
             onClick={() => setTimeframe('medium_term')}
           >
             6 months
           </button>
           <button 
-            className={timeframe === 'year' ? 'active' : ''}
+            className={timeframe === 'long_term' ? 'active' : ''}
             onClick={() => setTimeframe('long_term')}
           >
             1 Year

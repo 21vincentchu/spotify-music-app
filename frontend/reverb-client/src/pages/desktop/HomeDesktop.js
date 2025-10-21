@@ -43,7 +43,7 @@ function HomeDesktop() {
           })
           .then((response) => {
             console.log('Recent Songs:', response.data);
-            setRecentSongs(response.data);
+            setRecentSongs(response.data.top_songs);
           })
           .catch((error) => {
             console.error('Error fetching recent songs:', error);
@@ -57,18 +57,16 @@ function HomeDesktop() {
   return (
     <div className="home-page">
         <div className="home-recommended round-outline blue-box-shadow">
-            <h2>Recently Played</h2>
+            <h2>Recently Played Songs</h2>
             <div className="home-recommended-songs">
             {isLoadingRecentSongs ? (
             <LoadingSpinner message="Loading statistics..." />
             ) : (
-                <h1></h1>
-            // recentSongs.slice(0, 3).map((song, index) => (
-            //     <div>
-            //     {/* <p>{song.rank}</p> */}
-            //     {/* <SongComponent key={song.id || index} songData={song} /> */}
-            //     </div>
-            // ))
+            recentSongs.map((song, index) => (
+                <div>
+                <SongComponent key={song.id || index} songData={song} />
+                </div>
+            ))
             )}
             </div>
         </div>
