@@ -31,7 +31,6 @@ def fetch_all_top_songs(sp: spotipy.Spotify, time_range: str, batch_size: int = 
 
     while True:
         batch = sp.current_user_top_tracks(limit=batch_size, offset=offset, time_range=time_range)
-
         for track in batch['items']:
             song_data = {
                 'songName': track['name'],

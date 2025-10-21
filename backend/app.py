@@ -243,6 +243,5 @@ def callback():
     from flask import redirect
     return redirect('http://localhost:3000/callback?auth=success')
 
-
 if __name__ == '__main__':
     app.run(debug=(Config.FLASK_ENV == 'development'), host='0.0.0.0', port=Config.PORT)
