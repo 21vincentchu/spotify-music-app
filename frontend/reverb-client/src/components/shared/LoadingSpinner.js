@@ -14,7 +14,7 @@ function LoadingSpinner({ message = "Loading..." }) {
             width: 40px;
             height: 40px;
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #1DB954;
+            border-top: 4px solid #1282A2;
             border-radius: 50%;
             animation: spin 1s linear infinite;
           }

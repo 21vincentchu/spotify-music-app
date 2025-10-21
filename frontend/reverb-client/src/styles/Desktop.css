@@ -1,5 +1,6 @@
-desktop-layout{
-    max-height: 100vh;
+.desktop-layout{
+
+  height: 100%;
 }
 
 nav{
@@ -75,3 +76,74 @@ nav{
     }
 
 }
+
+/* .stats-page{
+    height: 100%;
+    display: flex;
+
+    .stats-categories{
+        width: 50%;
+        height: 50%;
+    }
+
+    .stats-data{
+        width: 50%;
+        height: 50%;
+    }
+
+    .stats-timeframe{
+        width: 50%;
+        height: 50%;
+    }
+
+} */
+
+.stats-page {
+    height: 80vh;
+    display: flex;
+    flex-direction: row;
+    padding: 20px;
+    margin-top: 100px;
+  }
+  
+  .stats-page h1 {
+    margin-bottom: 20px;
+  }
+  
+  .stats-content {
+    display: flex;
+    gap: 20px;
+    flex: 1;
+
+    button{
+        border: 1px solid black;
+        border-radius: 8px;
+        width: 50%;
+        margin: 5% auto;
+        padding: 5px;
+        font-weight: bold;
+        background-color: white;
+    }
+
+    button:hover{
+        color: #1282A2;
+    }
+    button.active{
+        color: white;
+        background-color: #034078;
+        padding: 5px 10px;
+        border-radius: 8px;
+    }
+  }
+  
+  .stats-categories,
+  .stats-timeframe {
+    flex: 0 0 250px; /* Fixed width of 250px */
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+  }
+  
+  .stats-data {
+    flex: 1; /* Takes up remaining space */
+  }

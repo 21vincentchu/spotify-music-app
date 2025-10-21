@@ -22,7 +22,7 @@ function HomeDesktop() {
           withCredentials: true
         })
         .then((response) => {
-          console.log('Top Songs:', response.data);
+        //   console.log('Top Songs:', response.data);
           setTopSongs(response.data);
         })
         .catch((error) => {
@@ -31,30 +31,23 @@ function HomeDesktop() {
         .finally(() => {
           setIsLoadingSongs(false);
         });
-      }
+    }
     
 
   return (
     <div className="home-page">
-        <div className="home-recommended round-outline">
+        <div className="home-recommended round-outline blue-box-shadow">
             <h2>Recommended</h2>
             <div className="home-recommended-songs">
-                {/* <SongComponent />
-                <SongComponent />
-                <SongComponent />
-                <SongComponent />
-                <SongComponent />
-                <SongComponent />
-                <SongComponent />
-                <SongComponent /> */}
+          
             </div>
         
 
         </div>
-        <div className="home-stats round-outline">
+        <div className="home-stats round-outline blue-box-shadow">
             <h2>Statistics</h2>
             {isLoadingSongs ? (
-            <LoadingSpinner message="Loading your top songs..." />
+            <LoadingSpinner message="Loading statistics..." />
             ) : (
             topSongs.slice(0, 3).map((song, index) => (
                 <SongComponent key={song.id || index} songData={song} />

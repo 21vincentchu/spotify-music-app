@@ -1,10 +1,93 @@
-function StatisticsPage() {
-    return (
-        <div>
-            <h1>Statistics Page</h1>
-            <p>This is where user statistics will be displayed.</p>
-        </div>
-    );
-}   
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
-export default StatisticsPage; 
+import SongComponent from '../../components/shared/SongComponent';
+import LoadingSpinner from '../../components/shared/LoadingSpinner';
+
+function StatisticsPage() {
+  const [category, setCategory] = useState('songs');
+  const [timeframe, setTimeframe] = useState('short_term');
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [songs, setSongs] = useState([]);
+  const [artists, setArtists] = useState([]);
+
+
+  useEffect(() => {
+   getSongs();
+  }, [category, timeframe]); // Runs whenever category or timeframe changes
+
+  const getSongs = async () => {
+    setLoading(true);
+    axios.get(`http://localhost:8000/api/top-${category}/${timeframe}`, {
+      withCredentials: true
+    })
+    .then((response) => {
+        setSongs(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching top songs:', error);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+}
+
+
+
+  return (
+    <div className="stats-page">
+      <div className="stats-content">
+        <div className="stats-categories">
+          <button 
+            className={category === 'songs' ? 'active' : ''}
+            onClick={() => setCategory('songs')}
+          >
+            Songs
+          </button>
+          <button 
+            className={category === 'artists' ? 'active' : ''}
+            onClick={() => setCategory('artists')}
+          >
+            Artists
+          </button>
+        </div>
+        <div className="stats-data round-outline">
+
+            <div>
+              {loading ? (
+            <LoadingSpinner message="Loading statistics..." />
+            ) : (
+            songs.slice(0, 3).map((song, index) => (
+                <SongComponent key={song.id || index} songData={song} />
+            ))
+            )}
+            </div>
+          
+        </div>
+        <div className="stats-timeframe">
+          <button 
+            className={timeframe === 'week' ? 'active' : ''}
+            onClick={() => setTimeframe('short_term')}
+          >
+            4 Weeks
+          </button>
+          <button 
+            className={timeframe === 'month' ? 'active' : ''}
+            onClick={() => setTimeframe('medium_term')}
+          >
+            6 months
+          </button>
+          <button 
+            className={timeframe === 'year' ? 'active' : ''}
+            onClick={() => setTimeframe('long_term')}
+          >
+            1 Year
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default StatisticsPage;

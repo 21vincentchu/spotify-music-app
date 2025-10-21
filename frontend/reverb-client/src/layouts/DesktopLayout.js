@@ -15,9 +15,9 @@ function DesktopLayout() {
     const { isAuthenticated, userName } = useAuth();
 
     return (
-        <div>
+        <div className="desktop-layout">
             {isAuthenticated && <NavbarDesktop />}
-            <div className="desktop-layout">
+            {/* <div className="desktop-layout"> */}
                 <Routes>
                     <Route path="/" element={<SignInPage />} />
                     <Route path="/callback" element={<CallbackPage />} />
@@ -25,7 +25,7 @@ function DesktopLayout() {
                     {/* Protected Routes */}
                     <Route path="/home" element={
                         <ProtectedRoute>
-                            <HomeDesktop username={userName} />
+                            <HomeDesktop />
                         </ProtectedRoute>
                     } />
                     <Route path="/ratings" element={
@@ -49,7 +49,7 @@ function DesktopLayout() {
                         </ProtectedRoute>
                     } />
                 </Routes>
-            </div>
+            {/* </div> */}
         </div>
     );
 }
