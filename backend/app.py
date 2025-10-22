@@ -198,6 +198,18 @@ def top_artists(time_range):
     return stat_Conversions.fetch_all_top_artists_Jsonify(sp, time_range)
 
 
+@app.route('/api/logout', methods=['POST'])
+def api_logout():
+    '''
+    1. retrieves current session id from Flask session
+    2. removes corresponding cache
+    3. clears all keys in flask session
+    4. return JSON response confirming login 
+    '''
+
+    import tempfile
+
+    session_id = session.get('session_id')
 @app.route('/callback')
 def callback():
     '''
@@ -219,7 +231,7 @@ def callback():
     session['userName'] = userName
 
     # Redirect to frontend (adjust URL based on where frontend is running)
-    frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:3000')
+    frontend_url = f"{frontend_url}?access_token={token_info['access_token']}"
     return redirect(frontend_url)
 
 if __name__ == '__main__':

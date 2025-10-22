@@ -14,7 +14,7 @@ def insert_friend(userName: str, friendUserName: str):
     Args: 
     returns true if accepted, false if not 
     '''
-    
+    =
     conn = get_db()
     cursor = conn.cursor()
 

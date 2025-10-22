@@ -140,3 +140,4 @@ def insert_top_artists_to_db(stats_id: int, artists: list) -> None:
     finally:
         cursor.close()
         conn.close()
+
