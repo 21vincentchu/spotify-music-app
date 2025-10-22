@@ -2,54 +2,30 @@ import axios from 'axios';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
 
 import SongComponent from "../../components/shared/SongComponent";
-import { useAuth } from "../../context/AuthContext";
 import { useEffect, useState } from 'react';
 
-
-
 function HomeDesktop() {
-    const { userName, isAuthenticated, loading } = useAuth();
-    const [isLoadingTopSongs, setIsLoadingTopSongs] = useState(true);
-    const [isLoadingRecentSongs, setIsLoadingRecentSongs] = useState(true);
-    const [topSongs, setTopSongs] = useState([]);
-    const [recentSongs, setRecentSongs] = useState([]);
+    const [isLoadingRecentData, setIsLoadingRecentData] = useState(true);
+    const [recentData, setRecentData] = useState([]);
 
     useEffect(() => {   
-        getTopSongs();      
-        getRecentSongs();
+        getRecentData();
     }, []);
 
-    const getTopSongs = async () => {
-        setIsLoadingTopSongs(true);
-        axios.get('http://localhost:8000/api/top-songs/short_term', {
-          withCredentials: true
-        })
-        .then((response) => {
-          console.log('Top Songs:', response.data);
-          setTopSongs(response.data);
-        })
-        .catch((error) => {
-          console.error('Error fetching top songs:', error);
-        })
-        .finally(() => {
-          setIsLoadingTopSongs(false);
-        });
-    }
-
-    const getRecentSongs = async () => {
-        setIsLoadingRecentSongs(true);
+    const getRecentData = async () => {
+        setIsLoadingRecentData(true);
         axios.get('http://localhost:8000/api/recently-played', {
             withCredentials: true
           })
           .then((response) => {
             console.log('Recent Songs:', response.data);
-            setRecentSongs(response.data.top_songs);
+            setRecentData(response.data);
           })
           .catch((error) => {
-            console.error('Error fetching recent songs:', error);
+            console.error('Error fetching recent data:', error);
           })
           .finally(() => {
-            setIsLoadingRecentSongs(false);
+            setIsLoadingRecentData(false);
           });
     }
     
@@ -59,10 +35,10 @@ function HomeDesktop() {
         <div className="home-recommended round-outline blue-box-shadow">
             <h2>Recently Played Songs</h2>
             <div className="home-recommended-songs">
-            {isLoadingRecentSongs ? (
+            {isLoadingRecentData ? (
             <LoadingSpinner message="Loading statistics..." />
             ) : (
-            recentSongs.map((song, index) => (
+            recentData.top_songs.map((song, index) => (
                 <div>
                 <SongComponent key={song.id || index} songData={song} />
                 </div>
@@ -71,17 +47,29 @@ function HomeDesktop() {
             </div>
         </div>
         <div className="home-stats round-outline blue-box-shadow">
-            <h2>Statistics</h2>
-            {isLoadingTopSongs ? (
+        {isLoadingRecentData ? (
             <LoadingSpinner message="Loading statistics..." />
             ) : (
-            topSongs.slice(0, 3).map((song, index) => (
-                <div>
-                {/* <p>{song.rank}</p> */}
-                <SongComponent key={song.id || index} songData={song} />
-                </div>
-            ))
+                <div className='home-stats-section'>
+                    <div>
+                        <h3>Average Track Length: </h3>
+                        <p>{recentData.listening_stats.avg_track_length_minutes} minutes</p>
+                    </div>
+                    <div>
+                        <h3>Total Hours: </h3>
+                        <p>{Math.round(recentData.listening_stats.total_hours)}</p>
+                    </div>
+                    <div>
+                        <h3>Total Minutes: </h3>
+                        <p>{Math.round(recentData.listening_stats.total_minutes)}</p>
+                    </div>
+                    <div>
+                        <h3>Total Plays: </h3>
+                        <p>{recentData.listening_stats.total_plays}</p>
+                    </div>
+              </div>
             )}
+          
         </div>
 
     </div>

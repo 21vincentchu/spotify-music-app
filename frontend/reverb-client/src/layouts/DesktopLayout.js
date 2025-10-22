@@ -9,15 +9,17 @@ import RecommendationsPage from "../pages/shared/RecommendationsPage";
 import FriendsPage from "../pages/shared/FriendsPage";
 import ProtectedRoute from "../components/shared/ProtectedRoute";
 import { useAuth } from "../context/AuthContext";
+import { useLocation } from "react-router-dom";
 import '../styles/Desktop.css';
 
 function DesktopLayout() {
     const { isAuthenticated, userName } = useAuth();
+    const location = useLocation();
+    const showNavbar = isAuthenticated && location.pathname !== '/' && location.pathname !== '/callback';
 
     return (
         <div className="desktop-layout">
-            {isAuthenticated && <NavbarDesktop />}
-            {/* <div className="desktop-layout"> */}
+            {showNavbar && <NavbarDesktop />}
                 <Routes>
                     <Route path="/" element={<SignInPage />} />
                     <Route path="/callback" element={<CallbackPage />} />
