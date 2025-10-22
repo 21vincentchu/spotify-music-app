@@ -24,13 +24,15 @@ function NavbarDesktop() {
   }, []);
 
   const handleSignOut = () => {
-    axios.post('http://localhost:8000/api/logout', {
-      withCredentials: true
-    })
-    .then(() => {
-      // Redirect to sign-in page after logout
+    // axios.post('http://localhost:8000/api/logout', {
+    //   withCredentials: true
+    // })
+    // .then(() => {
+    //   // Redirect to sign-in page after logout
+    //   window.location.href = '/';
+    // })
       window.location.href = '/';
-    })
+
   }
 
   return (
