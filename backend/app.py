@@ -210,6 +210,22 @@ def api_logout():
     import tempfile
 
     session_id = session.get('session_id')
+    if session_id:
+        cache_path = os.path.join(tempfile.gettempdir(), f'.spotipyoauthcache-{session_id}')
+        if os.path.exists(cache_path):
+            try:
+                os.remove(cache_path)
+                print(f"Removed Spotify cache file: {cache_path}")
+            except Exception as e:
+                print(f"Could not remove cache file: {e}")
+
+        session_keys = list(session.keys())
+        for key in session_keys:
+            session.pop(key, None)
+
+        print("successful clearing of session")
+        return jsonify({'message': 'logged out sucessfully', 'authenticated': False})
+
 @app.route('/callback')
 def callback():
     '''
