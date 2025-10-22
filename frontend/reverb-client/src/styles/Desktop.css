@@ -57,6 +57,142 @@ nav {
     object-fit: cover;
   }
 
+  .profile-container {
+    position: relative;
+  }
+  
+  .nav-profile {
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  
+  .nav-profile:hover {
+    opacity: 0.8;
+  }
+  
+  .profile-menu {
+    position: absolute;
+    top: 70px;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 10px 0;
+    min-width: 150px;
+    z-index: 1001;
+  }
+  
+  .profile-menu a {
+    display: block;
+    padding: 12px 20px;
+    color: black;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  
+  .profile-menu a:hover {
+    background: #f0f0f0;
+    color: #1282A2;
+  }
+
+/* SIGN IN PAGE-------------------------------------------------------------------------------------  */
+
+.signin-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background: linear-gradient(135deg, #034078 0%, #1282A2 100%); */
+    padding: 20px;
+  }
+
+  .signin-container {
+    background: white;
+    max-width: 500px;
+    width: 100%;
+    padding: 40px;
+    border-radius: 12px;
+  }
+
+  .signin-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .signin-title {
+    font-size: 48px;
+    font-weight: bold;
+    color: #034078;
+    margin: 0 0 10px 0;
+  }
+
+  .signin-subtitle {
+    font-size: 16px;
+    color: #666;
+    margin: 0 0 40px 0;
+  }
+
+  .signin-features {
+    width: 100%;
+    margin-bottom: 40px;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    margin-bottom: 20px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: transform 0.2s;
+  }
+
+  .feature-item:hover {
+    transform: translateX(5px);
+    background: #e9ecef;
+  }
+
+  .feature-item p {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .signin-button {
+    background-color: #1DB954;
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .signin-button:hover:not(:disabled) {
+    background-color: #1ed760;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);
+  }
+
+  .signin-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  .signin-footer {
+    margin-top: 30px;
+    font-size: 12px;
+    color: #999;
+  }
+
+
 
 /* HOME PAGE ------------------------------------------------------------------------------------- */
 .home-page{
@@ -99,8 +235,18 @@ nav {
     margin: 5%;
     padding: 10px;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+     h2 {
+        flex-shrink: 0; /* prevents header from being compressed or scrolled */
+        margin: 0 0 10px 0;
+        text-align: center;
+      }
 
     .home-stats-section{
+        flex: 1; /* fills remaining space under the h2 */
+
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -113,6 +259,7 @@ nav {
         }
         
     }
+
 
 }
 

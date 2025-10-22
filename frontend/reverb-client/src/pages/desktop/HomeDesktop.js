@@ -47,6 +47,8 @@ function HomeDesktop() {
             </div>
         </div>
         <div className="home-stats round-outline blue-box-shadow">
+            <h2>Recent Statistics</h2>
+
         {isLoadingRecentData ? (
             <LoadingSpinner message="Loading statistics..." />
             ) : (

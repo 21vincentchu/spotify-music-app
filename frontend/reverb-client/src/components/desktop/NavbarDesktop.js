@@ -1,11 +1,43 @@
 import { Link, NavLink } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import axios from 'axios';
+
 import tempLogo from "../../assets/pngegg.png";
 import tempProfile from "../../assets/istockphoto-2171382633-612x612.jpg";
 
 function NavbarDesktop() {
+  const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleSignOut = () => {
+    axios.post('http://localhost:8000/api/logout', {
+      withCredentials: true
+    })
+    .then(() => {
+      // Redirect to sign-in page after logout
+      window.location.href = '/';
+    })
+  }
+
   return (
     <nav>
-      <img src={tempLogo} className="nav-logo" />
+      <a href="/home">
+        <img src={tempLogo} className="nav-logo" />
+      </a>
       
       <div className="nav-links">
         <NavLink to="/home" className={({ isActive }) => (isActive ? "active" : "")}>
@@ -25,7 +57,24 @@ function NavbarDesktop() {
         </NavLink>
       </div>
       
-      <img src={tempProfile} className="nav-profile" />
+      <div className="profile-container" ref={menuRef}>
+        <img 
+          src={tempProfile} 
+          className="nav-profile" 
+          onClick={() => setShowMenu(!showMenu)}
+        />
+        
+        {showMenu && (
+          <div className="profile-menu">
+            <Link to="#" onClick={() => setShowMenu(false)}>
+              Profile
+            </Link>
+            <Link onClick={handleSignOut}>
+              Sign Out
+            </Link>
+          </div>
+        )}
+      </div>
     </nav>
   );
 }

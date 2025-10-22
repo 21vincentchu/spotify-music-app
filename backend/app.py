@@ -148,6 +148,11 @@ def api_login():
     auth_url = sp_oauth.get_authorize_url()
     return jsonify({'auth_url': auth_url})
 
+# @app.route('/api/logout', methods=['POST'])
+# def api_logout():
+#    return
+   
+
 @app.route('/api/auth/status')
 def auth_status():
     """Check if user is authenticated"""
