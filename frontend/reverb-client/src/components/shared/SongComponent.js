@@ -9,7 +9,6 @@ function SongComponent({songData}) {
             </div>
            
         </div>
-    )
-}
+      )}
 
 export default SongComponent;
