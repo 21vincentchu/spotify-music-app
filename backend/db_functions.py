@@ -181,8 +181,7 @@ def get_cached_stats_id(userName: str, timeframe: str, max_age_hours: int = 24):
     Check if a cached Stats record exists for this user and timeframe combination.
 
     This function prevents duplicate database inserts by checking if we've already
-    fetched and stored this user's stats for the given timeframe within the specified
-    time window. If a recent record exists, we can reuse its stats_id instead of
+    fetched and stored this user's stats. If a recent record exists, we can reuse its stats_id instead of
     creating a new Stats record and re-inserting all the data.
 
     Args:

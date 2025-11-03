@@ -10,7 +10,6 @@ ho# Spotify OAuth Authentication Flow
   - Frontend at `http://127.0.0.1:3000`
 
 
-got
 This application uses Spotify's OAuth 2.0 authorization flow to authenticate users and access their Spotify data.
 
 ## Authentication Flow

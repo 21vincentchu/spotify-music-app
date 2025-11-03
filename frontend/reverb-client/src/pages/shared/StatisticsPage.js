@@ -39,13 +39,13 @@ function StatisticsPage() {
     <div className="stats-page">
       <div className="stats-content">
         <div className="stats-categories">
-          <button 
+          <button
             className={category === 'songs' ? 'active' : ''}
             onClick={() => setCategory('songs')}
           >
             Songs
           </button>
-          <button 
+          <button
             className={category === 'artists' ? 'active' : ''}
             onClick={() => setCategory('artists')}
           >
