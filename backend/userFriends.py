@@ -14,7 +14,7 @@ def insert_friend(userName: str, friendUserName: str):
     Args: 
     returns true if accepted, false if not 
     '''
-    =
+
     conn = get_db()
     cursor = conn.cursor()
 
@@ -141,8 +141,28 @@ def get_top_songs(friendUserName: str, timeframe: str = 'short_term', limit: int
     """
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
-##get friend top artists
-##get friend top albums
-##get friends recently played
-##search user friend 
+    try:
+        cursor.execute
+        ("""
+        SELECT
+            ts.songName,
+            ts.artistName
+            ts.spotifyTrackId
+            ts.rank
+            ts.playCount
+            ts.imageUrl
+            s.timeframe
+        FROM topSong ts
+        JOIN Stats s ON ts.statsID = s.uniqueID
+        WHERE s.userName = %s AND s.timeframe = %s
+        ORDER BY ts.rank
+        LIMIT %s
+    """, (friendUserName, timeframe, limit))
+        
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
 
+                       
+                    
