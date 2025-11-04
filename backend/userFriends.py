@@ -199,4 +199,43 @@ def get_friend_top_artists(friendUserName: str, timeframe: str = 'short_term', l
     finally:
         cursor.close()
         conn.close()
+
+def get_friend_top_albums(friendUserName: str, timeframe: str = 'short_term', limit: int=10) -> List[Dict]:
+    """
+    Get a friend's top albums for a specific timeframe
+
+    Args:
+        friendUserName: The friend's userName
+        timeframe: the timeframe of the top albums
+        limit: max number of albums that are returned           
+    Return: 
+        A list of albums dictionaries
+    """ 
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+        SELECT 
+        tab.albumName,
+        tab.artistName,
+        tab.spotifyAlbumId,
+        tab.rank,
+        tab.playCount,
+        tab.imageUrl,
+        s.timeframe
+    FROM TopAlbum tab
+    JOIN Stats s ON tab.statsID = s.uniqueID
+    WHERE s.userName = %s AND s.timeframe = %s
+    ORDER BY tab.rank
+    LIMIT %s
+""", (friendUserName, timeframe, limit))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+
+         
+                    
+
                     
