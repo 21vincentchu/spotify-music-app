@@ -17,33 +17,49 @@ from db_functions import upsert_user, get_cached_stats_id, fetch_and_insert_all_
 from stats_json import stat_Conversions
 from stats import stats_bp
 from stats_recently_played import *
+from migrate import run_migrations
 
 app = Flask(__name__)
+
+# Run database migrations on startup
+try:
+    run_migrations()
+except Exception as e:
+    print(f"Warning: Migration failed - {e}")
 app.secret_key = Config.SECRET_KEY
 ### ------ APP CONFIGURATIONS ---- ####
-""" 
+"""
 Session configuration for cross-origin (different ports)
 Using 'Lax' instead of None for Safari compatibility in development
 """
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'    # Lax allows cookies on top-level navigation (like OAuth redirects)
-app.config['SESSION_COOKIE_SECURE'] = False      # False for local HTTP development
-app.config['SESSION_COOKIE_HTTPONLY'] = False    # False to allow JS access for debugging
+# Set session cookie configuration based on environment
+is_production = Config.FLASK_ENV == 'production'
+app.config['SESSION_COOKIE_SAMESITE'] = 'None' if is_production else 'Lax'
+app.config['SESSION_COOKIE_SECURE'] = is_production  # True in production (HTTPS required)
+app.config['SESSION_COOKIE_HTTPONLY'] = False
 app.config['SESSION_COOKIE_PATH'] = '/'
-app.config['SESSION_COOKIE_DOMAIN'] = 'localhost' # Share across all localhost ports
+app.config['SESSION_COOKIE_DOMAIN'] = None if is_production else 'localhost'
 
 ### ----- CORS CONFIGURATION ----- ###
-""" 
+"""
 Enable CORS (Cross-Origin Resource Sharing) to allow frontend requests from different origin
 Without this, browsers block requests from frontend (e.g., localhost:3000) to backend (localhost:5000)
 supports_credentials=True allows cookies/sessions to be sent with cross-origin requests
 origins specifies which domains can make requests with credentials
 """
-CORS(app, supports_credentials=True, origins=[
+# Build allowed origins list (always include local for development)
+allowed_origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-])
+]
+
+# Add production frontend URL if configured
+if Config.FRONTEND_URL and Config.FRONTEND_URL not in allowed_origins:
+    allowed_origins.append(Config.FRONTEND_URL)
+
+CORS(app, supports_credentials=True, origins=allowed_origins)
 
 ### ----- SESSION CONFIGURATION ----- ###
 app.config["SESSION_PERMANENT"] = False     # Sessions expire when the browser is closed
