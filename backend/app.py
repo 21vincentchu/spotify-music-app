@@ -173,6 +173,9 @@ def api_logout():
 
         print("successful clearing of session")
         return jsonify({'message': 'logged out sucessfully', 'authenticated': False})
+    else:
+        return jsonify({'message': 'log out failed', 'authenticated': True}), 400
+
 
 @app.route('/api/auth/status')
 def auth_status():
