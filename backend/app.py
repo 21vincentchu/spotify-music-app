@@ -19,7 +19,10 @@ from stats import stats_bp
 from stats_recently_played import *
 from migrate import run_migrations
 
-app = Flask(__name__)
+# Configure Flask to serve React's static files
+app = Flask(__name__,
+            static_folder='frontend_build/static',
+            static_url_path='/static')
 
 # Run database migrations on startup
 try:
