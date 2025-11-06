@@ -6,7 +6,7 @@ from threading import Thread
 # Third party imports
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-from flask import Flask, request, jsonify, session, redirect
+from flask import Flask, request, jsonify, session, redirect, send_from_directory
 from flask_session import Session
 from flask_cors import CORS
 
@@ -113,46 +113,6 @@ def get_sp_oauth():
     )
 
 ### ----- FLASK ROUTES ----- ###
-@app.route('/')
-def index():
-    '''
-    home endpoint. checks for cached token, which then prompts login or display current users profile
-
-    returns:
-        str or dict: login link if not authenicated, or their profile
-    '''
-
-    sp_oauth = get_sp_oauth()
-
-    #Checks for users cached tokens
-    token_info = sp_oauth.get_cached_token()
-
-    #redirect user to spotify login page if not token exists
-    if not token_info:
-        auth_url = sp_oauth.get_authorize_url()
-        return f'<a href="{auth_url}">Login with Spotify</a>'
-    
-    session['token_info'] = token_info
-    #if token exists, use for authenticated API calls
-    access_token = token_info['access_token']
-    sp = spotipy.Spotify(auth=access_token)
-    results = sp.current_user()
-
-    # Insert/update user in database
-    userName = upsert_user(results)
-    session['userName'] = userName
-
-    #display the json
-    profile_img = results['images'][0]['url'] if results.get('images') else ''
-    html = f'''
-        <h1>Welcome, {results['display_name']}!</h1>
-        <img src="{profile_img}" alt="Profile" width="200">
-        <p>Followers: {results['followers']['total']}</p>
-        <p><a href="/stats">View Your Spotify Stats</a></p>
-        <p><a href="{results['external_urls']['spotify']}">View on Spotify</a></p>
-    '''
-    return html
-
 @app.route('/api/login')
 def api_login():
     """
@@ -292,6 +252,21 @@ def callback():
 
     frontend_url = Config.FRONTEND_URL.rstrip('/')
     return redirect(f'{frontend_url}/callback?auth=success')
+
+### ----- SERVE REACT FRONTEND ----- ###
+# This must be LAST so /api routes are matched first
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_react(path):
+    '''Serve React frontend for all non-API routes'''
+    frontend_folder = os.path.join(os.path.dirname(__file__), 'frontend_build')
+
+    # If path is a static file that exists, serve it
+    if path and os.path.exists(os.path.join(frontend_folder, path)):
+        return send_from_directory(frontend_folder, path)
+
+    # Otherwise serve index.html (for React Router)
+    return send_from_directory(frontend_folder, 'index.html')
 
 if __name__ == '__main__':
     app.run(debug=(Config.FLASK_ENV == 'development'), host='0.0.0.0', port=Config.PORT)
