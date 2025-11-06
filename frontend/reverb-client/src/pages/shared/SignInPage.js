@@ -1,11 +1,20 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import config from '../../config';
+import { useAuth } from '../../context/AuthContext';
 
 function SignInPage() {
-
+    const navigate = useNavigate();
+    const { isAuthenticated, loading } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
+
+    // Redirect to home if already authenticated
+    useEffect(() => {
+        if (!loading && isAuthenticated) {
+            navigate('/home');
+        }
+    }, [isAuthenticated, loading, navigate]);
 
 
     const handleLogin = async () => {
