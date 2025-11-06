@@ -232,6 +232,12 @@ def callback():
     sp_oauth = get_sp_oauth()
     code = request.args.get('code')
 
+    # If no code, this is not from Spotify - let React handle it
+    if not code:
+        print("No code parameter - serving React app")
+        frontend_folder = os.path.join(os.path.dirname(__file__), 'frontend_build')
+        return send_from_directory(frontend_folder, 'index.html')
+
     token_info = sp_oauth.get_access_token(code)
     sp = spotipy.Spotify(auth=token_info['access_token'])
 
