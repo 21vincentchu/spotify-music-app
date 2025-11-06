@@ -14,7 +14,9 @@ def run_migrations():
     cursor = conn.cursor()
 
     with open(os.path.join(os.path.dirname(__file__), 'schema.sql'), 'r') as f:
-        cursor.execute(f.read(), multi=True)
+        # Execute each statement separately
+        for result in cursor.execute(f.read(), multi=True):
+            pass  # Consume the results
 
     conn.commit()
     cursor.close()
