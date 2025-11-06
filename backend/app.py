@@ -37,11 +37,11 @@ Using 'Lax' instead of None for Safari compatibility in development
 """
 # Set session cookie configuration based on environment
 is_production = Config.FLASK_ENV == 'production'
-app.config['SESSION_COOKIE_SAMESITE'] = 'None' if is_production else 'Lax'
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # Same domain, use Lax
 app.config['SESSION_COOKIE_SECURE'] = is_production  # True in production (HTTPS required)
 app.config['SESSION_COOKIE_HTTPONLY'] = False
 app.config['SESSION_COOKIE_PATH'] = '/'
-app.config['SESSION_COOKIE_DOMAIN'] = None if is_production else 'localhost'
+app.config['SESSION_COOKIE_DOMAIN'] = None  # Let browser handle it
 
 ### ----- CORS CONFIGURATION ----- ###
 """
