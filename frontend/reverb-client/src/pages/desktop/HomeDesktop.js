@@ -1,5 +1,6 @@
 import axios from 'axios';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
+import config from '../../config';
 
 import SongComponent from "../../components/shared/SongComponent";
 import { useEffect, useState } from 'react';
@@ -14,7 +15,7 @@ function HomeDesktop() {
 
     const getRecentData = async () => {
         setIsLoadingRecentData(true);
-        axios.get('http://localhost:8000/api/recently-played', {
+        axios.get(`${config.API_URL}/api/recently-played`, {
             withCredentials: true
           })
           .then((response) => {

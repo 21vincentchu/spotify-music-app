@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import config from '../../config';
 
 import SongComponent from '../../components/shared/SongComponent';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
@@ -19,7 +20,7 @@ function StatisticsPage() {
 
   const getSongs = async () => {
     setLoading(true);
-    axios.get(`http://localhost:8000/api/top-${category}/${timeframe}`, {
+    axios.get(`${config.API_URL}/api/top-${category}/${timeframe}`, {
       withCredentials: true
     })
     .then((response) => {

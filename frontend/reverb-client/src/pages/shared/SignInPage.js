@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link, NavLink } from "react-router-dom";
+import config from '../../config';
 
 function SignInPage() {
 
@@ -10,7 +11,7 @@ function SignInPage() {
     const handleLogin = async () => {
         setIsLoading(true);
         try {
-            const res = await axios.get('http://localhost:8000/api/login', {
+            const res = await axios.get(`${config.API_URL}/api/login`, {
                 withCredentials: true
             });
             
