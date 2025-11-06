@@ -290,7 +290,8 @@ def callback():
         daemon=True
     ).start()
 
-    return redirect(f'{Config.FRONTEND_URL}/callback?auth=success')
+    frontend_url = Config.FRONTEND_URL.rstrip('/')
+    return redirect(f'{frontend_url}/callback?auth=success')
 
 if __name__ == '__main__':
     app.run(debug=(Config.FLASK_ENV == 'development'), host='0.0.0.0', port=Config.PORT)
