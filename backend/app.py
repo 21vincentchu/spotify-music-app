@@ -1,15 +1,22 @@
-from flask import Flask, request, jsonify, session
-from flask_session import Session
-from flask_cors import CORS
+# Standard library imports
 import os
+import tempfile
+from threading import Thread
+
+# Third party imports
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-from db_functions import upsert_user
+from flask import Flask, request, jsonify, session, redirect
+from flask_session import Session
+from flask_cors import CORS
+
+# Local app imports
+from config import Config
+from auth import get_authenticated_spotify_client
+from db_functions import upsert_user, get_cached_stats_id, fetch_and_insert_all_stats
 from stats_json import stat_Conversions
 from stats import stats_bp
 from stats_recently_played import *
-from config import Config
-from auth import get_authenticated_spotify_client
 
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
@@ -17,7 +24,6 @@ app.secret_key = Config.SECRET_KEY
 """ 
 Session configuration for cross-origin (different ports)
 Using 'Lax' instead of None for Safari compatibility in development
-Safari blocks SameSite=None cookies without HTTPS
 """
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'    # Lax allows cookies on top-level navigation (like OAuth redirects)
 app.config['SESSION_COOKIE_SECURE'] = False      # False for local HTTP development
@@ -48,51 +54,46 @@ Session(app)
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
 
+### ----- BACKGROUND TASKS ----- ###
+def prefetch_all_stats(access_token: str, user_name: str):
+    """
+    Background task to prefetch all stats after login.
+    Warms the cache for all 3 timeframes so stats load instantly.
+    """
+    try:
+        sp = spotipy.Spotify(auth=access_token)
+
+        for timeframe in ['short_term', 'medium_term', 'long_term']:
+            cached = get_cached_stats_id(user_name, timeframe, max_age_hours=24)
+
+            if not cached:
+                print(f"Background prefetch: {timeframe}", flush=True)
+                fetch_and_insert_all_stats(user_name, timeframe, sp)
+            else:
+                print(f"Cache hit for {timeframe}, skipping prefetch", flush=True)
+
+    except Exception as e:
+        print(f"Prefetch error: {e}", flush=True)
+
 ### ----- SPOTIFY OAUTH HANDLER ----- ###
 def get_sp_oauth():
     """
-    Create and return a SpotifyOAuth instance with per-session token caching.
-
-    This function manages Spotify OAuth authentication by creating a unique cache file
-    for each user session. This approach prevents token conflicts when multiple users
-    access the application simultaneously.
-
-    1. Checks if the current Flask session has a session_id
-    2. If no session_id exists, generates a new random 16-byte hex string
-    3. Creates a unique cache file path in the system temp directory using the session_id
-    4. Returns a configured SpotifyOAuth instance that will store tokens in that cache file
-
-    The cache file stores the OAuth access token, refresh token, and expiry information
-    so users don't have to re-authenticate on every request.
-
-    Returns:
-        SpotifyOAuth: Configured OAuth handler with session-specific cache file
-
-    Note:
-        Uses Flask's session object to persist session_id across requests for the same user
+    Creates SpotifyOAuth instance with per-session token caching.
+    Prevents token conflicts when multiple users access simultaneously.
     """
-    import tempfile
-
-    # Get or create a unique session identifier for this user's session
-    # This ID is stored in Flask's session cookie and persists across requests
     session_id = session.get('session_id')
     if not session_id:
-        # Generate a new random session ID (32 character hex string)
         session_id = os.urandom(16).hex()
-        # Store it in the Flask session so it persists for this user
         session['session_id'] = session_id
 
-    # Create a unique cache file path for this session's OAuth tokens
-    # This prevents different users from overwriting each other's tokens
     cache_path = os.path.join(tempfile.gettempdir(), f'.spotipyoauthcache-{session_id}')
 
-    # Return a configured SpotifyOAuth instance
     return SpotifyOAuth(
-        Config.SPOTIFY_CLIENT_ID,      # Spotify app's client ID
-        Config.SPOTIFY_CLIENT_SECRET,  # Spotify app's client secret
-        Config.SPOTIPY_REDIRECT_URI,   # Spotify redirect after auth
-        scope=Config.SPOTIFY_SCOPE,    # Permissions your app requests
-        cache_path=cache_path          # Where to cache the OAuth tokens
+        Config.SPOTIFY_CLIENT_ID,
+        Config.SPOTIFY_CLIENT_SECRET,
+        Config.SPOTIPY_REDIRECT_URI,
+        scope=Config.SPOTIFY_SCOPE,
+        cache_path=cache_path
     )
 
 ### ----- FLASK ROUTES ----- ###
@@ -148,10 +149,33 @@ def api_login():
     auth_url = sp_oauth.get_authorize_url()
     return jsonify({'auth_url': auth_url})
 
-# @app.route('/api/logout', methods=['POST'])
-# def api_logout():
-#    return
-   
+@app.route('/api/logout', methods=['POST'])
+def api_logout():
+    '''
+    1. retrieves current session id from Flask session
+    2. removes corresponding cache
+    3. clears all keys in flask session
+    4. return JSON response confirming login
+    '''
+    session_id = session.get('session_id')
+    if session_id:
+        cache_path = os.path.join(tempfile.gettempdir(), f'.spotipyoauthcache-{session_id}')
+        if os.path.exists(cache_path):
+            try:
+                os.remove(cache_path)
+                print(f"Removed Spotify cache file: {cache_path}")
+            except Exception as e:
+                print(f"Could not remove cache file: {e}")
+
+        session_keys = list(session.keys())
+        for key in session_keys:
+            session.pop(key, None)
+
+        print("successful clearing of session")
+        return jsonify({'message': 'logged out sucessfully', 'authenticated': False})
+    else:
+        return jsonify({'message': 'log out failed', 'authenticated': True}), 400
+
 
 @app.route('/api/auth/status')
 def auth_status():
@@ -218,35 +242,6 @@ def api_recently_played():
         'top_albums': top_albums_recent
     })
 
-@app.route('/api/logout', methods=['POST'])
-def api_logout():
-    '''
-    1. retrieves current session id from Flask session
-    2. removes corresponding cache
-    3. clears all keys in flask session
-    4. return JSON response confirming login 
-    '''
-
-    import tempfile
-
-    session_id = session.get('session_id')
-    if session_id:
-        cache_path = os.path.join(tempfile.gettempdir(), f'.spotipyoauthcache-{session_id}')
-        if os.path.exists(cache_path):
-            try:
-                os.remove(cache_path)
-                print(f"Removed Spotify cache file: {cache_path}")
-            except Exception as e:
-                print(f"Could not remove cache file: {e}")
-
-        session_keys = list(session.keys())
-        for key in session_keys:
-            session.pop(key, None)
-
-        print("successful clearing of session")
-        return jsonify({'message': 'logged out sucessfully', 'authenticated': False})
-
-
 @app.route('/callback')
 def callback():
     '''
@@ -272,8 +267,13 @@ def callback():
     print(f"Session ID: {session.get('session_id')}")
     print(f"Session saved: {userName}")
 
-    # Redirect to frontend
-    from flask import redirect
+    # Start background prefetch to warm cache
+    Thread(
+        target=prefetch_all_stats,
+        args=(token_info['access_token'], userName),
+        daemon=True
+    ).start()
+
     return redirect('http://localhost:3000/callback?auth=success')
 
 if __name__ == '__main__':
