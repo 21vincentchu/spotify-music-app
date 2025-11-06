@@ -19,9 +19,7 @@ from stats_recently_played import *
 from migrate import run_migrations
 
 # Configure Flask to serve React's static files
-app = Flask(__name__,
-            static_folder='frontend_build/static',
-            static_url_path='/static')
+app = Flask(__name__, static_folder='frontend_build/static', static_url_path='/static')
 
 # Run database migrations on startup
 try:
@@ -29,6 +27,7 @@ try:
 except Exception as e:
     print(f"Warning: Migration failed - {e}")
 app.secret_key = Config.SECRET_KEY
+
 ### ------ APP CONFIGURATIONS ---- ####
 """
 Session configuration for cross-origin (different ports)
