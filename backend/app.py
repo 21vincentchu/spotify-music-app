@@ -290,7 +290,7 @@ def callback():
         daemon=True
     ).start()
 
-    return redirect('http://localhost:3000/callback?auth=success')
+    return redirect(f'{Config.FRONTEND_URL}/callback?auth=success')
 
 if __name__ == '__main__':
     app.run(debug=(Config.FLASK_ENV == 'development'), host='0.0.0.0', port=Config.PORT)
