@@ -66,7 +66,7 @@ CORS(app, supports_credentials=True, origins=allowed_origins)
 
 ### ----- SESSION CONFIGURATION ----- ###
 app.config["SESSION_PERMANENT"] = False     # Sessions expire when the browser is closed
-app.config["SESSION_TYPE"] = "filesystem"     # Store session data in files
+app.config["SESSION_TYPE"] = "null"     # Use Flask's default signed cookie sessions (works across multiple containers)
 Session(app)
 
 ### ----- REGISTER BLUEPRINTS ----- ###
