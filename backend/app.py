@@ -7,7 +7,6 @@ from threading import Thread
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from flask import Flask, request, jsonify, session, redirect, send_from_directory
-from flask_session import Session
 from flask_cors import CORS
 
 # Local app imports
@@ -65,9 +64,8 @@ if Config.FRONTEND_URL and Config.FRONTEND_URL not in allowed_origins:
 CORS(app, supports_credentials=True, origins=allowed_origins)
 
 ### ----- SESSION CONFIGURATION ----- ###
-app.config["SESSION_PERMANENT"] = False     # Sessions expire when the browser is closed
-app.config["SESSION_TYPE"] = "null"     # Use Flask's default signed cookie sessions (works across multiple containers)
-Session(app)
+# Use Flask's built-in sessions (signed cookies) - works across multiple containers
+app.config["SESSION_PERMANENT"] = False
 
 ### ----- REGISTER BLUEPRINTS ----- ###
 app.register_blueprint(stats_bp)
