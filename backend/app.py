@@ -261,9 +261,16 @@ def serve_react(path):
     '''Serve React frontend for all non-API routes'''
     frontend_folder = os.path.join(os.path.dirname(__file__), 'frontend_build')
 
-    # If path is a static file that exists, serve it
-    if path and os.path.exists(os.path.join(frontend_folder, path)):
-        return send_from_directory(frontend_folder, path)
+    print(f"Requested path: {path}")
+    print(f"Frontend folder: {frontend_folder}")
+
+    # If path is provided and file exists, serve it
+    if path:
+        file_path = os.path.join(frontend_folder, path)
+        print(f"Looking for file: {file_path}")
+        print(f"File exists: {os.path.exists(file_path)}")
+        if os.path.exists(file_path):
+            return send_from_directory(frontend_folder, path)
 
     # Otherwise serve index.html (for React Router)
     return send_from_directory(frontend_folder, 'index.html')
