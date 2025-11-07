@@ -158,6 +158,25 @@ def auth_status():
     print("✗ Not authenticated - no token_info in session")
     return jsonify({'authenticated': False})
 
+@app.route('/api/scheduler/test')
+def test_scheduler():
+    """Manually trigger the scheduler for testing purposes."""
+    try:
+        from scheduler import scheduled_stats_refresh
+        # Run in a background thread to avoid blocking the request
+        thread = Thread(target=scheduled_stats_refresh)
+        thread.daemon = True
+        thread.start()
+        return jsonify({
+            'message': 'Scheduler job triggered manually',
+            'status': 'running'
+        })
+    except Exception as e:
+        return jsonify({
+            'message': 'Failed to trigger scheduler',
+            'error': str(e)
+        }), 500
+
 @app.route('/api/top-songs/<time_range>')
 def top_songs(time_range):
     token_info = session.get('token_info')

@@ -9,6 +9,7 @@ from spotipy.oauth2 import SpotifyOAuth
 from db import get_db
 from db_functions import fetch_and_insert_all_stats
 from config import Config
+from datetime import datetime
 
 def get_all_users_with_tokens():
     """Fetch all users who have refresh tokens."""
@@ -75,19 +76,30 @@ def scheduled_stats_refresh():
     print("="*60, flush=True)
 
 def init_scheduler():
-    """Initialize scheduler - runs daily at 5am."""
-    scheduler = BackgroundScheduler()
+    """Initialize scheduler - runs daily at 5am local time."""
+    # Get local timezone (system timezone)
+    local_tz = datetime.now().astimezone().tzinfo
 
-    scheduler.add_job(
+    scheduler = BackgroundScheduler(timezone=local_tz)
+
+    job = scheduler.add_job(
         func=scheduled_stats_refresh,
-        trigger=CronTrigger(hour=5, minute=0),
+        trigger=CronTrigger(hour=11, minute=0, timezone=local_tz),  # 11:00 UTC = 5:00 AM CST
         id='daily_stats_refresh',
-        name='Daily stats refresh at 5am',
+        name='Daily stats refresh at 5am CST (11am UTC)',
         replace_existing=True
     )
 
     scheduler.start()
-    print("[SCHEDULER] Initialized - runs daily at 5:00 AM", flush=True)
+
+    # Log scheduler info
+    next_run = job.next_run_time
+    current_time = datetime.now(local_tz)
+    print("[SCHEDULER] Initialized - runs daily at 5:00 AM CST (11:00 AM UTC)", flush=True)
+    print(f"[SCHEDULER] Timezone: {local_tz}", flush=True)
+    print(f"[SCHEDULER] Current time: {current_time.strftime('%Y-%m-%d %H:%M:%S %Z')}", flush=True)
+    print(f"[SCHEDULER] Next run: {next_run.strftime('%Y-%m-%d %H:%M:%S %Z') if next_run else 'Not scheduled'}", flush=True)
+
     return scheduler
 
 if __name__ == "__main__":
