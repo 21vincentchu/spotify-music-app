@@ -5,15 +5,16 @@ from db_functions import *
 
 stats_bp = Blueprint('stats', __name__)
 
-def fetch_all_top_songs(sp: spotipy.Spotify, time_range: str, batch_size: int = 50, max_items: int = 150) -> list:
+def fetch_all_top_songs(sp: spotipy.Spotify, time_range: str, batch_size: int = 50, max_items: int = 999999) -> list:
     """
     Fetch all top songs for a given time range and extract data for TopSong table.
+    Pulls as many songs as Spotify provides (6-8k songs) to feed the album ranking algorithm.
 
     Args:
         sp: Authenticated Spotify client instance
         time_range: 'short_term' (4 weeks), 'medium_term' (6 months), or 'long_term' (several years)
         batch_size: Number of items to fetch per request (default 50, max 50)
-        max_items: Maximum total items to fetch (default 150)
+        max_items: Maximum total items to fetch (default 999999 = effectively no limit)
 
     Returns:
         List of dictionaries containing song data formatted for database insertion:
@@ -60,6 +61,9 @@ def fetch_all_top_albums(sp: spotipy.Spotify, time_range: str, batch_size: int =
     Ranks albums by combining track ranking scores with artist popularity scores.
     Implemented an algorithm to rank songs with weights and then to put that into the album calculation.
 
+    NOTE: This function pulls ALL available songs (6-8k) to feed the algorithm, but only returns
+    the top max_items albums.
+
     Args:
         sp: Authenticated Spotify client instance
         time_range: 'short_term' (4 weeks), 'medium_term' (6 months), or 'long_term' (several years)
@@ -69,21 +73,21 @@ def fetch_all_top_albums(sp: spotipy.Spotify, time_range: str, batch_size: int =
     Returns:
        List of album dictionaries formatted for database insertion, ranked by combined score
     """
-    # Fetch top tracks using pagination (limited to max_items)
+    # Fetch top tracks using pagination (pulls ALL available - no limit)
     tracks = []
     offset = 0
 
-    while len(tracks) < max_items:
+    while True:
         batch = sp.current_user_top_tracks(limit=batch_size, offset=offset, time_range=time_range)
         tracks.extend(batch['items'])
 
-        if len(batch['items']) < batch_size or len(tracks) >= max_items:
+        if len(batch['items']) < batch_size:
             break
 
         offset += batch_size
 
-    # Fetch top artists to get artist rankings (also limited)
-    artists_list = fetch_all_top_artists(sp, time_range, max_items=max_items)
+    # Fetch top artists to get artist rankings (also pull all available)
+    artists_list = fetch_all_top_artists(sp, time_range, max_items=999999)
 
     # Create artist rank lookup (artistId -> rank)
     # Lower rank number = higher popularity
@@ -155,15 +159,16 @@ def fetch_all_top_albums(sp: spotipy.Spotify, time_range: str, batch_size: int =
 
     return albums
 
-def fetch_all_top_artists(sp: spotipy.Spotify, time_range: str, batch_size: int = 50, max_items: int = 150) -> list:
+def fetch_all_top_artists(sp: spotipy.Spotify, time_range: str, batch_size: int = 50, max_items: int = 999999) -> list:
     """
     Fetch all top artists for a given time range and extract data for TopArtist table.
+    Pulls as many artists as Spotify provides to feed the album ranking algorithm.
 
     Args:
         sp: Authenticated Spotify client instance
         time_range: 'short_term' (4 weeks), 'medium_term' (6 months), or 'long_term' (several years)
         batch_size: Number of items to fetch per request (default 50, max 50)
-        max_items: Maximum total items to fetch (default 150)
+        max_items: Maximum total items to fetch (default 999999 = effectively no limit)
 
     Returns:
         List of dictionaries containing artist data formatted for database insertion

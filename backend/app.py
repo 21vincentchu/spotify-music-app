@@ -12,11 +12,13 @@ from flask_cors import CORS
 # Local app imports
 from config import Config
 from auth import get_authenticated_spotify_client
-from db_functions import upsert_user, get_cached_stats_id, fetch_and_insert_all_stats
+from db_functions import upsert_user, get_cached_stats_id
 from stats_json import stat_Conversions
 from stats import stats_bp
 from stats_recently_played import *
 from migrate import run_migrations
+from scheduler import init_scheduler
+from background_tasks import quick_prefetch_on_login, prefetch_all_stats
 
 # Configure Flask to serve React's static files
 app = Flask(__name__, static_folder='frontend_build/static', static_url_path='/static')
@@ -70,26 +72,9 @@ app.config["SESSION_PERMANENT"] = False
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
 
-### ----- BACKGROUND TASKS ----- ###
-def prefetch_all_stats(access_token: str, user_name: str):
-    """
-    Background task to prefetch all stats after login.
-    Warms the cache for all 3 timeframes so stats load instantly.
-    """
-    try:
-        sp = spotipy.Spotify(auth=access_token)
-
-        for timeframe in ['short_term', 'medium_term', 'long_term']:
-            cached = get_cached_stats_id(user_name, timeframe, max_age_hours=24)
-
-            if not cached:
-                print(f"Background prefetch: {timeframe}", flush=True)
-                fetch_and_insert_all_stats(user_name, timeframe, sp)
-            else:
-                print(f"Cache hit for {timeframe}, skipping prefetch", flush=True)
-
-    except Exception as e:
-        print(f"Prefetch error: {e}", flush=True)
+### ----- INITIALIZE SCHEDULER ----- ###
+# Start background scheduler for weekly stats refresh
+init_scheduler()
 
 ### ----- SPOTIFY OAUTH HANDLER ----- ###
 def get_sp_oauth():
@@ -191,6 +176,15 @@ def top_artists(time_range):
     sp = spotipy.Spotify(auth=token_info['access_token'])
     return stat_Conversions.fetch_all_top_artists_Jsonify(sp, time_range)
 
+@app.route('/api/top-albums/<time_range>')
+def top_albums(time_range):
+    token_info = session.get('token_info')
+    if not token_info:
+        return jsonify({'error': 'Not authenticated'}), 401
+
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    return stat_Conversions.fetch_all_top_albums(sp, time_range)
+
 @app.route('/api/recently-played')
 def api_recently_played():
     """API route to return all recently played stats as JSON."""
@@ -241,20 +235,35 @@ def callback():
     # Store in session
     session['token_info'] = token_info
 
-    # Get user data and insert/update in database
+    # Get user data and insert/update in database (including refresh token)
     results = sp.current_user()
-    userName = upsert_user(results)
+    refresh_token = token_info.get('refresh_token')
+    userName = upsert_user(results, refresh_token=refresh_token)
     session['userName'] = userName
 
     print(f"Session ID: {session.get('session_id')}")
     print(f"Session saved: {userName}")
 
-    # Start background prefetch to warm cache
-    Thread(
-        target=prefetch_all_stats,
-        args=(token_info['access_token'], userName),
-        daemon=True
-    ).start()
+    # Quick pull (foreground) - limited to 150, fast
+    quick_prefetch_on_login(token_info['access_token'], userName)
+
+    # Full pull (background thread) - ONLY for brand new users
+    # Check if user has ANY stats in database
+    has_existing_stats = any([
+        get_cached_stats_id(userName, 'short_term', max_age_hours=999999),
+        get_cached_stats_id(userName, 'medium_term', max_age_hours=999999),
+        get_cached_stats_id(userName, 'long_term', max_age_hours=999999)
+    ])
+
+    if not has_existing_stats:
+        print(f"[NEW USER] Starting full pull for brand new user: {userName}", flush=True)
+        Thread(
+            target=prefetch_all_stats,
+            args=(token_info['access_token'], userName),
+            daemon=True
+        ).start()
+    else:
+        print(f"[EXISTING USER] Skipping full pull, weekly scheduler will handle it", flush=True)
 
     frontend_url = Config.FRONTEND_URL.rstrip('/')
     return redirect(f'{frontend_url}/callback?auth=success')
