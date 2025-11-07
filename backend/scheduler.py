@@ -56,15 +56,13 @@ def scheduled_stats_refresh():
             continue
 
         try:
-            from db_functions import get_cached_stats_id
-
             for timeframe in ['short_term', 'medium_term', 'long_term']:
-                # Check if data is < 7 days old
-                cached = get_cached_stats_id(user_name, timeframe, max_age_hours=168)
-
-                if cached:
-                    print(f"[SCHEDULER] {user_name} - {timeframe}: Still fresh (< 7 days), skipping", flush=True)
-                    continue
+                # Uncomment below to enable 7-day cache (only refresh if > 7 days old)
+                # from db_functions import get_cached_stats_id
+                # cached = get_cached_stats_id(user_name, timeframe, max_age_hours=168)
+                # if cached:
+                #     print(f"[SCHEDULER] {user_name} - {timeframe}: Still fresh (< 7 days), skipping", flush=True)
+                #     continue
 
                 print(f"[SCHEDULER] {user_name} - {timeframe}: Fetching fresh data", flush=True)
                 fetch_and_insert_all_stats(user_name, timeframe, sp)
