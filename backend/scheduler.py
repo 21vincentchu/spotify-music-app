@@ -39,9 +39,9 @@ def get_spotify_client(refresh_token):
         return None
 
 def scheduled_stats_refresh():
-    """Main scheduled job - updates stats for all users weekly at 5am on Mondays."""
+    """Main scheduled job - updates stats for all users daily at 5am."""
     print("="*60, flush=True)
-    print("[SCHEDULER] Starting weekly stats refresh", flush=True)
+    print("[SCHEDULER] Starting daily stats refresh", flush=True)
     print("="*60, flush=True)
 
     users = get_all_users_with_tokens()
@@ -73,23 +73,23 @@ def scheduled_stats_refresh():
             print(f"[SCHEDULER] Error for {user_name}: {e}", flush=True)
 
     print("="*60, flush=True)
-    print(f"[SCHEDULER] Weekly refresh completed", flush=True)
+    print(f"[SCHEDULER] Daily refresh completed", flush=True)
     print("="*60, flush=True)
 
 def init_scheduler():
-    """Initialize scheduler - runs weekly at 5am on Mondays."""
+    """Initialize scheduler - runs daily at 5am."""
     scheduler = BackgroundScheduler()
 
     scheduler.add_job(
         func=scheduled_stats_refresh,
-        trigger=CronTrigger(day_of_week='mon', hour=5, minute=0),
-        id='weekly_stats_refresh',
-        name='Weekly stats refresh at 5am on Mondays',
+        trigger=CronTrigger(hour=5, minute=0),
+        id='daily_stats_refresh',
+        name='Daily stats refresh at 5am',
         replace_existing=True
     )
 
     scheduler.start()
-    print("[SCHEDULER] Initialized - runs weekly on Mondays at 5:00 AM", flush=True)
+    print("[SCHEDULER] Initialized - runs daily at 5:00 AM", flush=True)
     return scheduler
 
 if __name__ == "__main__":
