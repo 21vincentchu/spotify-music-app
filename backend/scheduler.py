@@ -89,7 +89,7 @@ def init_scheduler():
     )
 
     scheduler.start()
-    print("[SCHEDULER] ✓ Initialized - runs weekly on Mondays at 5:00 AM", flush=True)
+    print("[SCHEDULER] Initialized - runs weekly on Mondays at 5:00 AM", flush=True)
     return scheduler
 
 if __name__ == "__main__":

@@ -39,7 +39,7 @@ function HomeDesktop() {
             {isLoadingRecentData ? (
             <LoadingSpinner message="Loading statistics..." />
             ) : (
-            recentData.top_songs.map((song, index) => (
+            recentData.top_songs.slice(0, 50).map((song, index) => (
                 <div>
                 <SongComponent key={song.id || index} songData={song} />
                 </div>

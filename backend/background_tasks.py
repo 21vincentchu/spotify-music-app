@@ -35,7 +35,7 @@ def quick_prefetch_on_login(access_token: str, user_name: str):
 
             print(f"[QUICK] {timeframe}: {len(songs)} songs, {len(artists)} artists (no albums yet)", flush=True)
 
-        print(f"[QUICK] ✓ Quick pull completed for {user_name}", flush=True)
+        print(f"[QUICK] Quick pull completed for {user_name}", flush=True)
 
     except Exception as e:
         print(f"[QUICK] Error: {e}", flush=True)
@@ -64,7 +64,7 @@ def prefetch_all_stats(access_token: str, user_name: str):
             print(f"[FULL] {timeframe}: Fetching ALL data (> 7 days old)...", flush=True)
             fetch_and_insert_all_stats(user_name, timeframe, sp)
 
-        print(f"[FULL] ✓ Full pull completed for {user_name}", flush=True)
+        print(f"[FULL]  Full pull completed for {user_name}", flush=True)
 
     except Exception as e:
         print(f"[FULL] Error: {e}", flush=True)
