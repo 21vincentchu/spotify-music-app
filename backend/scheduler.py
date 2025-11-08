@@ -84,9 +84,9 @@ def init_scheduler():
 
     job = scheduler.add_job(
         func=scheduled_stats_refresh,
-        trigger=CronTrigger(hour=11, minute=0, timezone=local_tz),  # 11:00 UTC = 5:00 AM CST
+        trigger=CronTrigger(hour=5, minute=10, timezone=local_tz),  # 5:10 UTC = 11:10 PM CT (testing)
         id='daily_stats_refresh',
-        name='Daily stats refresh at 5am CST (11am UTC)',
+        name='Daily stats refresh at 11:10 PM CT (5:10 AM UTC - testing)',
         replace_existing=True
     )
 
