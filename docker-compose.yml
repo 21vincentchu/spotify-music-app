@@ -2,14 +2,18 @@ version: '3.8'
 
 services:
   frontend:
-    build: ./frontend/reverb-client
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     volumes:
       - ./frontend/reverb-client:/app
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "8000:5000"
     environment:
@@ -34,3 +38,4 @@ services:
 
 volumes:
   mysql_data:
+
