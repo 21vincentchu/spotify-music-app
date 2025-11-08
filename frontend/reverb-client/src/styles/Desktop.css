@@ -12,10 +12,12 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 40px; /* Add more horizontal padding */
+    padding: 10px 40px; 
     z-index: 1000;
     background-color: white;
-    box-sizing: border-box; /* This is important - includes padding in width calculation */
+    box-sizing: border-box; 
+    margin: 20px 0;
+    border: none;
   }
   
   .nav-logo {
@@ -197,6 +199,7 @@ nav {
 /* HOME PAGE ------------------------------------------------------------------------------------- */
 .home-page{
     display: flex;
+    flex-direction: row;
     padding-top: 50px;
 
     h2{

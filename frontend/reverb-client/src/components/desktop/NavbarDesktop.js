@@ -36,9 +36,6 @@ function NavbarDesktop() {
     .catch((error) => { 
       console.error('Error during logout:', error);
     });
-    
-    // window.location.href = '/';
-
   }
 
   return (
