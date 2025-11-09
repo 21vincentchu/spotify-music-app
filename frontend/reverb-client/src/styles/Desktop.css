@@ -223,12 +223,14 @@ nav {
   }
   
   .home-recommended-songs {
-    flex: 1; /* fills remaining space under the h2 */
-    overflow-y: auto; /* makes only the song list scrollable */
-    padding-right: 8px; /* optional: avoids scrollbar overlap */
+    flex: 1; 
+    overflow-y: auto; 
+    padding-right: 8px; 
     width: 95%;
-    /* height: 100%; */
     padding-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
 .home-stats{
@@ -317,12 +319,16 @@ nav {
   .stats-data {
     flex: 1; /* Takes up remaining space */
     overflow-y: auto; /* Makes this section scrollable */
-
-    h2{
-        flex-shrink: 0; /* prevents header from being compressed or scrolled */
-        margin: 20px;
-    }
   }
+
+  .stats-data .song-list{
+    margin: 20px;
+  }
+
+  .stats-data h2{
+    flex-shrink: 0; /* prevents header from being compressed or scrolled */
+    margin: 20px;
+  } 
 
   /* FRIENDS PAGE -------------------------------------------------------------------------------------  */
 
@@ -397,6 +403,9 @@ nav {
     padding-top: 5px;
     width: 95%;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   *::-webkit-scrollbar-thumb {
@@ -410,3 +419,10 @@ nav {
     margin-top: 100px;
     justify-content: center;
   }
+
+  .song-list{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  

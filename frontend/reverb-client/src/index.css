@@ -41,7 +41,9 @@ h1{
   flex-direction: row;
   align-items: center;
   gap: 12px;
-  padding: 16px;
+  padding: 10px;
+  background-color: #F8F8F8;
+  border-radius: 12px;
 
   .song-rank{
     font-weight: 600;

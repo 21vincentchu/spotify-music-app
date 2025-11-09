@@ -54,7 +54,7 @@ function StatisticsPage() {
         </div>
         <div className="stats-data round-outline blue-box-shadow">
 
-            <div>
+            <div className='song-list'>
               {loading ? (
             <LoadingSpinner message="Loading statistics..." />
             ) : (
