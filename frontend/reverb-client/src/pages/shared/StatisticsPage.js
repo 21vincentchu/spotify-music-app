@@ -52,7 +52,7 @@ function StatisticsPage() {
             Artists
           </button>
         </div>
-        <div className="stats-data round-outline">
+        <div className="stats-data round-outline blue-box-shadow">
 
             <div>
               {loading ? (

@@ -23,7 +23,7 @@ h1{
   border: 1px solid black;
   border-radius: 8px;
 }
-i 
+
 .blue-box-shadow{
   box-shadow: 10px 10px 0 #1282A280;
   border-radius: 8px;
@@ -36,7 +36,7 @@ i
   margin: 3% 3% 3% 1%;
 }
 
-.song-component{
+.song-component, .friend-component{
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -67,3 +67,4 @@ i
     }
   }
 }
+
