@@ -1,15 +1,13 @@
-/* =========================
-   📱 MOBILE LAYOUT
-   ========================= */
-   .mobile-layout {
-    /* display: flex;
+
+   /*.mobile-layout {
+    display: flex;
     flex-direction: column;
     min-height: 100vh;
     position: relative;
-    overflow: hidden; */
+    overflow: hidden;
 
     height: 100%;
-  }
+  }*/
   
   .mobile-content {
     flex: 1;
@@ -20,30 +18,34 @@
   /* =========================
      🧭 NAVBAR
      ========================= */
-     nav {
+     .navbar-mobile {
       position: fixed;
-      bottom: 0;
-      left: 0;
+      inset: auto 0 0 0;           /* top: auto; right: 0; bottom: 0; left: 0 */
       width: 100%;
-      height: 50px;
-      background: #034078;
-      border-top: 1px solid #ddd;
+      background: #034078;         /* your brand blue */
+      z-index: 99999;
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 14px 0;
-      z-index: 1000;
+      padding: 10px 0;
+      transform: none;             /* neutralize inherited transforms */
+      border-top: 1px solid #ddd;
+      box-sizing: border-box;
     }
     
-    nav a {
-      text-decoration: none;
-      color: white;
-      font-family: "Inter", sans-serif;
-      font-size: 0.9rem;
+    /* 🖼️ Navbar Icons */
+    .navbar-mobile .nav-icon {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      filter: brightness(0) invert(1); /* makes icons white if they’re dark */
+      transition: transform 0.2s ease, opacity 0.2s ease;
     }
     
-    nav a:hover {
-      opacity: 0.8;
+    /* 🪄 Hover animation (optional) */
+    .navbar-mobile .nav-icon:hover {
+      transform: scale(1.1);
+      opacity: 0.85;
     }
     
     .nav-icon {
