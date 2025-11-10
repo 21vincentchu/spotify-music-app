@@ -7,8 +7,6 @@ import { useState, useEffect } from "react";
 import MobileLayout from './layouts/MobileLayout';
 import DesktopLayout from './layouts/DesktopLayout';
 
-// import SignInPage from './pages/SignInPage';
-
 
 function App() {
   

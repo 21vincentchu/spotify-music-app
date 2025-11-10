@@ -1,7 +1,6 @@
 from flask import Blueprint, session, redirect
 import spotipy
 from collections import Counter
-from db import get_db
 from auth import get_authenticated_spotify_client
 
 stats_recently_played_bp = Blueprint('stats_recently_played', __name__)

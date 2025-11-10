@@ -34,8 +34,12 @@ def get_authenticated_spotify_client():
     if not token_info:
         return None, None
 
-    from app import get_sp_oauth
-    sp_oauth = get_sp_oauth()
+    sp_oauth = SpotifyOAuth(
+        client_id=os.getenv("SPOTIFY_CLIENT_ID"),
+        client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
+        redirect_uri="http://localhost:8000/callback",
+        scope='user-read-private user-read-email user-top-read user-read-recently-played user-read-playback-state user-read-currently-playing user-read-playback-position user-library-read user-library-modify playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-follow-read user-follow-modify user-modify-playback-state streaming app-remote-control ugc-image-upload'
+    )
 
     if sp_oauth.is_token_expired(token_info):
         token_info = sp_oauth.refresh_access_token(token_info['refresh_token'])

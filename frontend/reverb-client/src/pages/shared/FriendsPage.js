@@ -1,7 +1,7 @@
 function FriendsPage() {
   return (
-    <div>
-      <h1>Friends Page</h1>
+    <div className="page">
+      <p>Site under Construction</p>
     </div>
   );
 }

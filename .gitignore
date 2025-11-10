@@ -20,6 +20,8 @@ build/
 # Spotify cache
 .spotipyoauthcache
 .cache
+backend/flask_session/
+flask_session/
 
 # IDE
 .vscode/

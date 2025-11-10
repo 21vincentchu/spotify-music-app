@@ -1,128 +1,102 @@
-from flask import Flask, request, jsonify, redirect, session
-from flask_cors import CORS
+# Standard library imports
 import os
+import tempfile
+from threading import Thread
+
+# Third party imports
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-from db import get_db
-from jsonStats import stat_Conversions
-from stats import stats_bp
-from stats_recently_played import stats_recently_played_bp
+from flask import Flask, request, jsonify, session, redirect
+from flask_session import Session
+from flask_cors import CORS
+
+# Local app imports
 from config import Config
-
-def upsert_user(spotify_user_data):
-    """
-    Insert or update user in database from Spotify OAuth data. Checks for duplicates
-
-    Args:
-        spotify_user_data: Dictionary from Spotify API current_user() call
-
-    Returns:
-        userName: The userName (Spotify ID) of the user
-    """
-    conn = get_db()
-    cursor = conn.cursor()
-
-    try:
-        userName = spotify_user_data['id']
-        displayName = spotify_user_data.get('display_name', '')
-        profilePicture = spotify_user_data['images'][0]['url'] if spotify_user_data.get('images') else None
-
-        # Insert or update user (ON DUPLICATE KEY UPDATE handles existing users)
-        cursor.execute("""
-            INSERT INTO User (userName, spotifyId, displayName, profilePicture)
-            VALUES (%s, %s, %s, %s)
-            ON DUPLICATE KEY UPDATE
-                displayName = VALUES(displayName),
-                profilePicture = VALUES(profilePicture)
-        """, (userName, userName, displayName, profilePicture))
-
-        conn.commit()
-        return userName
-    except Exception as e:
-        conn.rollback()
-        raise e
-    finally:
-        cursor.close()
-        conn.close()
+from auth import get_authenticated_spotify_client
+from db_functions import upsert_user, get_cached_stats_id, fetch_and_insert_all_stats
+from stats_json import stat_Conversions
+from stats import stats_bp
+from stats_recently_played import *
 
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
+### ------ APP CONFIGURATIONS ---- ####
+""" 
+Session configuration for cross-origin (different ports)
+Using 'Lax' instead of None for Safari compatibility in development
+"""
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'    # Lax allows cookies on top-level navigation (like OAuth redirects)
+app.config['SESSION_COOKIE_SECURE'] = False      # False for local HTTP development
+app.config['SESSION_COOKIE_HTTPONLY'] = False    # False to allow JS access for debugging
+app.config['SESSION_COOKIE_PATH'] = '/'
+app.config['SESSION_COOKIE_DOMAIN'] = 'localhost' # Share across all localhost ports
 
-# Session configuration for cross-origin cookies
-app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Allow cookies across different origins (localhost:8000 -> localhost:3000)
-app.config['SESSION_COOKIE_SECURE'] = True      # Required when SameSite=None (even in dev with localhost)
-app.config['SESSION_COOKIE_HTTPONLY'] = False   # Allow JavaScript to read cookie for debugging
-app.config['SESSION_COOKIE_DOMAIN'] = None      # Don't set domain, uses current domain
-
-# Enable CORS (Cross-Origin Resource Sharing) to allow frontend requests from different origin
-# Without this, browsers block requests from frontend (e.g., localhost:3000) to backend (localhost:5000)
-# supports_credentials=True allows cookies/sessions to be sent with cross-origin requests
-# origins specifies which domains can make requests with credentials
+### ----- CORS CONFIGURATION ----- ###
+""" 
+Enable CORS (Cross-Origin Resource Sharing) to allow frontend requests from different origin
+Without this, browsers block requests from frontend (e.g., localhost:3000) to backend (localhost:5000)
+supports_credentials=True allows cookies/sessions to be sent with cross-origin requests
+origins specifies which domains can make requests with credentials
+"""
 CORS(app, supports_credentials=True, origins=[
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:8000",
-    "http://127.0.0.1:8000"
+    "http://127.0.0.1:8000",
 ])
 
+### ----- SESSION CONFIGURATION ----- ###
+app.config["SESSION_PERMANENT"] = False     # Sessions expire when the browser is closed
+app.config["SESSION_TYPE"] = "filesystem"     # Store session data in files
+Session(app)
+
+### ----- REGISTER BLUEPRINTS ----- ###
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
 
-# Initialize Spotify OAuth handler - use session-based cache instead of file
+### ----- BACKGROUND TASKS ----- ###
+def prefetch_all_stats(access_token: str, user_name: str):
+    """
+    Background task to prefetch all stats after login.
+    Warms the cache for all 3 timeframes so stats load instantly.
+    """
+    try:
+        sp = spotipy.Spotify(auth=access_token)
+
+        for timeframe in ['short_term', 'medium_term', 'long_term']:
+            cached = get_cached_stats_id(user_name, timeframe, max_age_hours=24)
+
+            if not cached:
+                print(f"Background prefetch: {timeframe}", flush=True)
+                fetch_and_insert_all_stats(user_name, timeframe, sp)
+            else:
+                print(f"Cache hit for {timeframe}, skipping prefetch", flush=True)
+
+    except Exception as e:
+        print(f"Prefetch error: {e}", flush=True)
+
+### ----- SPOTIFY OAUTH HANDLER ----- ###
 def get_sp_oauth():
     """
-    Create and return a SpotifyOAuth instance with per-session token caching.
-
-    PURPOSE:
-        This function is used for the OAuth login flow (initial user authorization).
-        Routes like /api/login and /callback use this to handle the Spotify authorization process.
-
-
-    IMPLEMENTATION:
-        This function manages Spotify OAuth authentication by creating a unique cache file
-        for each user session.
-
-    FLOW:
-        1. Checks if the current Flask session has a session_id
-        2. If no session_id exists, generates a new random 16-byte hex string
-        3. Creates a unique cache file path in the system temp directory using the session_id
-        4. Returns a configured SpotifyOAuth instance that will store tokens in that cache file
-
-    The cache file stores the OAuth access token, refresh token, and expiry information
-    so users don't have to re-authenticate on every request.
-
-    Returns:
-        SpotifyOAuth: Configured OAuth handler with session-specific cache file
-
-    Note:
-        Uses Flask's session object to persist session_id across requests for the same user.
-        This function is imported by auth.py to ensure both files use identical OAuth config.
+    Creates SpotifyOAuth instance with per-session token caching.
+    Prevents token conflicts when multiple users access simultaneously.
     """
-    import tempfile
-
-    # Get or create a unique session identifier for this user's session
-    # This ID is stored in Flask's session cookie and persists across requests
     session_id = session.get('session_id')
     if not session_id:
-        # Generate a new random session ID (32 character hex string)
         session_id = os.urandom(16).hex()
-        # Store it in the Flask session so it persists for this user
         session['session_id'] = session_id
 
-    # Create a unique cache file path for this session's OAuth tokens
-    # This prevents different users from overwriting each other's tokens
     cache_path = os.path.join(tempfile.gettempdir(), f'.spotipyoauthcache-{session_id}')
 
-    # Return a configured SpotifyOAuth instance
     return SpotifyOAuth(
-        Config.SPOTIFY_CLIENT_ID,      # Spotify app's client ID
-        Config.SPOTIFY_CLIENT_SECRET,  # Spotify app's client secret
-        Config.SPOTIPY_REDIRECT_URI,   # Spotify redirect after auth
-        scope=Config.SPOTIFY_SCOPE,    # Permissions your app requests
-        cache_path=cache_path          # Where to cache the OAuth tokens
+        Config.SPOTIFY_CLIENT_ID,
+        Config.SPOTIFY_CLIENT_SECRET,
+        Config.SPOTIPY_REDIRECT_URI,
+        scope=Config.SPOTIFY_SCOPE,
+        cache_path=cache_path
     )
 
-# Routes
+### ----- FLASK ROUTES ----- ###
 @app.route('/')
 def index():
     '''
@@ -187,16 +161,53 @@ def api_login():
     auth_url = sp_oauth.get_authorize_url()
     return jsonify({'auth_url': auth_url})
 
+@app.route('/api/logout', methods=['POST'])
+def api_logout():
+    '''
+    1. retrieves current session id from Flask session
+    2. removes corresponding cache
+    3. clears all keys in flask session
+    4. return JSON response confirming login
+    '''
+    session_id = session.get('session_id')
+    if session_id:
+        cache_path = os.path.join(tempfile.gettempdir(), f'.spotipyoauthcache-{session_id}')
+        if os.path.exists(cache_path):
+            try:
+                os.remove(cache_path)
+                print(f"Removed Spotify cache file: {cache_path}")
+            except Exception as e:
+                print(f"Could not remove cache file: {e}")
+
+        session_keys = list(session.keys())
+        for key in session_keys:
+            session.pop(key, None)
+
+        print("successful clearing of session")
+        return jsonify({'message': 'logged out sucessfully', 'authenticated': False})
+    else:
+        return jsonify({'message': 'log out failed', 'authenticated': True}), 400
+
+
 @app.route('/api/auth/status')
 def auth_status():
     """Check if user is authenticated"""
+    print(f"=== AUTH STATUS CHECK ===")
+    print(f"Request from: {request.remote_addr}")
+    print(f"Session ID: {session.get('session_id')}")
+    print(f"Session contents: {dict(session)}")
+
     token_info = session.get('token_info')
+
     if token_info:
+        print(f"✓ Authenticated as: {session.get('userName')}")
         return jsonify({
             'authenticated': True,
             'userName': session.get('userName')
         })
-    return jsonify({'authenticated': False}), 401
+
+    print("✗ Not authenticated - no token_info in session")
+    return jsonify({'authenticated': False})
 
 @app.route('/api/top-songs/<time_range>')
 def top_songs(time_range):
@@ -216,20 +227,48 @@ def top_artists(time_range):
     sp = spotipy.Spotify(auth=token_info['access_token'])
     return stat_Conversions.fetch_all_top_artists_Jsonify(sp, time_range)
 
+@app.route('/api/recently-played')
+def api_recently_played():
+    """API route to return all recently played stats as JSON."""
+    sp, token_info = get_authenticated_spotify_client()
+    if not sp:
+        return jsonify({'error': 'Not authenticated'}), 401
+
+    # Fetch raw recently played data (max 50 tracks)
+    recent_tracks = fetch_recently_played_tracks(sp)
+
+    # Calculate listening statistics
+    listening_stats = calculate_listening_minutes(recent_tracks)
+
+    # Fetch top songs/artists/albums from recently played tracks
+    top_songs_recent = fetch_recently_played_top_songs(sp)
+    top_artists_recent = fetch_recently_played_top_artists(sp)
+    top_albums_recent = fetch_recently_played_top_albums(sp)
+
+    # Return everything as JSON
+    return jsonify({
+        'recent_tracks': recent_tracks,
+        'listening_stats': listening_stats,
+        'top_songs': top_songs_recent,
+        'top_artists': top_artists_recent,
+        'top_albums': top_albums_recent
+    })
 
 @app.route('/callback')
 def callback():
     '''
-    Spotify oAuth callback endpoint, exchanges auth cod from spotify for an access token and return users profile
-
-    Returns:
-        redirect: redirect to frontend after authentication
+    Spotify oAuth callback endpoint - saves auth and redirects with session established
     '''
-    sp_oauth = get_sp_oauth()
+    print("=== CALLBACK ROUTE HIT ===")
+    print(f"Request from: {request.remote_addr}")
 
+    sp_oauth = get_sp_oauth()
     code = request.args.get('code')
+
     token_info = sp_oauth.get_access_token(code)
     sp = spotipy.Spotify(auth=token_info['access_token'])
+
+    # Store in session
     session['token_info'] = token_info
 
     # Get user data and insert/update in database
@@ -237,9 +276,17 @@ def callback():
     userName = upsert_user(results)
     session['userName'] = userName
 
-    # Redirect to frontend
-    frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:3000')
-    return redirect(frontend_url)
+    print(f"Session ID: {session.get('session_id')}")
+    print(f"Session saved: {userName}")
+
+    # Start background prefetch to warm cache
+    Thread(
+        target=prefetch_all_stats,
+        args=(token_info['access_token'], userName),
+        daemon=True
+    ).start()
+
+    return redirect('http://localhost:3000/callback?auth=success')
 
 if __name__ == '__main__':
     app.run(debug=(Config.FLASK_ENV == 'development'), host='0.0.0.0', port=Config.PORT)
