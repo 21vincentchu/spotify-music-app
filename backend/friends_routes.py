@@ -29,8 +29,9 @@ def add_friend():
     userName = session.get('userName')
     data = request.get_json()
     friendUserName = data.get('friendUserName')
+   
     if not userName or friendUserName:
-        return jsonify({'error': 'Not Authenticated'})
+        return jsonify({'error': 'Missing username or friendUserName'})
     try:
         successful_insert = insert_friend(userName, friendUserName)
         return jsonify({
@@ -39,3 +40,24 @@ def add_friend():
         })
     except Exception as e:
         return jsonify({'error': str(e)})
+
+@friends_bp.route('/remove', methods=['POST'])
+def remove_friend():
+    """
+    Remove a friend for the logged-in user
+    """
+    userName = session.get('userName')
+    data = request.get_json()
+    friendUserName = data.get('friendUserName')
+
+    if not userName or friendUserName:
+        return jsonify({'error': 'Missing username or friendUserName'})
+    try:
+        successful_deletion = delete_friend(userName, friendUserName)
+        return jsonify({
+            'success': successful_deletion,
+            'message': 'Friend removed successfully' if successful_deletion else 'Already friends'
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)})
+        
