@@ -23,3 +23,19 @@ def list_friends():
         return jsonify({'friends': friends})
     except Exception as e:
         return jsonify({'error': str(e)})
+
+@friends_bp.route('/add', methods=['POST'])
+def add_friend():
+    userName = session.get('userName')
+    data = request.get_json()
+    friendUserName = data.get('friendUserName')
+    if not userName or friendUserName:
+        return jsonify({'error': 'Not Authenticated'})
+    try:
+        successful_insert = insert_friend(userName, friendUserName)
+        return jsonify({
+            'success': successful_insert,
+            'message': 'Friend added successfully' if successful_insert else 'Already friends'
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)})
