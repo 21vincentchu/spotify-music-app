@@ -1,205 +1,189 @@
+/*MOBILE CONTENT*/
+.mobile-content {
+  flex: 1;
+  overflow-y: auto; /* global scroll */
+  padding-bottom: 60px; /* prevents content from hiding behind navbar */
+  padding-top: 0; /* remove extra space above sections */
+}
 
-   /*.mobile-layout {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    position: relative;
-    overflow: hidden;
+/*NAVBAR*/
+.navbar-mobile {
+  position: fixed;
+  inset: auto 0 0 0;
+  width: 100%;
+  background: #034078;
+  z-index: 99999;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  transform: none;
+  border-top: 1px solid #ddd;
+  box-sizing: border-box;
+}
 
-    height: 100%;
-  }*/
-  
-  .mobile-content {
-    flex: 1;
-    overflow-y: auto;
-    padding-bottom: 60px; /* prevents content from hiding behind navbar */
-  }
+.navbar-mobile .nav-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
 
-  /* =========================
-     🧭 NAVBAR
-     ========================= */
-     .navbar-mobile {
-      position: fixed;
-      inset: auto 0 0 0;           /* top: auto; right: 0; bottom: 0; left: 0 */
-      width: 100%;
-      background: #034078;         /* your brand blue */
-      z-index: 99999;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 10px 0;
-      transform: none;             /* neutralize inherited transforms */
-      border-top: 1px solid #ddd;
-      box-sizing: border-box;
-    }
-    
-    /* 🖼️ Navbar Icons */
-    .navbar-mobile .nav-icon {
-      width: 28px;
-      height: 28px;
-      object-fit: contain;
-      filter: brightness(0) invert(1); /* makes icons white if they’re dark */
-      transition: transform 0.2s ease, opacity 0.2s ease;
-    }
-    
-    /* 🪄 Hover animation (optional) */
-    .navbar-mobile .nav-icon:hover {
-      transform: scale(1.1);
-      opacity: 0.85;
-    }
-    
-    .nav-icon {
-      width: 28px;
-      height: 28px;
-      object-fit: contain;
-      filter: brightness(0) invert(1);
-      transition: transform 0.2s ease;
-    }
-  
-  /* =========================
-     🏠 HOME PAGE
-     ========================= */
-  .home-page {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 16px;
-  }
-  
-  .home-featured {
-    width: 100%;
-    margin-bottom: 24px;
-    text-align: left;
-  }
-  
-  .home-featured h2 {
-    font-family: "Inter", sans-serif;
-    font-weight: 700;
-    font-size: 1.5rem;
-    margin-bottom: 5px;
-  }
-  
-  .subtext {
-    font-family: "Montserrat", sans-serif;
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 12px;
-  }
-  
-  /* =========================
-     🎵 FEATURED STATS (CIRCLE + BOX)
-     ========================= */
+.navbar-mobile .nav-icon:hover {
+  transform: scale(1.1);
+  opacity: 0.85;
+}
+
+.nav-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  transition: transform 0.2s ease;
+}
+
+/*HOME PAGE*/
+.home-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 12px;
+}
+
+.home-featured {
+  width: 100%;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-align: left;
+}
+
+.home-featured h2 {
+  margin-bottom: 4px; /* tighter spacing below header */
+}
+
+.subtext {
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+/*FEATURED RECS*/
+.home-featured-recs {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  max-height: 50vh;
+}
+
+.home-featured-recs .song-info-box {
+  border: 1px solid #000;
+  border-radius: 12px;
+  padding: 8px 12px;
+  background-color: #fff;
+  box-shadow: 0 6px 16px rgba(0, 64, 120, 0.75);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/*FEATURED STATS*/
+.home-featured-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  max-height: 50vh;
+}
+
+.featured-song {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.song-component.avatar-only {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #000;
+  object-fit: cover;
+}
+
+.song-info-box {
+  flex: 1;
+  border: 1px solid #000;
+  border-radius: 12px;
+  padding: 8px 12px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(0, 64, 120, 0.75);
+}
+
+.song-title {
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+}
+
+.song-artist,
+.song-genre {
+  margin: 2px 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/*TOP RIGHT ICON*/
+.top-right-image {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 35px;
+  height: 35px;
+  padding: 8px;
+  border: 1px solid black;
+  border-radius: 50%;
+  background-color: transparent;
+  object-fit: contain;
+  cursor: pointer;
+  z-index: 10;
+}
+
+/*RESPONSIVENESS*/
+@media (min-width: 769px) {
   .home-featured-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 16px; /* spacing between songs */
+    display: none;
   }
-  
-  /* One song row (circle + text box) */
-  .featured-song {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .home-page {
+    padding: 12px;
   }
-  
-  /* Circle only from SongComponent */
-  .song-component.avatar-only {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* Circle styling */
-  .circle {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background-color: #000; /* placeholder or album art */
-    object-fit: cover;
-  }
-  
-  /* Boxed text next to circle */
+
   .song-info-box {
-    flex: 1;
-    border: 2px solid black;
-    border-radius: 12px;
-    padding: 8px 12px;
-    background-color: transparent; /* or use white if preferred */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    padding: 6px 10px;
   }
-  
-  /* Text inside box */
+
   .song-title {
-    font-weight: 600;
-    margin: 0 0 4px 0;
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
-  
+
   .song-artist,
   .song-genre {
-    margin: 2px 0;
-    font-size: 0.9rem;
-    color: #555;
+    font-size: 0.85rem;
   }
-  
-  /* =========================
-     🎧 FEATURED RECS
-     ========================= */
-  .home-featured-recs {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    overflow-y: auto;
-    width: 100%;
-  }
-  
-  
-  /* =========================
-     🖼️ TOP RIGHT IMAGE ICON
-     ========================= */
-  .top-right-image {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 35px;
-    height: 35px;
-    padding: 8px;
-    border: 1px solid black;
-    border-radius: 50%;
-    background-color: transparent;
-    object-fit: contain;
-    cursor: pointer;
-    z-index: 10;
-  }
-  
-  /* =========================
-     📱 RESPONSIVENESS
-     ========================= */
-  @media (min-width: 769px) {
-    .home-featured-stats {
-      display: none;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .home-page {
-      padding: 12px;
-    }
-  
-    .song-info-box {
-      padding: 6px 10px;
-    }
-  
-    .song-title {
-      font-size: 0.95rem;
-    }
-  
-    .song-artist,
-    .song-genre {
-      font-size: 0.85rem;
-    }
-  }
-  
+}
