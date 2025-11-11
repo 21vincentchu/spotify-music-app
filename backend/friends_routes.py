@@ -127,7 +127,7 @@ def search_for_users():
         return jsonify({'error': 'Missing required query parameters(q, currentUser)'}),
 
     try:
-        results = search_query(search_query, current_user, limit)
+        results = search_users(search_query, current_user, limit)
         return jsonify(results)
     except Exception as e:
         print(f"error searching userrs: {e}")
