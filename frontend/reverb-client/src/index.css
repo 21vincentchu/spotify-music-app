@@ -30,28 +30,32 @@ h1{
 }
 
 .circle {
-  width: 70px; /* Or any other equal value */
-  height: 70px; /* Must be equal to width */
-  /* background-color: #3498db; Example background color */
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
-  margin: 3% 3% 3% 6%; 
-
-  /* border: 10px solid white; 
-  border-radius: 50%; */
+  margin: 3% 3% 3% 1%;
 }
 
-.song-component{
+.song-component, .friend-component{
   display: flex;
   flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background-color: #F8F8F8;
+  border-radius: 12px;
 
+  .song-rank{
+    font-weight: 600;
+    color: #034078;
+    width: 30px;
+    text-align: right;
+  }
 
   .song-info{
-
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-left: 2%;
-
 
     .song-name{
       color:#034078;
@@ -64,6 +68,5 @@ h1{
       margin: 0;
     }
   }
-
-  
 }
+

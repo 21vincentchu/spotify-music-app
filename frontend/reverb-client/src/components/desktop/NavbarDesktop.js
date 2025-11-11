@@ -24,15 +24,18 @@ function NavbarDesktop() {
   }, []);
 
   const handleSignOut = () => {
-    // axios.post('http://localhost:8000/api/logout', {
-    //   withCredentials: true
-    // })
-    // .then(() => {
-    //   // Redirect to sign-in page after logout
-    //   window.location.href = '/';
-    // })
+    axios.post(
+      'http://localhost:8000/api/logout', 
+      {}, // no request body
+      { withCredentials: true } // config object
+    )
+    .then(() => {
+      // Redirect to sign-in page after logout
       window.location.href = '/';
-
+    })
+    .catch((error) => { 
+      console.error('Error during logout:', error);
+    });
   }
 
   return (
@@ -68,7 +71,7 @@ function NavbarDesktop() {
         
         {showMenu && (
           <div className="profile-menu">
-            <Link to="#" onClick={() => setShowMenu(false)}>
+            <Link to="/profile" onClick={() => setShowMenu(false)}>
               Profile
             </Link>
             <Link onClick={handleSignOut}>

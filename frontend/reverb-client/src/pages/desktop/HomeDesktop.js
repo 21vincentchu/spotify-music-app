@@ -40,7 +40,7 @@ function HomeDesktop() {
             ) : (
             recentData.top_songs.map((song, index) => (
                 <div>
-                <SongComponent key={song.id || index} songData={song} />
+                    <SongComponent key={song.id || index} songData={song} />
                 </div>
             ))
             )}

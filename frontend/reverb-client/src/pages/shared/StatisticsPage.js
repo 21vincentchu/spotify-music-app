@@ -39,22 +39,22 @@ function StatisticsPage() {
     <div className="stats-page">
       <div className="stats-content">
         <div className="stats-categories">
-          <button 
+          <button
             className={category === 'songs' ? 'active' : ''}
             onClick={() => setCategory('songs')}
           >
             Songs
           </button>
-          <button 
+          <button
             className={category === 'artists' ? 'active' : ''}
             onClick={() => setCategory('artists')}
           >
             Artists
           </button>
         </div>
-        <div className="stats-data round-outline">
+        <div className="stats-data round-outline blue-box-shadow">
 
-            <div>
+            <div className='song-list'>
               {loading ? (
             <LoadingSpinner message="Loading statistics..." />
             ) : (
