@@ -18,10 +18,9 @@ function MobileLayout() {
     const location = useLocation();
     const hideNavbar = location.pathname === "/"; // hide navbar on login page
 
-
+    
       return (
         <div className="mobile-layout">
-          {/* <h2>MOBILE</h2> */}
           {/* ✅ clickable top-right image */}
           {!hideNavbar && (
             <Link to="/profile">
@@ -46,7 +45,9 @@ function MobileLayout() {
             </div>
 
             {/* only show navbar if NOT on login page */}
-            {/* {!hideNavbar && <NavbarMobile />} */}
+            <NavbarMobile />
+
+
         </div>
     );
 }
