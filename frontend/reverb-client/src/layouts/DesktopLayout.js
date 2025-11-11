@@ -1,18 +1,18 @@
 import { Routes, Route } from "react-router-dom";
-import SignInPage from '../pages/shared/SignInPage';
-import CallbackPage from '../pages/shared/CallbackPage';
+import SignInPageDesktop from '../pages/desktop/SignInPageDesktop';
+import CallbackPageDesktop from '../pages/desktop/CallbackPageDesktop';
 import NavbarDesktop from "../components/desktop/NavbarDesktop";
 import HomeDesktop from "../pages/desktop/HomeDesktop";
-import RatingsPage from "../pages/shared/RatingsPage";
-import StatisticsPage from "../pages/shared/StatisticsPage";
-import RecommendationsPage from "../pages/shared/RecommendationsPage";
-import FriendsPage from "../pages/shared/FriendsPage";
+import RatingsPageDesktop from "../pages/desktop/RatingsPageDesktop";
+import StatisticsPageDesktop from "../pages/desktop/StatisticsPageDesktop";
+import RecommendationsPageDesktop from "../pages/desktop/RecommendationsPageDesktop";
+import FriendsPageDesktop from "../pages/desktop/FriendsPageDesktop";
 import ProtectedRoute from "../components/shared/ProtectedRoute";
 import { useAuth } from "../context/AuthContext";
 import { useLocation } from "react-router-dom";
 import '../styles/Desktop.css';
 import ProfilePageDesktop from "../pages/desktop/ProfilePageDesktop";
-import AboutPage from "../pages/shared/AboutPage";
+import AboutPageDesktop from "../pages/desktop/AboutPageDesktop";
 
 function DesktopLayout() {
     const { isAuthenticated, userName } = useAuth();
@@ -23,9 +23,9 @@ function DesktopLayout() {
         <div className="desktop-layout">
             {showNavbar && <NavbarDesktop />}
                 <Routes>
-                    <Route path="/" element={<SignInPage />} />
-                    <Route path="/about" element={<AboutPage />} />
-                    <Route path="/callback" element={<CallbackPage />} />
+                    <Route path="/" element={<SignInPageDesktop />} />
+                    <Route path="/about" element={<AboutPageDesktop />} />
+                    <Route path="/callback" element={<CallbackPageDesktop />} />
                     
                     {/* Protected Routes */}
                     <Route path="/home" element={
@@ -40,22 +40,22 @@ function DesktopLayout() {
                     } />
                     <Route path="/ratings" element={
                         <ProtectedRoute>
-                            <RatingsPage />
+                            <RatingsPageDesktop />
                         </ProtectedRoute>
                     } />
                     <Route path="/statistics" element={
                         <ProtectedRoute>
-                            <StatisticsPage />
+                            <StatisticsPageDesktop />
                         </ProtectedRoute>
                     } />
                     <Route path="/recommendations" element={
                         <ProtectedRoute>
-                            <RecommendationsPage />
+                            <RecommendationsPageDesktop />
                         </ProtectedRoute>
                     } />
                     <Route path="/friends" element={
                         <ProtectedRoute>
-                            <FriendsPage />
+                            <FriendsPageDesktop />
                         </ProtectedRoute>
                     } />
                 </Routes>
