@@ -75,3 +75,10 @@ def friend_count():
         return jsonify({'friendCount': count})
     except Exception as e:
         return jsonify({'error': str(e)})
+    
+@friends_bp('/<friendUserName>/stats', methods=['GET'])
+def friend_stats(friendUserName):
+    """
+    Gets a friend's stats including top songs, artists, albums as well as recently played
+    params include timeframe
+    """
