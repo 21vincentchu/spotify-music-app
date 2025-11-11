@@ -5,7 +5,8 @@ from userFriends import (insert_friend,
     get_user_friend_count,
     get_top_songs,
     get_friend_top_artists,
-    get_friend_top_albums
+    get_friend_top_albums,
+    get_friend_recently_played
 )
 
 friends_bp = Blueprint('friends_bp', __name__, url_prefix='/api/friends')
@@ -80,5 +81,34 @@ def friend_count():
 def friend_stats(friendUserName):
     """
     Gets a friend's stats including top songs, artists, albums as well as recently played
-    params include timeframe
+    params include timeframe and limit
     """
+
+    timeframe = request.args.get('timeframe', 'short_term')
+    song_limit = int(request.args.get('limit', 10))
+
+    try:
+        friend_profile = get_friend_recently_played(friendUserName, song_limit)
+
+        if not friend_profile:
+            return jsonify({'error': 'Friend not found'})
+        
+        friend_songs = get_top_songs(friendUserName, timeframe, song_limit)
+        friend_albums = get_friend_top_albums(friendUserName, timeframe, song_limit)
+        friend_artists = get_friend_top_artists(friendUserName, timeframe, song_limit)
+
+        friend_profile.update({
+            'timeframe': timeframe,
+            'topSongs': friend_songs,
+            'topArtists': friend_artists,
+            'topAlbums': friend_albums
+        })
+
+        return jsonify(friend_profile)
+    
+    except Exception as e:
+        print(f"Error fetching friend profile: {e}")
+        return jsonify({'error': str(e)})
+
+
+    
