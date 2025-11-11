@@ -12,17 +12,19 @@ import { useAuth } from "../context/AuthContext";
 import { useLocation } from "react-router-dom";
 import '../styles/Desktop.css';
 import ProfilePageDesktop from "../pages/desktop/ProfilePageDesktop";
+import AboutPage from "../pages/shared/AboutPage";
 
 function DesktopLayout() {
     const { isAuthenticated, userName } = useAuth();
     const location = useLocation();
-    const showNavbar = isAuthenticated && location.pathname !== '/' && location.pathname !== '/callback';
+    const showNavbar = isAuthenticated && location.pathname !== '/' && location.pathname !== '/callback'  && location.pathname !== '/about';
 
     return (
         <div className="desktop-layout">
             {showNavbar && <NavbarDesktop />}
                 <Routes>
                     <Route path="/" element={<SignInPage />} />
+                    <Route path="/about" element={<AboutPage />} />
                     <Route path="/callback" element={<CallbackPage />} />
                     
                     {/* Protected Routes */}
