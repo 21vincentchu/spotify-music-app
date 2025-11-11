@@ -36,9 +36,6 @@ function NavbarDesktop() {
     .catch((error) => { 
       console.error('Error during logout:', error);
     });
-    
-    // window.location.href = '/';
-
   }
 
   return (
@@ -74,7 +71,7 @@ function NavbarDesktop() {
         
         {showMenu && (
           <div className="profile-menu">
-            <Link to="#" onClick={() => setShowMenu(false)}>
+            <Link to="/profile" onClick={() => setShowMenu(false)}>
               Profile
             </Link>
             <Link onClick={handleSignOut}>
