@@ -134,39 +134,3 @@ def search_for_users():
         return jsonify({'error': str(e)})
     
 
-@friends_bp.route('/test', methods=['GET'])
-def test_friends_homepage():
-    """
-    Simple test page for friend routes
-    """
-    return """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Friends API Test</title>
-    </head>
-    <body>
-        <h1>Friends API Test Page</h1>
-
-        <button onclick="testEndpoint('/api/friends/')">List Friends</button>
-        <button onclick="testEndpoint('/api/friends/count')">Friend Count</button>
-        <button onclick="testEndpoint('/api/friends/search?q=test&currentUser=user123')">Search Users</button>
-
-        <h3>Response:</h3>
-        <pre id='output'></pre>
-
-        <script>
-            async function testEndpoint(endpoint) {
-                document.getElementById('output').textContent = 'Loading...';
-                try {
-                    const res = await fetch(endpoint);
-                    const data = await res.json();
-                    document.getElementById('output').textContent = JSON.stringify(data, null, 2);
-                } catch (err) {
-                    document.getElementById('output').textContent = 'Error: ' + err;
-                }
-            }
-        </script>
-    </body>
-    </html>
-    """
