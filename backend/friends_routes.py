@@ -61,3 +61,17 @@ def remove_friend():
     except Exception as e:
         return jsonify({'error': str(e)})
         
+@friends_bp.route('/count', methods=['GET'])
+def friend_count():
+    """
+    get the total number of friends the user has
+    """
+    userName = session.get('userName')
+    if not userName:
+        return jsonify({'error': 'not authenticated'})
+    
+    try:
+        count = get_user_friend_count(userName)
+        return jsonify({'friendCount': count})
+    except Exception as e:
+        return jsonify({'error': str(e)})
