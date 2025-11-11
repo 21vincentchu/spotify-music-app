@@ -6,7 +6,8 @@ from userFriends import (insert_friend,
     get_top_songs,
     get_friend_top_artists,
     get_friend_top_albums,
-    get_friend_recently_played
+    get_friend_recently_played,
+    search_users
 )
 
 friends_bp = Blueprint('friends_bp', __name__, url_prefix='/api/friends')
@@ -108,6 +109,28 @@ def friend_stats(friendUserName):
     
     except Exception as e:
         print(f"Error fetching friend profile: {e}")
+        return jsonify({'error': str(e)})
+    
+@friends_bp.route('/search', methods=['GET'])
+def search_for_users():
+    """
+    search for users by username or display name
+    Query Params:
+    limit
+    """
+
+    search_query = request.args.get('q', '').strip()
+    current_user = request.args.get('currentUser', '').strip()
+    limit = int(request.args.get('limit', 20))
+
+    if not search_query or not current_user: 
+        return jsonify({'error': 'Missing required query parameters(q, currentUser)'}),
+
+    try:
+        results = search_query(search_query, current_user, limit)
+        return jsonify(results)
+    except Exception as e:
+        print(f"error searching userrs: {e}")
         return jsonify({'error': str(e)})
 
 
