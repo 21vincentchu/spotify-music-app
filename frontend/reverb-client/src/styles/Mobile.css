@@ -6,6 +6,21 @@
   padding-top: 0; /* remove extra space above sections */
 }
 
+/*HEADINGS*/
+h1 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 300;
+  font-size: 3rem;
+  margin: 0 0 8px 0;
+  text-align: center;
+}
+
+h2 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  margin: 0 0 4px 0;
+}
+
 /*NAVBAR*/
 .navbar-mobile {
   position: fixed;
@@ -17,7 +32,6 @@
   justify-content: space-around;
   align-items: center;
   padding: 10px 0;
-  transform: none;
   border-top: 1px solid #ddd;
   box-sizing: border-box;
 }
@@ -35,32 +49,21 @@
   opacity: 0.85;
 }
 
-.nav-icon {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-  transition: transform 0.2s ease;
-}
-
 /*HOME PAGE*/
 .home-page {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
   padding: 12px;
+  position: relative;
 }
 
 .home-featured {
   width: 100%;
   font-family: "Inter", sans-serif;
-  font-weight: 700;
+  font-weight: 400;
   font-size: 1.5rem;
   text-align: left;
-}
-
-.home-featured h2 {
-  margin-bottom: 4px; /* tighter spacing below header */
 }
 
 .subtext {
@@ -68,69 +71,45 @@
   font-size: 0.9rem;
   color: #666;
   margin-top: 0;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
-/*FEATURED RECS*/
-.home-featured-recs {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+/* FEATURED RECS + STATS — 2 columns max */
+.home-featured-recs,
+.home-featured-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* exactly 2 columns max */
+  gap: 12px;
   overflow-y: auto;
-  max-height: 50vh;
+  max-height: 45vh;
 }
 
-.home-featured-recs .song-info-box {
+/* SONG COMPONENTS inside each box */
+.song-info-box {
   border: 1px solid #000;
   border-radius: 12px;
   padding: 8px 12px;
   background-color: #fff;
   box-shadow: 0 6px 16px rgba(0, 64, 120, 0.75);
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: center; /* keep circle + text aligned horizontally */
+  gap: 10px;
 }
 
-/*FEATURED STATS*/
-.home-featured-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  overflow-y: auto;
-  max-height: 50vh;
-}
-
-.featured-song {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.song-component.avatar-only {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.circle {
-  width: 80px;
-  height: 80px;
+/* black circle inside each song box */
+.song-info-box .circle {
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background-color: #000;
-  object-fit: cover;
+  flex-shrink: 0;
 }
 
-.song-info-box {
-  flex: 1;
-  border: 1px solid #000;
-  border-radius: 12px;
-  padding: 8px 12px;
-  background-color: #fff;
+/* text inside song box */
+.song-text {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  box-shadow: 0 6px 16px rgba(0, 64, 120, 0.75);
 }
 
 .song-title {
@@ -146,20 +125,54 @@
   color: #555;
 }
 
-/*TOP RIGHT ICON*/
+/*TOP RIGHT PROFILE BUTTON*/
 .top-right-image {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 35px;
-  height: 35px;
-  padding: 8px;
-  border: 1px solid black;
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background-color: transparent;
-  object-fit: contain;
+  object-fit: cover;
   cursor: pointer;
-  z-index: 10;
+  z-index: 1000;
+  border: none;
+  background-color: transparent;
+  padding: 0;
+}
+
+/*PROFILE DROPDOWN*/
+.profile-dropdown {
+  position: absolute;
+  top: 50px; /* below icon */
+  right: 0;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  min-width: 140px;
+  z-index: 1001;
+  display: none;
+}
+
+.profile-dropdown.active {
+  display: block;
+}
+
+.profile-dropdown button {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #000;
+  transition: background 0.2s;
+}
+
+.profile-dropdown button:hover {
+  background: #f0f0f0;
+  color: #1282A2;
 }
 
 /*RESPONSIVENESS*/
