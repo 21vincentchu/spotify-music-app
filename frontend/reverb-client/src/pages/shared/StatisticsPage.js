@@ -60,9 +60,9 @@ function StatisticsPage() {
             Albums
           </button>
         </div>
-        <div className="stats-data round-outline">
+        <div className="stats-data round-outline blue-box-shadow">
 
-            <div>
+            <div className='song-list'>
               {loading ? (
             <LoadingSpinner message="Loading statistics..." />
             ) : songs.length === 0 && category === 'albums' ? (

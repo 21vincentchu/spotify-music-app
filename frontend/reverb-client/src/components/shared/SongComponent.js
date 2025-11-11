@@ -12,7 +12,6 @@ function SongComponent({songData}) {
                 <p className="artist-name">{artistName}</p>
             </div>
         </div>
-    )
-}
+      )}
 
 export default SongComponent;

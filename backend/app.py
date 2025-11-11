@@ -19,6 +19,8 @@ from stats_recently_played import *
 from migrate import run_migrations
 from scheduler import init_scheduler
 from background_tasks import quick_prefetch_on_login, prefetch_all_stats
+from friends_routes import friends_bp
+from profile_routes import profile_bp
 
 # Configure Flask to serve React's static files
 app = Flask(__name__, static_folder='frontend_build/static', static_url_path='/static')
@@ -71,6 +73,8 @@ app.config["SESSION_PERMANENT"] = False
 ### ----- REGISTER BLUEPRINTS ----- ###
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
+app.register_blueprint(friends_bp)   
+app.register_blueprint(profile_bp)
 
 ### ----- INITIALIZE SCHEDULER ----- ###
 # Start background scheduler for weekly stats refresh
@@ -102,6 +106,18 @@ def get_sp_oauth():
 def api_login():
     """
     Returns Spotify authorization URL for frontend to redirect user to.
+
+    This is the ENTRY POINT for the OAuth login flow.
+    Frontend calls this endpoint to get the Spotify authorization URL,
+    then redirects the user to that URL to authorize the app.
+
+    Flow:
+        1. Frontend calls GET /api/login
+        2. Backend generates Spotify auth URL with required scopes
+        3. Backend returns {'auth_url': 'https://accounts.spotify.com/authorize?...'}
+        4. Frontend redirects user to that URL
+        5. User authorizes on Spotify
+        6. Spotify redirects back to /callback
 
     Returns:
         JSON: {'auth_url': 'https://accounts.spotify.com/authorize?...'}
