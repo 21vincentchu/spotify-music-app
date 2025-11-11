@@ -17,6 +17,7 @@ from db_functions import upsert_user, get_cached_stats_id, fetch_and_insert_all_
 from stats_json import stat_Conversions
 from stats import stats_bp
 from stats_recently_played import *
+from friends_routes import friends_bp
 
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
@@ -53,6 +54,7 @@ Session(app)
 ### ----- REGISTER BLUEPRINTS ----- ###
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
+app.register_blueprint(friends_bp)   
 
 ### ----- BACKGROUND TASKS ----- ###
 def prefetch_all_stats(access_token: str, user_name: str):
@@ -275,6 +277,38 @@ def callback():
     ).start()
 
     return redirect('http://localhost:3000/callback?auth=success')
+
+def home_test_page():
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head><title>Friends API Test</title></head>
+    <body>
+        <h1>Friends API Test Dashboard</h1>
+        <p>Click a button to test the friend routes:</p>
+
+        <button onclick="testEndpoint('/api/friends/')">List Friends</button>
+        <button onclick="testEndpoint('/api/friends/count')">Friend Count</button>
+        <button onclick="testEndpoint('/api/friends/search?q=test&currentUser=user123')">Search Users</button>
+
+        <h3>Response:</h3>
+        <pre id='output'></pre>
+
+        <script>
+            async function testEndpoint(endpoint) {
+                document.getElementById('output').textContent = 'Loading...';
+                try {
+                    const res = await fetch(endpoint);
+                    const data = await res.json();
+                    document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+                } catch (err) {
+                    document.getElementById('output').textContent = 'Error: ' + err;
+                }
+            }
+        </script>
+    </body>
+    </html>
+    """
 
 if __name__ == '__main__':
     app.run(debug=(Config.FLASK_ENV == 'development'), host='0.0.0.0', port=Config.PORT)
