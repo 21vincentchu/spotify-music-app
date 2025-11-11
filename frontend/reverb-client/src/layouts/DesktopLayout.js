@@ -11,6 +11,7 @@ import ProtectedRoute from "../components/shared/ProtectedRoute";
 import { useAuth } from "../context/AuthContext";
 import { useLocation } from "react-router-dom";
 import '../styles/Desktop.css';
+import ProfilePageDesktop from "../pages/desktop/ProfilePageDesktop";
 
 function DesktopLayout() {
     const { isAuthenticated, userName } = useAuth();
@@ -28,6 +29,11 @@ function DesktopLayout() {
                     <Route path="/home" element={
                         <ProtectedRoute>
                             <HomeDesktop />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/profile" element={
+                        <ProtectedRoute>
+                            < ProfilePageDesktop/>
                         </ProtectedRoute>
                     } />
                     <Route path="/ratings" element={
