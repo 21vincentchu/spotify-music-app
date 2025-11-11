@@ -13,8 +13,10 @@ Note:
     The initial OAuth login flow (user authorization) is handled in app.py.
     This module is used AFTER the user has already logged in and we have a token.
 """
+import os
 from flask import session
 import spotipy
+from spotipy.oauth2 import SpotifyOAuth
 
 def get_authenticated_spotify_client():
     """

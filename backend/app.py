@@ -17,6 +17,7 @@ from db_functions import upsert_user, get_cached_stats_id, fetch_and_insert_all_
 from stats_json import stat_Conversions
 from stats import stats_bp
 from stats_recently_played import *
+from profile_routes import profile_bp
 
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
@@ -53,6 +54,7 @@ Session(app)
 ### ----- REGISTER BLUEPRINTS ----- ###
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
+app.register_blueprint(profile_bp)
 
 ### ----- BACKGROUND TASKS ----- ###
 def prefetch_all_stats(access_token: str, user_name: str):
