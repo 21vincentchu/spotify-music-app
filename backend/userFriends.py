@@ -87,7 +87,7 @@ def get_friend(userName: str) -> List[Dict]:
 
     try:
         cursor.execute("""
-                        SELECT u.userName. u.spotifyId, u.profilePic, u.displayName FROM userFriends uf JOIN User u on uf.friendUserName = u.userName
+                        SELECT u.userName, u.spotifyId, u.profilePic, u.displayName FROM userFriends uf JOIN User u on uf.friendUserName = u.userName
                         LEFT JOIN RecentlyPlayed rp ON u.userName = rp.userName
                         WHERE uf.userName = %s
                         GROUP BY u.userName, u.displayName, u.profilePicture, u.spotifyId
