@@ -20,7 +20,7 @@ def insert_friend(userName: str, friendUserName: str):
 
     try:
         cursor.execute("""
-    SELECT * from userFriends WHERE userFriends = %s AND friendUserName = %s
+    SELECT * from userFriends WHERE userName = %s AND friendUserName = %s
                 """, (userName, friendUserName))
 
         if cursor.fetchone():
@@ -62,7 +62,7 @@ def delete_friend(userName: str, friendUserName: str):
     ##delete from a relationship
     try:
         cursor.execute("""
-    Delete * from userFriends WHERE (userFriends = %s AND friendUserName = %s) OR (userFriends = %s AND friendUserName = %s)
+    Delete * from userFriends WHERE (userName = %s AND friendUserName = %s) OR (userName = %s AND friendUserName = %s)
                 """, (userName, friendUserName, friendUserName, userName))
 
         conn.commit()
