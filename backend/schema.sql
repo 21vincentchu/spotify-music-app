@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS User (
     userName VARCHAR(255) PRIMARY KEY,
     spotifyId VARCHAR(255) UNIQUE NOT NULL,
     displayName VARCHAR(255),
-    profilePicture VARCHAR(512)
+    profilePicture VARCHAR(512),
+    refreshToken VARCHAR(512)
 );
 
 -- UserFriends table (many-to-many friendship)

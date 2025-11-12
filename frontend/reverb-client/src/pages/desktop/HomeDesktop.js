@@ -1,5 +1,6 @@
 import axios from 'axios';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
+import config from '../../config';
 
 import SongComponent from "../../components/shared/SongComponent";
 import { useEffect, useState } from 'react';
@@ -14,7 +15,7 @@ function HomeDesktop() {
 
     const getRecentData = async () => {
         setIsLoadingRecentData(true);
-        axios.get('http://localhost:8000/api/recently-played', {
+        axios.get(`${config.API_URL}/api/recently-played`, {
             withCredentials: true
           })
           .then((response) => {
@@ -38,7 +39,7 @@ function HomeDesktop() {
             {isLoadingRecentData ? (
             <LoadingSpinner message="Loading statistics..." />
             ) : (
-            recentData.top_songs.map((song, index) => (
+            recentData.top_songs.slice(0, 50).map((song, index) => (
                 <div>
                     <SongComponent key={song.id || index} songData={song} />
                 </div>

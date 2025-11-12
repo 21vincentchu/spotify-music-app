@@ -7,12 +7,13 @@ from db import *
 import spotipy
 
 ### ----- USER FUNCTIONS ----- ###
-def upsert_user(spotify_user_data):
+def upsert_user(spotify_user_data, refresh_token=None):
     """
     Insert or update user in database from Spotify OAuth data. Checks for duplicates
 
     Args:
         spotify_user_data: Dictionary from Spotify API current_user() call
+        refresh_token: Optional Spotify refresh token for scheduled jobs
 
     Returns:
         userName: The userName (Spotify ID) of the user
@@ -27,12 +28,13 @@ def upsert_user(spotify_user_data):
 
         # Insert or update user (ON DUPLICATE KEY UPDATE handles existing users)
         cursor.execute("""
-            INSERT INTO User (userName, spotifyId, displayName, profilePicture)
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO User (userName, spotifyId, displayName, profilePicture, refreshToken)
+            VALUES (%s, %s, %s, %s, %s)
             ON DUPLICATE KEY UPDATE
                 displayName = VALUES(displayName),
-                profilePicture = VALUES(profilePicture)
-        """, (userName, userName, displayName, profilePicture))
+                profilePicture = VALUES(profilePicture),
+                refreshToken = VALUES(refreshToken)
+        """, (userName, userName, displayName, profilePicture, refresh_token))
 
         conn.commit()
         return userName

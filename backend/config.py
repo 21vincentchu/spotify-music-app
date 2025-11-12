@@ -26,3 +26,6 @@ class Config:
 
     # Server
     PORT = int(os.getenv('PORT', '5000'))
+
+    # Frontend URL for CORS
+    FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')

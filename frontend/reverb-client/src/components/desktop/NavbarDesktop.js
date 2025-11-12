@@ -1,6 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import axios from 'axios';
+import config from '../../config';
 
 import tempLogo from "../../assets/pngegg.png";
 import tempProfile from "../../assets/istockphoto-2171382633-612x612.jpg";
@@ -25,7 +26,7 @@ function NavbarDesktop() {
 
   const handleSignOut = () => {
     axios.post(
-      'http://localhost:8000/api/logout', 
+      `${config.API_URL}/api/logout`,
       {}, // no request body
       { withCredentials: true } // config object
     )

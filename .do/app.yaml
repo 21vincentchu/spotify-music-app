@@ -7,19 +7,34 @@ databases:
     engine: MYSQL
     production: true
 
+# Static Site (Frontend)
+static_sites:
+  - name: frontend
+    github:
+      repo: 21vincentchu/spotify-music-app
+      branch: reverb-DO-deployment
+      deploy_on_push: true
+    build_command: cd frontend/reverb-client && npm install && npm run build
+    output_dir: frontend/reverb-client/build
+    routes:
+      - path: /
+    envs:
+      - key: REACT_APP_API_URL
+        value: ${backend.PUBLIC_URL}
+
 # Backend API
 services:
   - name: backend
     github:
       repo: 21vincentchu/spotify-music-app
-      branch: reverb-production
+      branch: reverb-DO-deployment
       deploy_on_push: true
     dockerfile_path: backend/Dockerfile
     http_port: 5000
     instance_count: 1
     instance_size_slug: basic-xxs
     routes:
-      - path: /
+      - path: /api
     envs:
       - key: FLASK_ENV
         value: production
@@ -34,6 +49,8 @@ services:
         type: SECRET
       - key: SPOTIPY_REDIRECT_URI
         value: ${backend.PUBLIC_URL}/callback
+      - key: FRONTEND_URL
+        value: ${frontend.PUBLIC_URL}
       - key: MYSQL_HOST
         value: ${reverb-db.HOSTNAME}
       - key: MYSQL_PORT
