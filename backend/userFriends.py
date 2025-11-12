@@ -146,12 +146,12 @@ def get_top_songs(friendUserName: str, timeframe: str = 'short_term', limit: int
         ("""
         SELECT
             ts.songName,
-            ts.artistName
-            ts.spotifyTrackId
-            ts.rank
-            ts.playCount
-            ts.imageUrl
-            s.timeframe
+            ts.artistName,
+            ts.spotifyTrackId,
+            ts.rank,
+            ts.playCount,
+            ts.imageUrl,
+            s.timeframe,
         FROM topSong ts
         JOIN Stats s ON ts.statsID = s.uniqueID
         WHERE s.userName = %s AND s.timeframe = %s
