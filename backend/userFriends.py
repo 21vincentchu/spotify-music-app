@@ -20,7 +20,7 @@ def insert_friend(userName: str, friendUserName: str):
 
     try:
         cursor.execute("""
-    SELECT from userFriends WHERE userFriends = %s AND friendUserName = %s
+    SELECT * from userFriends WHERE userFriends = %s AND friendUserName = %s
                 """, (userName, friendUserName))
 
         if cursor.fetchone():
@@ -62,7 +62,7 @@ def delete_friend(userName: str, friendUserName: str):
     ##delete from a relationship
     try:
         cursor.execute("""
-    Delete from userFriends WHERE (userFriends = %s AND friendUserName = %s) OR (userFriends = %s AND friendUserName = %s)
+    Delete * from userFriends WHERE (userFriends = %s AND friendUserName = %s) OR (userFriends = %s AND friendUserName = %s)
                 """, (userName, friendUserName, friendUserName, userName))
 
         conn.commit()
@@ -305,7 +305,7 @@ def search_users(SearchQuery: str, currentUserName: str, limit: int = 20) -> Lis
                        LIMIT %s
                        """, (currentUserName, search_pattern, search_pattern, currentUserName, limit))
         
-        return cursor.fetchall
+        return cursor.fetchall()
     finally:
         cursor.close()
         conn.close()
