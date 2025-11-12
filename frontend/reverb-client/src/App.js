@@ -1,5 +1,4 @@
-
-import React from "react";
+import react from 'react';
 import { useState, useEffect } from "react";
 
 import MobileLayout from './layouts/MobileLayout';
@@ -7,16 +6,11 @@ import DesktopLayout from './layouts/DesktopLayout';
 
 
 function App() {
-  
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  useEffect(() => { const handleResize = () => setIsMobile(window.innerWidth < 768);
+  window.addEventListener("resize", handleResize); return () => window.removeEventListener("resize", handleResize);
+}, []);
 
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return isMobile ? <MobileLayout /> : <DesktopLayout />;
-}
+return isMobile ? <MobileLayout /> : <DesktopLayout />; }
 
 export default App;

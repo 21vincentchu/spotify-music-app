@@ -29,7 +29,7 @@ h1{
   border-radius: 8px;
 }
 
-.circle {
+.global-circle {
   width: 70px;
   height: 70px;
   border-radius: 50%;
@@ -67,6 +67,12 @@ h1{
       font-size: 0.75em;
       margin: 0;
     }
+
+    img.top-right-image,
+    .profile-button img {
+      all: unset;
+}
+
   }
 }
 

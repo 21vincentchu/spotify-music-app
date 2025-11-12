@@ -1,39 +1,71 @@
-/*MOBILE CONTENT*/
-.mobile-content {
-  flex: 1;
-  overflow-y: auto; /* global scroll */
-  padding-bottom: 60px; /* prevents content from hiding behind navbar */
-  padding-top: 0; /* remove extra space above sections */
+/* ========== BASE LAYOUT ========== */
+.mobile-layout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background-color: #ffffff;
+  overflow: hidden;
 }
 
-/*HEADINGS*/
+/* Scrollable content area */
+.mobile-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 70px 16px 80px; /* space for profile and navbar */
+  box-sizing: border-box;
+}
+
+/* ========== HEADINGS ========== */
 h1 {
   font-family: "Montserrat", sans-serif;
   font-weight: 300;
-  font-size: 3rem;
-  margin: 0 0 8px 0;
+  font-size: 2.2rem;
+  margin: 0 0 12px 0;
   text-align: center;
+  color: #034078;
 }
 
 h2 {
   font-family: "Montserrat", sans-serif;
-  font-weight: 400;
-  margin: 0 0 4px 0;
+  font-weight: 500;
+  font-size: 1.25rem;
+  color: #034078;
+  margin: 16px 0 8px;
+  text-align: left;
 }
 
-/*NAVBAR*/
+/* ========== PROFILE ICON (TOP RIGHT) ========== */
+.profile-button-link {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+}
+
+.profile-button {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid #034078;
+  object-fit: cover;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+/* ========== NAVBAR ========== */
 .navbar-mobile {
   position: fixed;
   inset: auto 0 0 0;
   width: 100%;
   background: #034078;
-  z-index: 99999;
+  z-index: 999;
   display: flex;
   justify-content: space-around;
   align-items: center;
   padding: 10px 0;
   border-top: 1px solid #ddd;
-  box-sizing: border-box;
 }
 
 .navbar-mobile .nav-icon {
@@ -48,134 +80,100 @@ h2 {
   transform: scale(1.1);
   opacity: 0.85;
 }
-
-/*HOME PAGE*/
+/* ========== HOME PAGE ========== */
 .home-page {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 12px;
-  position: relative;
+  display: flex !important;
+  flex-direction: column !important; /* Stack vertically */
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  gap: 32px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
+/* Each feature group (header + subtext + grid) stacks vertically */
 .home-featured {
-  width: 100%;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  width: 100% !important;
   font-family: "Inter", sans-serif;
-  font-weight: 400;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
+  font-weight: 500;
   text-align: left;
+  color: #034078;
+  gap: 8px !important;
 }
-
+/* Subtext below headers */
 .subtext {
   font-family: "Montserrat", sans-serif;
   font-size: 0.9rem;
   color: #666;
-  margin-top: 0;
-  margin-bottom: 6px;
+  margin: 0 0 12px 0;
 }
 
-/* FEATURED RECS + STATS — 2 columns max */
-.home-featured-recs,
-.home-featured-stats {
+/* ========== SONG GRID CONTAINERS ========== */
+.grid-wrapper {
+  width: 100%;
+}
+
+.responsive-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* exactly 2 columns max */
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* max 2 columns */
   gap: 12px;
-  overflow-y: auto;
-  max-height: 45vh;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* SONG COMPONENTS inside each box */
+/* ========== SONG COMPONENT ========== */
 .song-info-box {
-  border: 1px solid #000;
-  border-radius: 12px;
-  padding: 8px 12px;
-  background-color: #fff;
-  box-shadow: 0 6px 16px rgba(0, 64, 120, 0.75);
   display: flex;
-  align-items: center; /* keep circle + text aligned horizontally */
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background-color: #fff;
+  border-radius: 12px;
+  border: 1px solid #000;
+  box-shadow: 0 6px 16px rgba(0, 64, 120, 0.75);
+  box-sizing: border-box;
 }
 
-/* black circle inside each song box */
+/* Black circle inside song box */
 .song-info-box .circle {
-  width: 50px;
-  height: 50px;
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background-color: #000;
-  flex-shrink: 0;
 }
 
-/* text inside song box */
+/* Song text info */
 .song-text {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  overflow: hidden;
 }
 
 .song-title {
   font-weight: 600;
-  margin: 0 0 4px 0;
   font-size: 1rem;
+  margin: 0 0 4px 0;
+  color: #034078;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .song-artist,
 .song-genre {
-  margin: 2px 0;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #555;
+  margin: 0;
 }
 
-/*TOP RIGHT PROFILE BUTTON*/
-.top-right-image {
-  position: fixed;
-  top: 12px;
-  right: 12px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  cursor: pointer;
-  z-index: 1000;
-  border: none;
-  background-color: transparent;
-  padding: 0;
-}
-
-/*PROFILE DROPDOWN*/
-.profile-dropdown {
-  position: absolute;
-  top: 50px; /* below icon */
-  right: 0;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  min-width: 140px;
-  z-index: 1001;
-  display: none;
-}
-
-.profile-dropdown.active {
-  display: block;
-}
-
-.profile-dropdown button {
-  width: 100%;
-  background: none;
-  border: none;
-  text-align: left;
-  padding: 10px 16px;
-  cursor: pointer;
-  font-size: 0.95rem;
-  color: #000;
-  transition: background 0.2s;
-}
-
-.profile-dropdown button:hover {
-  background: #f0f0f0;
-  color: #1282A2;
-}
-
-/*RESPONSIVENESS*/
+/* ========== RESPONSIVENESS ========== */
 @media (min-width: 769px) {
   .home-featured-stats {
     display: none;
@@ -183,12 +181,8 @@ h2 {
 }
 
 @media (max-width: 768px) {
-  .home-page {
-    padding: 12px;
-  }
-
   .song-info-box {
-    padding: 6px 10px;
+    padding: 8px 10px;
   }
 
   .song-title {
@@ -197,6 +191,10 @@ h2 {
 
   .song-artist,
   .song-genre {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+  }
+
+  h1 {
+    font-size: 2rem;
   }
 }
