@@ -21,7 +21,7 @@ def insert_friend(userName: str, friendUserName: str):
     try:
         cursor.execute("""
     SELECT 1 from userFriends WHERE (userName = %s AND friendUserName = %s) OR (userName = %s AND friendUserName = %s)
-                """, (userName, friendUserName), (friendUserName, userName))
+                """, (userName, friendUserName, friendUserName, userName))
 
         if cursor.fetchone():
             return False ##if exists, return false'
