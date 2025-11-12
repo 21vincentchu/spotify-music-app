@@ -235,6 +235,81 @@ def get_friend_top_albums(friendUserName: str, timeframe: str = 'short_term', li
         cursor.close()
         conn.close()
 
+def get_friend_recently_played(friendUserName: str, limit: int = 50):
+    """
+    
+    Get a friend's complete profile with stats.
+
+    Args:
+        friendUserName: The friend's userName
+
+    Returns:
+        Dictionary with profile information or None if not found
+
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT
+            u.userName,
+            u.displayName,
+            u.profilePicture,
+            fs.songName as featuredSongName,
+            fs.artistName as featuredArtistName,
+            fs.imageUrl as featuredSongImage,
+            (SELECT COUNT(*) FROM RatedAlbum WHERE useName = u.userName) as ratedAlbumsCount,
+             (SELECT COUNT(*) FROM RatedSong WHERE userName = u.userName) as ratedSongsCount,
+                (SELECT MAX(playedAt) FROM RecentlyPlayed WHERE userName = u.userName) as lastActive
+            FROM User u
+            LEFT JOIN FeaturedSong fs ON u.userName = fs.userName
+            WHERE u.userName = %s
+            """, (friendUserName,))
+        return cursor.fetchone()
+    finally:
+            cursor.close()
+            conn.close()
+def search_users(SearchQuery: str, currentUserName: str, limit: int = 20) -> List[Dict]:
+    """
+    search for users by username or displayname 
+    Args: 
+    searchquery: searches 
+    currentusername: current users username
+    limit: maximum number of results
+    returns:
+    list of user dictionaries of friendship staus
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        search_pattern = "f%{searchQuery}%"
+        cursor.execute("""
+            SELECT
+            u.userName,
+            u.displayName,
+            u.profilePicture,
+            CASE
+                WHEN uf.friendUserName is NOT NULL THEN TRUE
+                ELSE FALSE
+            END as isFriend
+            FROM User u 
+            LEFT JOIN UserFriends uf ON u.userName = uf.friendUserName %s
+                       WHERE(u.userName LIKE %s OR u.displayName LIKE %s)
+                       AND u.userName != %s
+                       LIMIT %s
+                       """, (currentUserName, search_pattern, search_pattern, currentUserName, limit))
+        
+        return cursor.fetchall
+    finally:
+        cursor.close()
+        conn.close()
+            
+
+
+
+                    
          
                     
 
