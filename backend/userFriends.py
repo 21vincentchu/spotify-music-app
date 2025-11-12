@@ -258,7 +258,7 @@ def get_friend_recently_played(friendUserName: str, limit: int = 50):
             fs.songName as featuredSongName,
             fs.artistName as featuredArtistName,
             fs.imageUrl as featuredSongImage,
-            (SELECT COUNT(*) FROM RatedAlbum WHERE useName = u.userName) as ratedAlbumsCount,
+            (SELECT COUNT(*) FROM RatedAlbum WHERE userName = u.userName) as ratedAlbumsCount,
              (SELECT COUNT(*) FROM RatedSong WHERE userName = u.userName) as ratedSongsCount,
                 (SELECT MAX(playedAt) FROM RecentlyPlayed WHERE userName = u.userName) as lastActive
             FROM User u
