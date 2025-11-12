@@ -142,8 +142,7 @@ def get_top_songs(friendUserName: str, timeframe: str = 'short_term', limit: int
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
     try:
-        cursor.execute
-        ("""
+        cursor.execute("""
         SELECT
             ts.songName,
             ts.artistName,
@@ -309,12 +308,4 @@ def search_users(SearchQuery: str, currentUserName: str, limit: int = 20) -> Lis
     finally:
         cursor.close()
         conn.close()
-            
-
-
-
-                    
-         
-                    
-
                     
