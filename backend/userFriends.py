@@ -1,7 +1,7 @@
 ##insert user friend into database
 from db import get_db
 from typing import List, Dict
-
+from flask import session
 
 def insert_friend(userName: str, friendUserName: str):
     '''
@@ -284,6 +284,10 @@ def search_users(SearchQuery: str, currentUserName: str, limit: int = 20) -> Lis
     cursor = conn.cursor(dictionary=True)
 
     try:
+        currentUserName = session.get('userName')
+        if not currentUserName:
+            raise ValueError("User not logged in or session expired.")
+
         search_pattern = "f%{searchQuery}%"
         cursor.execute("""
             SELECT

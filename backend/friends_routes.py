@@ -122,6 +122,7 @@ def search_for_users():
     search_query = request.args.get('q', '').strip()
     current_user = request.args.get('currentUser', '').strip()
     limit = int(request.args.get('limit', 20))
+    current_user = session.get('userName')
 
     if not search_query or not current_user: 
         return jsonify({'error': 'Missing required query parameters(q, currentUser)'}),
