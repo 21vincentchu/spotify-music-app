@@ -287,7 +287,8 @@ def search_users(SearchQuery: str, currentUserName: str, limit: int = 20) -> Lis
         if not currentUserName:
             raise ValueError("User not logged in or session expired.")
 
-        search_pattern = "f%{searchQuery}%"
+        search_pattern = f"%{SearchQuery}%"
+
         cursor.execute("""
             SELECT
             u.userName,
