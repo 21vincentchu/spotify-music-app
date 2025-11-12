@@ -19,7 +19,7 @@ WORKDIR /app
 
 # Copy the package files from the correct path
 COPY reverb-client/package*.json ./
-RUN npm install
+RUN npm install ajv@6 ajv-keywords@3 && npm install
 
 # Copy the rest of the React source
 COPY reverb-client/ ./

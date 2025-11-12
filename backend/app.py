@@ -18,6 +18,7 @@ from stats_json import stat_Conversions
 from stats import stats_bp
 from stats_recently_played import *
 from friends_routes import friends_bp
+from profile_routes import profile_bp
 
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
@@ -55,6 +56,7 @@ Session(app)
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
 app.register_blueprint(friends_bp)   
+app.register_blueprint(profile_bp)
 
 ### ----- BACKGROUND TASKS ----- ###
 def prefetch_all_stats(access_token: str, user_name: str):
@@ -143,6 +145,18 @@ def index():
 def api_login():
     """
     Returns Spotify authorization URL for frontend to redirect user to.
+
+    This is the ENTRY POINT for the OAuth login flow.
+    Frontend calls this endpoint to get the Spotify authorization URL,
+    then redirects the user to that URL to authorize the app.
+
+    Flow:
+        1. Frontend calls GET /api/login
+        2. Backend generates Spotify auth URL with required scopes
+        3. Backend returns {'auth_url': 'https://accounts.spotify.com/authorize?...'}
+        4. Frontend redirects user to that URL
+        5. User authorizes on Spotify
+        6. Spotify redirects back to /callback
 
     Returns:
         JSON: {'auth_url': 'https://accounts.spotify.com/authorize?...'}

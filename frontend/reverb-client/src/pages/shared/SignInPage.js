@@ -2,6 +2,8 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link, NavLink } from "react-router-dom";
 
+import tempLogo from "../../assets/pngegg.png";
+
 function SignInPage() {
 
     const [isLoading, setIsLoading] = useState(false);
@@ -26,8 +28,16 @@ function SignInPage() {
   return(
     <div className="signin-page">
         <nav>
-            {/* <NavLink>About</NavLink> */}
-        </nav>
+          <a href="/">
+            <img src={tempLogo} className="nav-logo" />
+          </a>
+          
+          <div className="nav-links">
+            <NavLink to="/about" className={({ isActive }) => (isActive ? "active" : "")}>
+              About
+            </NavLink>
+          </div>
+      </nav>
       <div className="signin-container round-outline blue-box-shadow">
         <div className="signin-content">
           <h1 className="signin-title">Reverb</h1>
