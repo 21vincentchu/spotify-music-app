@@ -29,30 +29,15 @@ h1 {
 
 h2 {
   font-family: "Montserrat", sans-serif;
-  font-weight: 500;
-  font-size: 1.25rem;
+  font-weight: 700;
+  font-size: 2rem;
   color: #034078;
   margin: 16px 0 8px;
   text-align: left;
 }
 
-/* ========== PROFILE ICON (TOP RIGHT) ========== */
-.profile-button-link {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 10;
-}
 
-.profile-button {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: 2px solid #034078;
-  object-fit: cover;
-  background-color: #fff;
-  cursor: pointer;
-}
+
 
 /* ========== NAVBAR ========== */
 .navbar-mobile {
@@ -120,7 +105,7 @@ h2 {
 
 .responsive-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* max 2 columns */
+  grid-template-columns: 1fr; 
   gap: 12px;
   width: 100%;
   box-sizing: border-box;
@@ -172,6 +157,114 @@ h2 {
   color: #555;
   margin: 0;
 }
+/* Apple-style scroll section */
+.scroll-section {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 15px 15px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; /* smooth iOS scrolling */
+  position: relative;
+}
+.scroll-section {
+  scrollbar-width: thin;
+  scrollbar-color: #B5B5B5 #D9D9D9; /* thumb track */
+}
+
+
+/* ========== NEW: Your requested D9D9D9 scroll styling ========== */
+.scroll-section::-webkit-scrollbar {
+  width: 8px; /* thickness */
+}
+
+
+
+.scroll-section::-webkit-scrollbar-thumb {
+  background: #B5B5B5; /* visible contrast */
+  border-radius: 8px;
+}
+
+.scroll-section::-webkit-scrollbar-track {
+  background: #D9D9D9;
+  border-radius: 8px;
+}
+
+
+/* ========== PROFILE DROPDOWN MENU ========== */
+.profile-menu-wrapper {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 20;
+}
+
+/* ========== PROFILE ICON (TOP RIGHT) ========== */
+.profile-button-link {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+}
+/* clickable button */
+.profile-button {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.profile-button img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid #034078;
+}
+
+/* dropdown box */
+.profile-dropdown {
+  position: absolute;
+  top: 58px;
+  right: 0;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 10px 0;
+  width: 160px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+}
+
+/* dropdown items */
+.dropdown-item {
+  padding: 10px 14px;
+  text-align: left;
+  font-family: "Inter", sans-serif;
+  font-size: 0.95rem;
+  color: #034078;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: #F1F1F1;
+}
+
+/* sign out is red */
+.dropdown-item.signout {
+  color: #B00020;
+}
+.dropdown-item.signout:hover {
+  background: #FFECEC;
+}
 
 /* ========== RESPONSIVENESS ========== */
 @media (min-width: 769px) {
@@ -195,6 +288,11 @@ h2 {
   }
 
   h1 {
-    font-size: 2rem;
+    font-size: 3rem;
+  }
+  @media (min-width: 360px) {
+    .responsive-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 }

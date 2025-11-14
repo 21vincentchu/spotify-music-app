@@ -1,5 +1,6 @@
 // src/layouts/MobileLayout.js
-import { Routes, Route, useLocation, Link } from "react-router-dom";
+import { Routes, Route, useLocation, Link, useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 
 import SignInPage from "../pages/shared/SignInPage";
 import NavbarMobile from "../components/mobile/NavbarMobile";
@@ -15,22 +16,59 @@ import "../styles/Mobile.css";
 
 function MobileLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const hideNavbar = location.pathname === "/";
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSignOut = () => {
+    // add your sign-out logic here
+    navigate("/");
+  };
 
   return (
     <div className="mobile-layout">
-      {/* ✅ top-right profile icon */}
+      {/* TOP-RIGHT PROFILE BUTTON */}
       {!hideNavbar && (
-        <Link to="/profile" className="profile-button-link">
-          <img
-            src={profileButton}
-            alt="Profile"
+        <div className="profile-menu-wrapper" ref={menuRef}>
+          <button
             className="profile-button"
-          />
-        </Link>
+            onClick={() => setMenuOpen((prev) => !prev)}
+          >
+            <img src={profileButton} alt="Profile" />
+          </button>
+
+          {menuOpen && (
+            <div className="profile-dropdown">
+              <Link
+                to="/profile"
+                className="dropdown-item"
+                onClick={() => setMenuOpen(false)}
+              >
+                View Profile
+              </Link>
+
+              <button className="dropdown-item signout" onClick={handleSignOut}>
+                Sign Out
+              </button>
+            </div>
+          )}
+        </div>
       )}
 
-      {/* ✅ main content area */}
+      {/* MAIN CONTENT */}
       <div className="mobile-content">
         <Routes>
           <Route path="/" element={<SignInPage />} />
@@ -43,7 +81,6 @@ function MobileLayout() {
         </Routes>
       </div>
 
-      {/* ✅ bottom navbar */}
       {!hideNavbar && <NavbarMobile />}
     </div>
   );

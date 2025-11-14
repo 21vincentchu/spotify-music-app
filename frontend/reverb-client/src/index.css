@@ -67,11 +67,10 @@ h1{
       font-size: 0.75em;
       margin: 0;
     }
-
-    img.top-right-image,
-    .profile-button img {
+    
+    .song-component img.top-right-image {
       all: unset;
-}
+    }
 
   }
 }
