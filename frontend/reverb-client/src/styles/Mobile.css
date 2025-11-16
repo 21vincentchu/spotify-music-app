@@ -9,6 +9,47 @@
   overflow: hidden;
 }
 
+/* User Profile */
+.user-info-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 15px;
+  border-radius: 0px;
+}
+
+.user-info-box .circle {
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #000;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0 0 4px 0;
+  color: #034078;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spotify-user-name {
+  font-size: 0.85rem;
+  color: #555;
+  margin: 0;
+}
+
+
 /* Scrollable content area */
 .mobile-content {
   flex: 1;
