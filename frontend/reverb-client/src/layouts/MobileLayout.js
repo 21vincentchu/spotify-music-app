@@ -2,15 +2,15 @@
 import { Routes, Route, useLocation, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 
-import SignInPage from "../pages/shared/SignInPage";
+import SignInPage from "../pages/mobile/SignInPage";
 import NavbarMobile from "../components/mobile/NavbarMobile";
 import HomeMobile from "../pages/mobile/HomeMobile";
-import RatingsPage from "../pages/shared/RatingsPage";
-import StatisticsPage from "../pages/shared/StatisticsPage";
-import RecommendationsPage from "../pages/shared/RecommendationsPage";
-import FriendsPage from "../pages/shared/FriendsPage";
+import RatingsPage from "../pages/mobile/RatingsPage";
+import StatisticsPage from "../pages/mobile/StatisticsPage";
+import RecommendationsPage from "../pages/mobile/RecommendationsPage";
+import FriendsPage from "../pages/mobile/FriendsPage";
 import UserPage from "../pages/shared/UserPage";
-import profileButton from "../icons/UserIcon.png";
+import profileButton from "../assets/istockphoto-2171382633-612x612.jpg";
 
 import "../styles/Mobile.css";
 

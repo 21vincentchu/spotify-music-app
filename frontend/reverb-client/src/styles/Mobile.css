@@ -1,4 +1,10 @@
-/* ========== BASE LAYOUT ========== */
+/* ========================================================= */
+/* ===================== BASE LAYOUT ====================== */
+/* ========================================================= */
+* {
+  box-sizing: border-box;
+}
+
 .mobile-layout {
   position: relative;
   display: flex;
@@ -9,13 +15,121 @@
   overflow: hidden;
 }
 
-/* User Profile */
+/* Scrollable content area */
+.mobile-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 70px 16px 80px;
+}
+
+/* ========================================================= */
+/* ====================== SEARCH BAR ====================== */
+/* ========================================================= */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 90%;
+  height: 50px;
+  margin: 10px auto;
+  padding: 0 5px;
+  overflow: hidden;
+}
+
+.search-input-container {
+  flex: 5;
+  height: 90%;
+  display: flex;
+  justify-content: center;
+}
+
+.search-input {
+  margin: auto;
+  padding: 10px 15px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  width: 95%;
+  overflow-y: auto;
+}
+
+.search-bar button {
+  flex: 1;
+  border: 1px solid black;
+  border-radius: 8px;
+  height: 80%;
+  margin: 20px auto;
+  padding: 10px 30px;
+  font-weight: bold;
+  background-color: #034078;
+  color: white;
+  cursor: pointer;
+}
+
+.search-bar button:hover {
+  opacity: 0.8;
+}
+
+/* ========================================================= */
+/* ===================== DATA CONTAINERS ================== */
+/* ========================================================= */
+.data-container {
+  width: 40vw;
+  height: 80vh;
+  margin: 0 5%;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.data-container h2 {
+  flex-shrink: 0;
+  margin: 20px;
+}
+
+.data-container-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 5px;
+  padding-right: 8px;
+  width: 95%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Page layout helper */
+.page {
+  height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: row;
+  padding: 20px;
+  margin-top: 100px;
+  justify-content: center;
+}
+
+.song-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Medium-sized song image for stats page only */
+.stats-circle {
+  width: 70px !important;
+  height: 70px !important;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* ========================================================= */
+/* ====================== USER PROFILE ==================== */
+/* ========================================================= */
 .user-info-box {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 40px 15px;
-  border-radius: 0px;
 }
 
 .user-info-box .circle {
@@ -49,16 +163,9 @@
   margin: 0;
 }
 
-
-/* Scrollable content area */
-.mobile-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 70px 16px 80px; /* space for profile and navbar */
-  box-sizing: border-box;
-}
-
-/* ========== HEADINGS ========== */
+/* ========================================================= */
+/* ======================== HEADINGS ====================== */
+/* ========================================================= */
 h1 {
   font-family: "Montserrat", sans-serif;
   font-weight: 300;
@@ -77,10 +184,9 @@ h2 {
   text-align: left;
 }
 
-
-
-
-/* ========== NAVBAR ========== */
+/* ========================================================= */
+/* ======================== NAVBAR ======================== */
+/* ========================================================= */
 .navbar-mobile {
   position: fixed;
   inset: auto 0 0 0;
@@ -106,18 +212,19 @@ h2 {
   transform: scale(1.1);
   opacity: 0.85;
 }
-/* ========== HOME PAGE ========== */
+
+/* ========================================================= */
+/* ======================== HOME PAGE ===================== */
+/* ========================================================= */
 .home-page {
   display: flex !important;
-  flex-direction: column !important; /* Stack vertically */
+  flex-direction: column !important;
   align-items: stretch !important;
   justify-content: flex-start !important;
   gap: 32px !important;
   width: 100% !important;
-  box-sizing: border-box !important;
 }
 
-/* Each feature group (header + subtext + grid) stacks vertically */
 .home-featured {
   display: flex !important;
   flex-direction: column !important;
@@ -131,7 +238,7 @@ h2 {
   color: #034078;
   gap: 8px !important;
 }
-/* Subtext below headers */
+
 .subtext {
   font-family: "Montserrat", sans-serif;
   font-size: 0.9rem;
@@ -139,20 +246,23 @@ h2 {
   margin: 0 0 12px 0;
 }
 
-/* ========== SONG GRID CONTAINERS ========== */
+/* ========================================================= */
+/* ======================== GRID ========================== */
+/* ========================================================= */
 .grid-wrapper {
   width: 100%;
 }
 
 .responsive-grid {
   display: grid;
-  grid-template-columns: 1fr; 
+  grid-template-columns: 1fr;
   gap: 12px;
   width: 100%;
-  box-sizing: border-box;
 }
 
-/* ========== SONG COMPONENT ========== */
+/* ========================================================= */
+/* ===================== SONG COMPONENT =================== */
+/* ========================================================= */
 .song-info-box {
   display: flex;
   align-items: center;
@@ -162,10 +272,16 @@ h2 {
   border-radius: 12px;
   border: 1px solid #000;
   box-shadow: 0 6px 16px rgba(0, 64, 120, 0.75);
-  box-sizing: border-box;
 }
 
-/* Black circle inside song box */
+.featured-stat-heading {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 650;
+  font-size: 1rem;
+  margin: 0 0 12px 0;
+  color: black;
+}
+
 .song-info-box .circle {
   flex-shrink: 0;
   width: 60px;
@@ -174,7 +290,6 @@ h2 {
   background-color: #000;
 }
 
-/* Song text info */
 .song-text {
   display: flex;
   flex-direction: column;
@@ -198,34 +313,33 @@ h2 {
   color: #555;
   margin: 0;
 }
-/* Apple-style scroll section */
+
+/* ========================================================= */
+/* ===================== APPLE SCROLL ===================== */
+/* ========================================================= */
 .scroll-section {
   max-height: 300px;
   overflow-y: auto;
-  padding: 15px 15px;
+  padding: 15px;
   background: #ffffff;
   border-radius: 18px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   margin-bottom: 24px;
   scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch; /* smooth iOS scrolling */
-  position: relative;
+  -webkit-overflow-scrolling: touch;
 }
+
 .scroll-section {
   scrollbar-width: thin;
-  scrollbar-color: #B5B5B5 #D9D9D9; /* thumb track */
+  scrollbar-color: #B5B5B5 #D9D9D9;
 }
 
-
-/* ========== NEW: Your requested D9D9D9 scroll styling ========== */
 .scroll-section::-webkit-scrollbar {
-  width: 8px; /* thickness */
+  width: 8px;
 }
-
-
 
 .scroll-section::-webkit-scrollbar-thumb {
-  background: #B5B5B5; /* visible contrast */
+  background: #B5B5B5;
   border-radius: 8px;
 }
 
@@ -234,26 +348,153 @@ h2 {
   border-radius: 8px;
 }
 
+/* ========== FRIENDS MOBILE PAGE ========== */
+.mobile-friends {
+  width: 100%;
+  height: calc(100vh - 120px); /* Adjust for navbar/header */
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
 
-/* ========== PROFILE DROPDOWN MENU ========== */
-.profile-menu-wrapper {
+.mobile-friends-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-friend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ================== FRIEND COMPONENT MOBILE ================== */
+.friend-component-mobile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background-color: #fff;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.friend-circle-mobile {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #eee;
+}
+
+.friend-info-mobile {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.friend-name-mobile {
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0 0 4px 0;
+  color: #034078;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.friend-username-mobile {
+  font-size: 0.85rem;
+  color: #555;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-friends {
+  width: 100%;
+  flex: 1;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.mobile-friends-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-friend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Friend Component */
+.friend-component {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background-color: #fff;
+  border-radius: 12px;
+  border: 1px solid #000;
+  box-shadow: 0 4px 12px rgba(0, 64, 120, 0.2);
+}
+
+.friend-component .circle {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #ccc; /* placeholder bg if no avatar */
+  object-fit: cover;
+}
+
+.friend-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.friend-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #034078;
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.friend-user {
+  font-size: 0.85rem;
+  color: #555;
+  margin: 0;
+}
+
+/* ========================================================= */
+/* ====================== PROFILE DROPDOWN ================= */
+/* ========================================================= */
+.profile-menu-wrapper,
+.profile-button-link {
   position: absolute;
   top: 12px;
   right: 12px;
   z-index: 20;
 }
 
-/* ========== PROFILE ICON (TOP RIGHT) ========== */
-.profile-button-link {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 10;
-}
-/* clickable button */
 .profile-button {
-  width: 48px;
-  height: 48px;
+  width: 60px;
+  height: 60px;
   padding: 0;
   border: none;
   background: transparent;
@@ -261,14 +502,12 @@ h2 {
 }
 
 .profile-button img {
-  width: 48px;
-  height: 48px;
+  width: 60px;
+  height: 60px;
   object-fit: cover;
   border-radius: 50%;
-  border: 1px solid #034078;
 }
 
-/* dropdown box */
 .profile-dropdown {
   position: absolute;
   top: 58px;
@@ -282,14 +521,12 @@ h2 {
   flex-direction: column;
 }
 
-/* dropdown items */
 .dropdown-item {
   padding: 10px 14px;
   text-align: left;
   font-family: "Inter", sans-serif;
   font-size: 0.95rem;
   color: #034078;
-  text-decoration: none;
   background: none;
   border: none;
   cursor: pointer;
@@ -299,18 +536,141 @@ h2 {
   background: #F1F1F1;
 }
 
-/* sign out is red */
 .dropdown-item.signout {
   color: #B00020;
 }
+
 .dropdown-item.signout:hover {
   background: #FFECEC;
 }
 
-/* ========== RESPONSIVENESS ========== */
+/* ========================================================= */
+/* ===================== STATISTICS PAGE (MOBILE) ========= */
+/* ========================================================= */
+.mobile-stats {
+  width: 100%;
+  height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px;
+}
+
+.mobile-stats-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.mobile-stats-categories {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.mobile-stats-categories button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #034078;
+  background: #fff;
+  color: #034078;
+  font-size: 0.95rem;
+  font-family: "Inter", sans-serif;
+}
+
+.mobile-stats-categories button.active {
+  background: #034078;
+  color: #fff;
+}
+
+.mobile-stats-data {
+  width: 100%;
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  border-radius: 12px;
+}
+
+.mobile-song-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-stats-timeframe {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.mobile-stats-timeframe button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #034078;
+  background: #fff;
+  color: #034078;
+  font-size: 0.95rem;
+}
+
+.mobile-stats-timeframe button.active {
+  background: #034078;
+  color: #fff;
+}
+
+/* ========================================================= */
+/* ===================== FRIENDS PAGE (MOBILE) ============ */
+/* ========================================================= */
+.mobile-friends {
+  width: 100%;
+  height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+.mobile-friends-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.mobile-friend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-friend-circle {
+  width: 80px; /* Bigger than SongComponent circle */
+  height: 80px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+/* ========================================================= */
+/* ===================== RESPONSIVENESS =================== */
+/* ========================================================= */
 @media (min-width: 769px) {
-  .home-featured-stats {
-    display: none;
+  /* Hide mobile-only content */
+  .mobile-stats,
+  .mobile-stats-content,
+  .mobile-stats-data,
+  .mobile-stats-categories,
+  .mobile-stats-timeframe,
+  .mobile-song-list,
+  .mobile-friends,
+  .mobile-friends-content,
+  .mobile-friend-list {
+    display: none !important;
   }
 }
 
@@ -331,9 +691,16 @@ h2 {
   h1 {
     font-size: 3rem;
   }
-  @media (min-width: 360px) {
-    .responsive-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+}
+
+@media (min-width: 360px) {
+  .responsive-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* ========================================================= */
+/* ===================== CUSTOM SCROLLBAR ================= */
+*::-webkit-scrollbar-thumb {
+  background: red !important;
 }
