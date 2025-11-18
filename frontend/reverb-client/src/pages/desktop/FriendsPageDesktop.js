@@ -6,7 +6,8 @@ import FriendComponentDesktop from "../../components/desktop/FriendComponentDesk
 
 function FriendsPage() {
 
-  const [isLoadingData, setIsLoadingRecentData] = useState(true);
+  const [isLoadingFriends, setIsLoadingFriends] = useState(true);
+  const [isLoadingSearch, setIsLoadingSearch] = useState(false);
   const [friends, setFriends] = useState([]);
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -32,7 +33,7 @@ function FriendsPage() {
 
 
   const getFriendsList = async () => {
-    setIsLoadingRecentData(true);
+    setIsLoadingFriends(true);
     axios.get(`${config.API_URL}/api/friends`, {
         withCredentials: true
       })
@@ -44,12 +45,12 @@ function FriendsPage() {
         console.error('Error fetching friends:', error);
       })
       .finally(() => {
-        setIsLoadingRecentData(false);
+        setIsLoadingFriends(false);
       });
   }
 
   const getSearchResults = async (query) => {
-    setIsLoadingRecentData(true);
+    setIsLoadingSearch(true);
     axios.get(`http://localhost:8000/api/friends/search?q=${query}`, {
         withCredentials: true
       })
@@ -61,7 +62,7 @@ function FriendsPage() {
         console.error('Error fetching search results:', error);
       })
       .finally(() => {
-        setIsLoadingRecentData(false);
+        setIsLoadingSearch(false);
       });
   }
   
@@ -74,7 +75,7 @@ function FriendsPage() {
       <div className="data-container round-outline blue-box-shadow">
         <h2>Friends</h2>
         <div className="data-container-list">
-          {isLoadingData ? (
+          {isLoadingFriends ? (
             <p>Loading friends...</p>
           ) : friends.length > 0 ? (
             friends.map((friend, index) => (
@@ -102,16 +103,21 @@ function FriendsPage() {
               Search
           </button>
         </div>
-      </div>
-      {searchResults ? (
-        <div>
+        {query.trim() && (
+        searchResults.length > 0 ? (
+            <div>
+              {searchResults.map((result, index) => ( 
+                <FriendComponentDesktop key={result.userName || index} friendData={result} />
+              ))}
 
-        </div>
-      ):(
-        <div>
-          <p>No search results.</p>
-        </div>
-      )}
+            </div>  // Shows when there ARE results
+        ) : (
+            <div>No search results</div>   // Shows when there are NO results
+        )
+    )}
+
+
+      </div>
     </div>
   );
 }
