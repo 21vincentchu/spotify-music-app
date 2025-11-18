@@ -21,6 +21,7 @@ from scheduler import init_scheduler
 from background_tasks import quick_prefetch_on_login, prefetch_all_stats
 from friends_routes import friends_bp
 from profile_routes import profile_bp
+from featured_songs_route import featured_songs_bp
 
 # Configure Flask to serve React's static files
 app = Flask(__name__, static_folder='frontend_build/static', static_url_path='/static')
@@ -73,8 +74,9 @@ app.config["SESSION_PERMANENT"] = False
 ### ----- REGISTER BLUEPRINTS ----- ###
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
-app.register_blueprint(friends_bp)   
+app.register_blueprint(friends_bp)
 app.register_blueprint(profile_bp)
+app.register_blueprint(featured_songs_bp)
 
 ### ----- INITIALIZE SCHEDULER ----- ###
 # Start background scheduler for weekly stats refresh
