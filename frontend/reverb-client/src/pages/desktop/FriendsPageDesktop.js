@@ -16,6 +16,20 @@ function FriendsPage() {
     getFriendsList();
   }, []);
 
+  useEffect(() => {
+    if (query.trim() === "") {
+      setSearchResults([]);   // clear results when field is empty
+      return;
+    }
+  
+    const delayDebounce = setTimeout(() => {
+      getSearchResults(query);
+    }, 300); // <— debounce so you don't spam the API
+  
+    return () => clearTimeout(delayDebounce);
+  }, [query]);
+  
+
 
   const getFriendsList = async () => {
     setIsLoadingRecentData(true);
@@ -35,7 +49,6 @@ function FriendsPage() {
   }
 
   const getSearchResults = async (query) => {
-    // if (!query.trim()) return; // optional guard
     setIsLoadingRecentData(true);
     axios.get(`http://localhost:8000/api/friends/search?q=${query}`, {
         withCredentials: true
@@ -90,9 +103,15 @@ function FriendsPage() {
           </button>
         </div>
       </div>
-      {/* {(searchResults.result.friends).map((friend, index) => (
-        <FriendComponentDesktop key={index} friend={friend} />
-      ))} */}
+      {searchResults ? (
+        <div>
+
+        </div>
+      ):(
+        <div>
+          <p>No search results.</p>
+        </div>
+      )}
     </div>
   );
 }

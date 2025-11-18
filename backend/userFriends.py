@@ -284,7 +284,7 @@ def search_users(SearchQuery: str, currentUserName: str, limit: int = 20) -> Lis
     cursor = conn.cursor(dictionary=True)
 
     try:
-        search_pattern = f"%{SearchQuery}%"
+        search_pattern = f"{SearchQuery}%"
 
         cursor.execute("""
             SELECT
