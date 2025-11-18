@@ -10,7 +10,9 @@ import StatisticsPage from "../pages/mobile/StatisticsPage";
 import RecommendationsPage from "../pages/mobile/RecommendationsPage";
 import FriendsPage from "../pages/mobile/FriendsPage";
 import UserPage from "../pages/shared/UserPage";
+
 import profileButton from "../assets/istockphoto-2171382633-612x612.jpg";
+import logo from "../assets/pngegg.png";
 
 import "../styles/Mobile.css";
 
@@ -34,41 +36,44 @@ function MobileLayout() {
   }, []);
 
   const handleSignOut = () => {
-    // add your sign-out logic here
     navigate("/");
   };
 
   return (
     <div className="mobile-layout">
-      {/* TOP-RIGHT PROFILE BUTTON */}
+      {/* SCROLL-AWAY TOP BAR */}
       {!hideNavbar && (
-        <div className="profile-menu-wrapper" ref={menuRef}>
-          <button
-            className="profile-button"
-            onClick={() => setMenuOpen((prev) => !prev)}
-          >
-            <img src={profileButton} alt="Profile" />
-          </button>
+        <div className="mobile-topbar">
+          <img src={logo} alt="Logo" className="mobile-logo" />
 
-          {menuOpen && (
-            <div className="profile-dropdown">
-              <Link
-                to="/profile"
-                className="dropdown-item"
-                onClick={() => setMenuOpen(false)}
-              >
-                View Profile
-              </Link>
+          <div className="profile-menu-wrapper" ref={menuRef}>
+            <button
+              className="profile-button"
+              onClick={() => setMenuOpen((prev) => !prev)}
+            >
+              <img src={profileButton} alt="Profile" />
+            </button>
 
-              <button className="dropdown-item signout" onClick={handleSignOut}>
-                Sign Out
-              </button>
-            </div>
-          )}
+            {menuOpen && (
+              <div className="profile-dropdown">
+                <Link
+                  to="/profile"
+                  className="dropdown-item"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  View Profile
+                </Link>
+
+                <button className="dropdown-item signout" onClick={handleSignOut}>
+                  Sign Out
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
-      {/* MAIN CONTENT */}
+      {/* MAIN CONTENT AREA */}
       <div className="mobile-content">
         <Routes>
           <Route path="/" element={<SignInPage />} />
@@ -81,6 +86,7 @@ function MobileLayout() {
         </Routes>
       </div>
 
+      {/* NAVBAR */}
       {!hideNavbar && <NavbarMobile />}
     </div>
   );

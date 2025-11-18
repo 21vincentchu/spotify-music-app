@@ -13,13 +13,19 @@ function FriendsMobilePage() {
   return (
     <div className="mobile-friends">
       <div className="mobile-friends-content">
+
+        {/* HERE → Add header before the list */}
+        <h2 className="friends-header">Friends</h2>
+
         <div className="mobile-friend-list">
           {friends.map((friend) => (
             <FriendComponentMobile key={friend.id} friendData={friend} />
           ))}
         </div>
       </div>
+      
     </div>
+    
   );
 }
 
