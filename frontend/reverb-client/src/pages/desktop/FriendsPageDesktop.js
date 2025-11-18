@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import config from '../../config';
 
 import FriendComponentDesktop from "../../components/desktop/FriendComponentDesktop";
 
@@ -11,23 +12,22 @@ function FriendsPage() {
   const [searchResults, setSearchResults] = useState([]);
 
 
-  useEffect(() => {   
+  useEffect(() => {
     getFriendsList();
-    getSearchResults();
-}, []);
+  }, []);
 
 
   const getFriendsList = async () => {
     setIsLoadingRecentData(true);
-    axios.get('http://localhost:8000/api/friends', {
+    axios.get(`${config.API_URL}/api/friends`, {
         withCredentials: true
       })
       .then((response) => {
         console.log('Friends:', response.data);
-        setFriends(response.data);
+        setFriends(response.data.friends || []);
       })
       .catch((error) => {
-        console.error('Error fetching recent data:', error);
+        console.error('Error fetching friends:', error);
       })
       .finally(() => {
         setIsLoadingRecentData(false);
@@ -61,14 +61,15 @@ function FriendsPage() {
       <div className="data-container round-outline blue-box-shadow">
         <h2>Friends</h2>
         <div className="data-container-list">
-          <FriendComponentDesktop />
-          <FriendComponentDesktop />
-          <FriendComponentDesktop />
-          <FriendComponentDesktop />
-          <FriendComponentDesktop />
-          <FriendComponentDesktop />
-          <FriendComponentDesktop />
-
+          {isLoadingData ? (
+            <p>Loading friends...</p>
+          ) : friends.length > 0 ? (
+            friends.map((friend, index) => (
+              <FriendComponentDesktop key={friend.userName || index} friendData={friend} />
+            ))
+          ) : (
+            <p>No friends yet. Add some friends!</p>
+          )}
         </div>
       </div>
       <div className="data-container round-outline blue-box-shadow">

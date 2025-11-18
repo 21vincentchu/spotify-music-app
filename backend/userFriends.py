@@ -86,15 +86,18 @@ def get_friend(userName: str) -> List[Dict]:
 
     try:
         cursor.execute("""
-                        SELECT u.userName, u.spotifyId, u.profilePicture, u.displayName FROM userFriends uf JOIN User u on uf.friendUserName = u.userName
-                        LEFT JOIN RecentlyPlayed rp ON u.userName = rp.userName
+                        SELECT u.userName, u.spotifyId, u.profilePicture, u.displayName
+                        FROM UserFriends uf
+                        JOIN User u ON uf.friendUserName = u.userName
                         WHERE uf.userName = %s
-                        GROUP BY u.userName, u.displayName, u.profilePicture, u.spotifyId
-                        ORDER BY lastActive DESC, u.displayName
+                        ORDER BY u.displayName
                     """, (userName,))
-        
+
         return cursor.fetchall()
-    except:
+    except Exception as e:
+        print(f"Error getting friends: {e}")
+        return []
+    finally:
         cursor.close()
         conn.close()
 

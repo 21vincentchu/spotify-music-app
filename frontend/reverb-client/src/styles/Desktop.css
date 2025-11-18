@@ -319,15 +319,27 @@ nav {
   .stats-data {
     flex: 1; /* Takes up remaining space */
     overflow-y: auto; /* Makes this section scrollable */
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    padding: 20px;
+    box-sizing: border-box;
   }
 
   .stats-data .song-list{
-    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .stats-data .song-component {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .stats-data h2{
     flex-shrink: 0; /* prevents header from being compressed or scrolled */
-    margin: 20px;
+    margin: 0 0 20px 0;
   } 
 
   /* FRIENDS PAGE -------------------------------------------------------------------------------------  */
@@ -425,4 +437,145 @@ nav {
     flex-direction: column;
     gap: 10px;
   }
-  
+
+  /* RECOMMENDATIONS PAGE ------------------------------------------------------------------------------- */
+
+  .recommendations-page {
+    min-height: calc(100vh - 100px);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    margin-top: 100px;
+  }
+
+  .recommendations-content {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+  }
+
+  .featured-section,
+  .friends-featured-section {
+    flex: 1;
+    height: 80vh;
+    margin: 5%;
+    padding: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .featured-section h2,
+  .friends-featured-section h2 {
+    flex-shrink: 0;
+    margin: 0 0 20px 0;
+  }
+
+  .featured-section .song-list {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px;
+  }
+
+  .featured-section .song-component,
+  .friends-featured-section .song-component {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .friends-feed {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .friend-featured-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+  }
+
+  .friend-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .friend-profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .friend-details {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .friend-name {
+    font-weight: bold;
+    color: #034078;
+  }
+
+  .featured-time {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .empty-message {
+    text-align: center;
+    color: #666;
+    padding: 40px 20px;
+  }
+
+  /* Star button styling */
+  .star-button {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    color: #ccc;
+    transition: all 0.2s;
+    padding: 0;
+    margin: 0;
+    margin-left: auto;
+    flex-shrink: 0;
+    flex-grow: 0;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px;
+    min-height: 40px;
+    max-width: 40px;
+    max-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    box-sizing: border-box;
+  }
+
+  .star-button:hover {
+    transform: scale(1.1);
+    border-color: #FFD700;
+  }
+
+  .star-button.starred {
+    color: #FFD700;
+    background: #FFF9E6;
+    border-color: #FFD700;
+  }
+
+  .star-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }

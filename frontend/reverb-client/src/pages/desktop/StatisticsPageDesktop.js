@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import SongComponent from '../../components/shared/SongComponent';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
+import config from '../../config';
 
 function StatisticsPage() {
   const [category, setCategory] = useState('songs');
@@ -11,15 +12,28 @@ function StatisticsPage() {
   const [loading, setLoading] = useState(false);
   const [songs, setSongs] = useState([]);
   const [artists, setArtists] = useState([]);
+  const [featuredSongs, setFeaturedSongs] = useState([]);
 
 
   useEffect(() => {
    getSongs();
+   getFeaturedSongs();
   }, [category, timeframe]); // Runs whenever category or timeframe changes
+
+  const getFeaturedSongs = async () => {
+    try {
+      const response = await axios.get(`${config.API_URL}/api/featured-songs/`, {
+        withCredentials: true
+      });
+      setFeaturedSongs(response.data);
+    } catch (error) {
+      console.error('Error fetching featured songs:', error);
+    }
+  };
 
   const getSongs = async () => {
     setLoading(true);
-    axios.get(`http://localhost:8000/api/top-${category}/${timeframe}`, {
+    axios.get(`${config.API_URL}/api/top-${category}/${timeframe}`, {
       withCredentials: true
     })
     .then((response) => {
@@ -32,6 +46,10 @@ function StatisticsPage() {
       setLoading(false);
     });
 }
+
+  const isSongFeatured = (spotifyTrackId) => {
+    return featuredSongs.some(song => song.spotifyTrackId === spotifyTrackId);
+  };
 
 
 
@@ -59,7 +77,12 @@ function StatisticsPage() {
             <LoadingSpinner message="Loading statistics..." />
             ) : (
             songs.slice(0, 10).map((song, index) => (
-                <SongComponent key={song.id || index} songData={song} />
+                <SongComponent
+                  key={song.id || index}
+                  songData={song}
+                  showStar={true}
+                  isFeatured={isSongFeatured(song.spotifyTrackId)}
+                />
             ))
             )}
             </div>

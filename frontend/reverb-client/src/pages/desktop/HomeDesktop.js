@@ -8,10 +8,23 @@ import { useEffect, useState } from 'react';
 function HomeDesktop() {
     const [isLoadingRecentData, setIsLoadingRecentData] = useState(true);
     const [recentData, setRecentData] = useState([]);
+    const [featuredSongs, setFeaturedSongs] = useState([]);
 
-    useEffect(() => {   
+    useEffect(() => {
         getRecentData();
+        getFeaturedSongs();
     }, []);
+
+    const getFeaturedSongs = async () => {
+        try {
+            const response = await axios.get(`${config.API_URL}/api/featured-songs/`, {
+                withCredentials: true
+            });
+            setFeaturedSongs(response.data);
+        } catch (error) {
+            console.error('Error fetching featured songs:', error);
+        }
+    };
 
     const getRecentData = async () => {
         setIsLoadingRecentData(true);
@@ -29,6 +42,10 @@ function HomeDesktop() {
             setIsLoadingRecentData(false);
           });
     }
+
+    const isSongFeatured = (spotifyTrackId) => {
+        return featuredSongs.some(song => song.spotifyTrackId === spotifyTrackId);
+    };
     
 
   return (
@@ -40,8 +57,12 @@ function HomeDesktop() {
             <LoadingSpinner message="Loading statistics..." />
             ) : (
             recentData.top_songs.slice(0, 50).map((song, index) => (
-                <div>
-                    <SongComponent key={song.id || index} songData={song} />
+                <div key={song.id || index}>
+                    <SongComponent
+                        songData={song}
+                        showStar={true}
+                        isFeatured={isSongFeatured(song.spotifyTrackId)}
+                    />
                 </div>
             ))
             )}
