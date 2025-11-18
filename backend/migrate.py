@@ -55,3 +55,26 @@ def run_additional_migrations(cursor, conn):
             print("refreshToken column already exists")
     except Exception as e:
         print(f"Migration warning (refreshToken): {e}")
+
+    # Migration 2: Add featuredAt timestamp to FeaturedSong table
+    try:
+        # Check if column exists
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = %s
+            AND TABLE_NAME = 'FeaturedSong'
+            AND COLUMN_NAME = 'featuredAt'
+        """, (Config.MYSQL_DATABASE,))
+
+        exists = cursor.fetchone()[0] > 0
+
+        if not exists:
+            print("Adding featuredAt column to FeaturedSong table...")
+            cursor.execute("ALTER TABLE FeaturedSong ADD COLUMN featuredAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+            conn.commit()
+            print("featuredAt column added")
+        else:
+            print("featuredAt column already exists")
+    except Exception as e:
+        print(f"Migration warning (featuredAt): {e}")
