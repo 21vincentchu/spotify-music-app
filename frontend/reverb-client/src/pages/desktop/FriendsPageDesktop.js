@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import config from '../../config';
 
 import FriendComponentDesktop from "../../components/desktop/FriendComponentDesktop";
+import AddFriendComponentDesktop from '../../components/desktop/AddFriendComponentDesktop';
 
 function FriendsPage() {
 
@@ -66,10 +67,6 @@ function FriendsPage() {
       });
   }
   
-
-
-
-
   return (
     <div className="page">
       <div className="data-container round-outline blue-box-shadow">
@@ -107,10 +104,10 @@ function FriendsPage() {
         searchResults.length > 0 ? (
             <div>
               {searchResults.map((result, index) => ( 
-                <FriendComponentDesktop key={result.userName || index} friendData={result} />
+                <AddFriendComponentDesktop key={result.userName || index} friendData={result} />
               ))}
 
-            </div>  // Shows when there ARE results
+            </div>  
         ) : (
             <div>No search results</div>   // Shows when there are NO results
         )
