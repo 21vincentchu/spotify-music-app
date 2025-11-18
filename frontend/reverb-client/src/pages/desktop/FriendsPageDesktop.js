@@ -37,7 +37,7 @@ function FriendsPage() {
   const getSearchResults = async (query) => {
     // if (!query.trim()) return; // optional guard
     setIsLoadingRecentData(true);
-    axios.get(`http://localhost:8000/api/friends/search?q=${query}`, {
+    axios.get(`${config.API_URL}/api/friends/search?q=${query}`, {
         withCredentials: true
       })
       .then((response) => {
