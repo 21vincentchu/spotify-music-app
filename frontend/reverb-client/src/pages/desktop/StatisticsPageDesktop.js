@@ -12,6 +12,7 @@ function StatisticsPage() {
   const [loading, setLoading] = useState(false);
   const [songs, setSongs] = useState([]);
   const [artists, setArtists] = useState([]);
+  const [albums, setAlbums] = useState([]);
   const [featuredSongs, setFeaturedSongs] = useState([]);
 
 
@@ -69,12 +70,23 @@ function StatisticsPage() {
           >
             Artists
           </button>
+          <button
+            className={category === 'albums' ? 'active' : ''}
+            onClick={() => setCategory('albums')}
+          >
+            Albums
+          </button>
         </div>
         <div className="stats-data round-outline blue-box-shadow">
 
             <div className='song-list'>
               {loading ? (
             <LoadingSpinner message="Loading statistics..." />
+            ) : songs.length === 0 && category === 'albums' ? (
+              <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
+                <p style={{ fontSize: '18px', marginBottom: '10px' }}>⏳ Calculating your top albums...</p>
+                <p style={{ fontSize: '14px' }}>This may take 2-3 minutes. Your songs and artists are ready to view!</p>
+              </div>
             ) : (
             songs.slice(0, 10).map((song, index) => (
                 <SongComponent

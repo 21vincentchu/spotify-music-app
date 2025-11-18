@@ -281,17 +281,20 @@ def callback():
     print(f"Session ID: {session.get('session_id')}")
     print(f"Session saved: {userName}")
 
-    # Quick pull (foreground) - limited to 150, fast
-    quick_prefetch_on_login(token_info['access_token'], userName)
-
-    # Full pull (background thread) - ONLY for brand new users
-    # Check if user has ANY stats in database
+    # Check if user has ANY stats in database BEFORE running quick pull
+    # This determines if they're a brand new user
     has_existing_stats = any([
         get_cached_stats_id(userName, 'short_term', max_age_hours=999999),
         get_cached_stats_id(userName, 'medium_term', max_age_hours=999999),
         get_cached_stats_id(userName, 'long_term', max_age_hours=999999)
     ])
 
+    # Quick pull (foreground) - limited to 150, fast
+    # Runs for ALL users so they see results immediately
+    quick_prefetch_on_login(token_info['access_token'], userName)
+
+    # Full pull (background thread) - ONLY for brand new users
+    # Runs comprehensive pull including albums (takes 2-3 minutes)
     if not has_existing_stats:
         print(f"[NEW USER] Starting full pull for brand new user: {userName}", flush=True)
         Thread(
