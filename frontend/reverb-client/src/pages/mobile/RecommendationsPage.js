@@ -1,72 +1,117 @@
-import React from "react";
+import React, { useState } from "react";
 import "../../styles/Mobile.css";
 
-function RecommendationsPage() {
+function MobileRecommendationsPage() {
+  const [myTab, setMyTab] = useState("songs");
+  const [friendsTab, setFriendsTab] = useState("songs");
+
   return (
-    <div className="page" style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "20px", marginTop: "20px" }}>
-      
-      {/* Header above scrollable section */}
-      <h2 style={{ margin: "0 0 10px 0", color: "#034078", padding: "15x 15px", textAlign: "center"}}>
-        Recommended Songs
-      </h2>
+    <div className="mobile-layout">
+      <div className="mobile-content">
 
-      {/* Scrollable section */}
-      <div
-        className="scroll-section"
-        style={{ maxHeight: "60vh", overflowY: "auto", padding: "15px" }}
-      >
-        <div
-          className="song-list"
-          style={{ display: "flex", flexDirection: "column", gap: "15px", margin: "0 0 100px 0"}}
-        >
-          <div className="song-info-box">
-            <div className="circle"></div>
-            <div className="song-text">
-              <p className="song-title">Lost in Japan</p>
-              <p className="song-artist">Shawn Mendes</p>
-              <p className="song-genre">Pop</p>
-            </div>
-          </div>
+        {/* ===== My Featured Section ===== */}
+        <h2>Your Featured</h2>
 
-          <div className="song-info-box">
-            <div className="circle"></div>
-            <div className="song-text">
-              <p className="song-title">Blinding Lights</p>
-              <p className="song-artist">The Weeknd</p>
-              <p className="song-genre">R&B</p>
-            </div>
-          </div>
+        {/* Tabs */}
+        <div className="featured-tabs" style={{ display: "flex", gap: "8px" }}>
+          <button
+            className={myTab === "songs" ? "active" : ""}
+            onClick={() => setMyTab("songs")}
+          >
+            Songs
+          </button>
+          <button
+            className={myTab === "artists" ? "active" : ""}
+            onClick={() => setMyTab("artists")}
+          >
+            Artists
+          </button>
+          <button
+            className={myTab === "albums" ? "active" : ""}
+            onClick={() => setMyTab("albums")}
+          >
+            Albums
+          </button>
+        </div>
 
-          <div className="song-info-box">
-            <div className="circle"></div>
-            <div className="song-text">
-              <p className="song-title">Levitating</p>
-              <p className="song-artist">Dua Lipa</p>
-              <p className="song-genre">Pop</p>
-            </div>
-          </div>
+        <div className="scroll-section">
+          <div className="song-list">
 
-          <div className="song-info-box">
-            <div className="circle"></div>
-            <div className="song-text">
-              <p className="song-title">Levitating</p>
-              <p className="song-artist">Dua Lipa</p>
-              <p className="song-genre">Pop</p>
-            </div>
-          </div>
+            {/* EXAMPLE STATIC ITEMS — replace with real data later */}
+            {myTab === "songs" && (
+              <>
+                <div className="song-info-box">
+                  <div className="circle"></div>
+                  <div className="song-text">
+                    <p className="song-title">Lost in Japan</p>
+                    <p className="song-artist">Shawn Mendes</p>
+                  </div>
+                </div>
 
-          <div className="song-info-box">
-            <div className="circle"></div>
-            <div className="song-text">
-              <p className="song-title">Levitating</p>
-              <p className="song-artist">Dua Lipa</p>
-              <p className="song-genre">Pop</p>
-            </div>
+                <div className="song-info-box">
+                  <div className="circle"></div>
+                  <div className="song-text">
+                    <p className="song-title">Blinding Lights</p>
+                    <p className="song-artist">The Weeknd</p>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {myTab === "artists" && (
+              <p style={{ textAlign: "center" }}>No featured artists yet.</p>
+            )}
+
+            {myTab === "albums" && (
+              <p style={{ textAlign: "center" }}>No featured albums yet.</p>
+            )}
           </div>
         </div>
+
+        {/* ===== Friends Featured Section ===== */}
+        <h2>Friends' Featured</h2>
+
+        <div className="featured-tabs" style={{ display: "flex", gap: "8px" }}>
+          <button
+            className={friendsTab === "songs" ? "active" : ""}
+            onClick={() => setFriendsTab("songs")}
+          >
+            Songs
+          </button>
+          <button
+            className={friendsTab === "artists" ? "active" : ""}
+            onClick={() => setFriendsTab("artists")}
+          >
+            Artists
+          </button>
+          <button
+            className={friendsTab === "albums" ? "active" : ""}
+            onClick={() => setFriendsTab("albums")}
+          >
+            Albums
+          </button>
+        </div>
+
+        <div className="scroll-section">
+          <div className="song-list">
+
+            {friendsTab === "songs" && (
+              <p className="empty-message">No friends’ songs yet.</p>
+            )}
+
+            {friendsTab === "artists" && (
+              <p className="empty-message">No friends’ artists yet.</p>
+            )}
+
+            {friendsTab === "albums" && (
+              <p className="empty-message">No friends’ albums yet.</p>
+            )}
+          </div>
+        </div>
+
       </div>
     </div>
   );
 }
 
-export default RecommendationsPage;
+export default MobileRecommendationsPage;

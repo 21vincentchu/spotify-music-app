@@ -376,6 +376,22 @@
   margin: 0;
 }
 
+.mobile-layout .featured-tabs button {
+  flex: 1;
+  padding: 20x;
+  border-radius: 10px;
+  border: 1px solid #034078;
+  background: #fff;
+  color: #034078;
+  font-size: 0.95rem;
+}
+
+.mobile-layout .featured-tabs button.active {
+  background: #034078;
+  color: #fff;
+}
+
+
 /* ========================================================= */
 /* ===================== APPLE SCROLL ===================== */
 /* ========================================================= */
