@@ -52,7 +52,7 @@ function FriendsPage() {
 
   const getSearchResults = async (query) => {
     // if (!query.trim()) return; // optional guard
-    setIsLoadingRecentData(true);
+    setIsLoadingSearch(true);
     axios.get(`${config.API_URL}/api/friends/search?q=${query}`, {
         withCredentials: true
       })
