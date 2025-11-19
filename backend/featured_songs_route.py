@@ -9,6 +9,7 @@ from featured_songs import (
 
 featured_songs_bp = Blueprint('featured_songs_bp', __name__, url_prefix='/api/featured-songs')
 
+@featured_songs_bp.route('', methods=['GET'])
 @featured_songs_bp.route('/', methods=['GET'])
 def get_my_featured_songs():
     """Get the current user's featured songs."""
