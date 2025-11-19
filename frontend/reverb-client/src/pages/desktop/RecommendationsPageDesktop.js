@@ -108,6 +108,24 @@ function RecommendationsPage() {
     }
   };
 
+  // Group items by friend
+  const groupByFriend = (items) => {
+    const grouped = {};
+    items.forEach(item => {
+      const key = item.userName || item.displayName;
+      if (!grouped[key]) {
+        grouped[key] = {
+          userName: item.userName,
+          displayName: item.displayName,
+          profilePicture: item.profilePicture,
+          items: []
+        };
+      }
+      grouped[key].items.push(item);
+    });
+    return Object.values(grouped);
+  };
+
   return (
     <div className="recommendations-page">
       <div className="recommendations-content">
@@ -235,23 +253,23 @@ function RecommendationsPage() {
               loadingFriendsFeatured ? (
                 <LoadingSpinner message="Loading..." />
               ) : friendsFeaturedSongs.length > 0 ? (
-                friendsFeaturedSongs.map((song, index) => (
-                  <div key={song.featuredSongId || index} className="friend-featured-item">
+                groupByFriend(friendsFeaturedSongs).map((friendGroup, index) => (
+                  <div key={friendGroup.userName || index} className="friend-group">
                     <div className="friend-info">
-                      {song.profilePicture && (
-                        <img src={song.profilePicture} alt={song.displayName} className="friend-profile-pic" />
+                      {friendGroup.profilePicture && (
+                        <img src={friendGroup.profilePicture} alt={friendGroup.displayName} className="friend-profile-pic" />
                       )}
-                      <div className="friend-details">
-                        <span className="friend-name">{song.displayName || song.userName}</span>
-                        <span className="featured-time">
-                          {song.featuredAt ? new Date(song.featuredAt).toLocaleDateString() : ''}
-                        </span>
-                      </div>
+                      <span className="friend-name">{friendGroup.displayName || friendGroup.userName}</span>
                     </div>
-                    <SongComponent
-                      songData={song}
-                      showStar={false}
-                    />
+                    <div className="friend-items">
+                      {friendGroup.items.map((song, songIndex) => (
+                        <SongComponent
+                          key={song.featuredSongId || songIndex}
+                          songData={song}
+                          showStar={false}
+                        />
+                      ))}
+                    </div>
                   </div>
                 ))
               ) : (
@@ -261,22 +279,21 @@ function RecommendationsPage() {
 
             {friendsFeaturedTab === 'artists' && (
               friendsFeaturedArtists.length > 0 ? (
-                friendsFeaturedArtists.map((artist, index) => (
-                  <div key={artist.featuredArtistId || index} className="friend-featured-item">
+                groupByFriend(friendsFeaturedArtists).map((friendGroup, index) => (
+                  <div key={friendGroup.userName || index} className="friend-group">
                     <div className="friend-info">
-                      {artist.profilePicture && (
-                        <img src={artist.profilePicture} alt={artist.displayName} className="friend-profile-pic" />
+                      {friendGroup.profilePicture && (
+                        <img src={friendGroup.profilePicture} alt={friendGroup.displayName} className="friend-profile-pic" />
                       )}
-                      <div className="friend-details">
-                        <span className="friend-name">{artist.displayName || artist.userName}</span>
-                        <span className="featured-time">
-                          {artist.featuredAt ? new Date(artist.featuredAt).toLocaleDateString() : ''}
-                        </span>
-                      </div>
+                      <span className="friend-name">{friendGroup.displayName || friendGroup.userName}</span>
                     </div>
-                    <div className="featured-artist-display">
-                      <img src={artist.imageUrl} alt={artist.artistName} className="artist-image circle" />
-                      <span className="artist-name">{artist.artistName}</span>
+                    <div className="friend-items">
+                      {friendGroup.items.map((artist, artistIndex) => (
+                        <div key={artist.featuredArtistId || artistIndex} className="featured-artist-display">
+                          <img src={artist.imageUrl} alt={artist.artistName} className="artist-image circle" />
+                          <span className="artist-name">{artist.artistName}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 ))
@@ -287,25 +304,24 @@ function RecommendationsPage() {
 
             {friendsFeaturedTab === 'albums' && (
               friendsFeaturedAlbums.length > 0 ? (
-                friendsFeaturedAlbums.map((album, index) => (
-                  <div key={album.featuredAlbumId || index} className="friend-featured-item">
+                groupByFriend(friendsFeaturedAlbums).map((friendGroup, index) => (
+                  <div key={friendGroup.userName || index} className="friend-group">
                     <div className="friend-info">
-                      {album.profilePicture && (
-                        <img src={album.profilePicture} alt={album.displayName} className="friend-profile-pic" />
+                      {friendGroup.profilePicture && (
+                        <img src={friendGroup.profilePicture} alt={friendGroup.displayName} className="friend-profile-pic" />
                       )}
-                      <div className="friend-details">
-                        <span className="friend-name">{album.displayName || album.userName}</span>
-                        <span className="featured-time">
-                          {album.featuredAt ? new Date(album.featuredAt).toLocaleDateString() : ''}
-                        </span>
-                      </div>
+                      <span className="friend-name">{friendGroup.displayName || friendGroup.userName}</span>
                     </div>
-                    <div className="featured-album-display">
-                      <img src={album.imageUrl} alt={album.albumName} className="album-image" />
-                      <div className="album-info">
-                        <span className="album-name">{album.albumName}</span>
-                        <span className="album-artist">{album.artistName}</span>
-                      </div>
+                    <div className="friend-items">
+                      {friendGroup.items.map((album, albumIndex) => (
+                        <div key={album.featuredAlbumId || albumIndex} className="featured-album-display">
+                          <img src={album.imageUrl} alt={album.albumName} className="album-image" />
+                          <div className="album-info">
+                            <span className="album-name">{album.albumName}</span>
+                            <span className="album-artist">{album.artistName}</span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 ))
