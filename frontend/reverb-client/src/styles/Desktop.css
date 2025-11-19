@@ -272,31 +272,29 @@ nav {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-
-     h2 {
-        flex-shrink: 0; /* prevents header from being compressed or scrolled */
-        margin: 0 0 10px 0;
-        text-align: center;
-      }
-
-    .home-stats-section{
-        flex: 1; /* fills remaining space under the h2 */
-
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-        align-items: center;
-
-        div{
-            margin: 10px 0;
-            text-align: center;
-        }
-        
-    }
-
-
 }
+
+.home-stats h2 {
+  flex-shrink: 0; /* prevents header from being compressed or scrolled */
+  margin: 0 0 10px 0;
+  text-align: center;
+}
+
+.home-stats .home-stats-section{
+  flex: 1; /* fills remaining space under the h2 */
+
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.home-stats .home-stats-section div{
+    margin: 10px 0;
+    text-align: center;
+}
+  
 
 /* STATISTICS PAGE -------------------------------------------------------------------------------------  */
 
