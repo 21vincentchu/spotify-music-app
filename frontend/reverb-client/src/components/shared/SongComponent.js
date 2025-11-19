@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import config from '../../config';
 
-function SongComponent({songData, showStar, isFeatured, onToggleFeatured}) {
+function SongComponent({songData, showStar, isFeatured, onToggleFeatured, showRank = true, showPlay = false}) {
     // Handle both songs (songName) and albums (albumName)
     const displayName = songData?.songName || songData?.albumName || songData?.artistName;
     const artistName = songData?.artistName;
@@ -18,6 +18,21 @@ function SongComponent({songData, showStar, isFeatured, onToggleFeatured}) {
     };
 
     const itemType = getItemType();
+
+    // Get Spotify URL for opening in Spotify
+    const getSpotifyUrl = () => {
+        if (songData?.spotifyUrl) return songData.spotifyUrl;
+
+        // Construct URL from ID based on type
+        if (itemType === 'song' && songData?.spotifyTrackId) {
+            return `https://open.spotify.com/track/${songData.spotifyTrackId}`;
+        } else if (itemType === 'artist' && songData?.spotifyArtistId) {
+            return `https://open.spotify.com/artist/${songData.spotifyArtistId}`;
+        } else if (itemType === 'album' && songData?.spotifyAlbumId) {
+            return `https://open.spotify.com/album/${songData.spotifyAlbumId}`;
+        }
+        return null;
+    };
 
     const handleStarToggle = async (e) => {
         e.stopPropagation();
@@ -91,14 +106,27 @@ function SongComponent({songData, showStar, isFeatured, onToggleFeatured}) {
         }
     };
 
+    const spotifyUrl = getSpotifyUrl();
+
     return (
         <div className="song-component">
-            <div className="song-rank">#{songData?.rank}</div>
+            {showRank && <div className="song-rank">#{songData?.rank}</div>}
             <img className="circle stats-circle" src={songData?.imageUrl} />
             <div className="song-info">
                 <p className="song-name">{displayName}</p>
                 <p className="artist-name">{artistName}</p>
             </div>
+            {showPlay && spotifyUrl && (
+                <a
+                    href={spotifyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="play-button"
+                    title="Open in Spotify"
+                >
+                    ▶
+                </a>
+            )}
             {showStar && (
                 <button
                     className={`star-button ${isStarred ? 'starred' : ''}`}

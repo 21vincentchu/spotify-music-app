@@ -167,6 +167,7 @@ function RecommendationsPage() {
                     songData={song}
                     showStar={true}
                     isFeatured={true}
+                    showRank={false}
                     onToggleFeatured={handleToggleFeatured}
                   />
                 ))
@@ -183,6 +184,7 @@ function RecommendationsPage() {
                     songData={artist}
                     showStar={true}
                     isFeatured={true}
+                    showRank={false}
                     onToggleFeatured={(spotifyArtistId, isNowFeatured) => {
                       if (!isNowFeatured) {
                         setMyFeaturedArtists(prev => prev.filter(a => a.spotifyArtistId !== spotifyArtistId));
@@ -205,6 +207,7 @@ function RecommendationsPage() {
                     songData={album}
                     showStar={true}
                     isFeatured={true}
+                    showRank={false}
                     onToggleFeatured={(spotifyAlbumId, isNowFeatured) => {
                       if (!isNowFeatured) {
                         setMyFeaturedAlbums(prev => prev.filter(a => a.spotifyAlbumId !== spotifyAlbumId));
@@ -267,6 +270,8 @@ function RecommendationsPage() {
                           key={song.featuredSongId || songIndex}
                           songData={song}
                           showStar={false}
+                          showRank={false}
+                          showPlay={true}
                         />
                       ))}
                     </div>
