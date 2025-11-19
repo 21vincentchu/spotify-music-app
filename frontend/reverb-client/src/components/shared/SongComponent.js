@@ -94,7 +94,7 @@ function SongComponent({songData, showStar, isFeatured, onToggleFeatured}) {
     return (
         <div className="song-component">
             <div className="song-rank">#{songData?.rank}</div>
-            <img className="circle" src={songData?.imageUrl}></img>
+            <img className="circle stats-circle" src={songData?.imageUrl} />
             <div className="song-info">
                 <p className="song-name">{displayName}</p>
                 <p className="artist-name">{artistName}</p>
