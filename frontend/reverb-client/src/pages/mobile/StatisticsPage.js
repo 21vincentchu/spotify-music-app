@@ -60,8 +60,14 @@ function StatisticsPage() {
               <LoadingSpinner message="Loading statistics..." />
             ) : (
               songs.slice(0, 10).map((song, index) => (
-                <SongComponent key={song.id || index} songData={song} />
+                <SongComponent
+                  key={song.id || index}
+                  songData={song}
+                  showStar={true}      // ⭐ makes star visible + clickable
+                  isFeatured={false}   // ⭐ prevents auto-detection from homepage
+                />
               ))
+              
             )}
           </div>
         </div>
