@@ -35,7 +35,7 @@ function FriendsPage() {
 
   const getFriendsList = async () => {
     setIsLoadingFriends(true);
-    axios.get(`${config.API_URL}/api/friends`, {
+    axios.get(`${config.API_URL}/api/friends/`, {
         withCredentials: true
       })
       .then((response) => {
