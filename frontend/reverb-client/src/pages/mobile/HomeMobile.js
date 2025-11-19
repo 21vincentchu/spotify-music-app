@@ -1,6 +1,13 @@
 import React from "react";
 import "../../styles/Mobile.css";
 
+import axios from 'axios';
+import LoadingSpinner from '../../components/shared/LoadingSpinner';
+
+import SongComponent from "../../components/shared/SongComponent";
+import { useEffect, useState } from 'react';
+
+
 const HomeMobile = () => {
   return (
     <div className="mobile-content">
@@ -16,6 +23,15 @@ const HomeMobile = () => {
 
                       <div className="grid-wrapper">
                         <div className="responsive-grid">
+                          <div className="song-info-box">
+                            <div className="circle"></div>
+                            <div className="song-text">
+                              <p className="song-title">Lost in Japan</p>
+                              <p className="song-artist">Shawn Mendes</p>
+                              <p className="song-genre">Pop</p>
+                            </div>
+                          </div>
+
                           <div className="song-info-box">
                             <div className="circle"></div>
                             <div className="song-text">

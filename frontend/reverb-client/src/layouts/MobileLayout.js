@@ -11,6 +11,8 @@ import RecommendationsPage from "../pages/mobile/RecommendationsPage";
 import FriendsPage from "../pages/mobile/FriendsPage";
 import UserPage from "../pages/shared/UserPage";
 
+
+
 import profileButton from "../assets/istockphoto-2171382633-612x612.jpg";
 import logo from "../assets/pngegg.png";
 

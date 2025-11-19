@@ -30,7 +30,8 @@ function RatingsPage() {
 
   return (
     <div className="ratings-page-wrapper">
-      {/* Fixed Search Bar */}
+
+      {/* ⭐ Fixed Search Bar */}
       <div className="search-bar-wrapper">
         <div className="search-bar">
           <div className="search-input-container">
@@ -46,8 +47,9 @@ function RatingsPage() {
         </div>
       </div>
 
-      {/* Scrollable content */}
+      {/* ⭐ Scrollable Content */}
       <div className="ratings-page-content">
+
         {/* Rated Songs */}
         <h2 className="section-title">Rated Songs</h2>
         <div className="scroll-section">
@@ -81,6 +83,7 @@ function RatingsPage() {
             ))}
           </div>
         </div>
+
       </div>
     </div>
   );
