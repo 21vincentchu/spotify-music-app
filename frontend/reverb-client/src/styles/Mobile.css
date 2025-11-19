@@ -17,11 +17,30 @@
 .ratings-page {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  height: calc(100vh - 120px);
-  padding: 16px; /* simpler padding */
+  height: calc(100vh - 120px); /* adjust for navbar/header */
+  padding: 16px;
+  box-sizing: border-box;
+  gap: 16px;
+}
+
+/* Wrapper for page */
+.ratings-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px); /* adjust for navbar/header */
+  padding: 0 16px;
   box-sizing: border-box;
 }
+
+/* Scrollable content below search bar */
+.ratings-page-content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .rating-stars {
   display: flex;
   gap: 6px;
@@ -86,6 +105,16 @@
   color: white;
   cursor: pointer;
 }
+
+/* Fixed search bar */
+.search-bar-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #ffffff;
+  padding: 20px 0;
+}
+
 
 .search-bar button:hover {
   opacity: 0.8;
@@ -345,7 +374,7 @@ h2 {
 .scroll-section {
   flex: 1;
   max-height: none; /* 50% of viewport minus some spacing */
-  min-height: 200px;             /* optional: avoid tiny boxes */
+  min-height: 300px;             /* optional: avoid tiny boxes */
   overflow-y: auto;
   padding: 15px;
   background: #ffffff;

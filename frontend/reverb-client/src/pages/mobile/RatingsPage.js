@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "../../styles/Mobile.css";
 import StarIcon from "../../components/mobile/StarIcon";
 
-
 function RatingsPage() {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -30,62 +29,57 @@ function RatingsPage() {
   );
 
   return (
-    <div className="ratings-page">
-      {/* Search Bar */}
-      <div className="search-bar">
-        <div className="search-input-container">
-          <input
-            type="text"
-            placeholder="Search song or album..."
-            className="search-input"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <button className="search-button">Search</button>
-      </div>
-
-      {/* Rated Songs Header */}
-      <h2 className="section-title">Rated Songs</h2>
-
-      {/* Rated Songs */}
-      <div className="scroll-section">
-        <div className="song-list">
-          {ratedSongs.map((item, i) => (
-            <div className="song-info-box" key={i}>
-              <div className="circle"></div>
-
-              <div className="song-text">
-                <p className="song-title">{item.title}</p>
-                <p className="song-artist">{item.artist}</p>
-              </div>
-
-              {/* Stars */}
-              {renderStars(item.rating)}
-            </div>
-          ))}
+    <div className="ratings-page-wrapper">
+      {/* Fixed Search Bar */}
+      <div className="search-bar-wrapper">
+        <div className="search-bar">
+          <div className="search-input-container">
+            <input
+              type="text"
+              placeholder="Search song or album..."
+              className="search-input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <button className="search-button">Search</button>
         </div>
       </div>
 
-      {/* Rated Albums Header */}
-      <h2 className="section-title">Rated Albums</h2>
-
-      {/* Rated Albums */}
-      <div className="scroll-section">
-        <div className="song-list">
-          {ratedAlbums.map((item, i) => (
-            <div className="song-info-box" key={i}>
-              <div className="circle"></div>
-
-              <div className="song-text">
-                <p className="song-title">{item.title}</p>
-                <p className="song-artist">{item.artist}</p>
+      {/* Scrollable content */}
+      <div className="ratings-page-content">
+        {/* Rated Songs */}
+        <h2 className="section-title">Rated Songs</h2>
+        <div className="scroll-section">
+          <div className="song-list">
+            {ratedSongs.map((item, i) => (
+              <div className="song-info-box" key={i}>
+                <div className="circle"></div>
+                <div className="song-text">
+                  <p className="song-title">{item.title}</p>
+                  <p className="song-artist">{item.artist}</p>
+                </div>
+                {renderStars(item.rating)}
               </div>
+            ))}
+          </div>
+        </div>
 
-              {/* Stars */}
-              {renderStars(item.rating)}
-            </div>
-          ))}
+        {/* Rated Albums */}
+        <h2 className="section-title">Rated Albums</h2>
+        <div className="scroll-section">
+          <div className="song-list">
+            {ratedAlbums.map((item, i) => (
+              <div className="song-info-box" key={i}>
+                <div className="circle"></div>
+                <div className="song-text">
+                  <p className="song-title">{item.title}</p>
+                  <p className="song-artist">{item.artist}</p>
+                </div>
+                {renderStars(item.rating)}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
