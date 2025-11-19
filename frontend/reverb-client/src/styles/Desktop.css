@@ -393,7 +393,7 @@ nav {
     justify-content: center;
   }
 
-  .search-input {
+  .desktop-layout .search-input {
     margin: auto;
     padding: 10px 15px;
     border: none;
