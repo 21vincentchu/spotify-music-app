@@ -69,7 +69,8 @@ function MobileRecommendationsPage() {
         </div>
 
         {/* ===== Friends Featured Section ===== */}
-        <h2>Friends' Featured</h2>
+        <h2 className="friends-heading">Friends' Featured</h2>
+
 
         <div className="featured-tabs" style={{ display: "flex", gap: "8px" }}>
           <button
