@@ -14,11 +14,15 @@ function StatisticsPage() {
   const [artists, setArtists] = useState([]);
   const [albums, setAlbums] = useState([]);
   const [featuredSongs, setFeaturedSongs] = useState([]);
+  const [featuredArtists, setFeaturedArtists] = useState([]);
+  const [featuredAlbums, setFeaturedAlbums] = useState([]);
 
 
   useEffect(() => {
    getSongs();
    getFeaturedSongs();
+   getFeaturedArtists();
+   getFeaturedAlbums();
   }, [category, timeframe]); // Runs whenever category or timeframe changes
 
   const getFeaturedSongs = async () => {
@@ -29,6 +33,28 @@ function StatisticsPage() {
       setFeaturedSongs(response.data);
     } catch (error) {
       console.error('Error fetching featured songs:', error);
+    }
+  };
+
+  const getFeaturedArtists = async () => {
+    try {
+      const response = await axios.get(`${config.API_URL}/api/featured-artists/`, {
+        withCredentials: true
+      });
+      setFeaturedArtists(response.data);
+    } catch (error) {
+      console.error('Error fetching featured artists:', error);
+    }
+  };
+
+  const getFeaturedAlbums = async () => {
+    try {
+      const response = await axios.get(`${config.API_URL}/api/featured-albums/`, {
+        withCredentials: true
+      });
+      setFeaturedAlbums(response.data);
+    } catch (error) {
+      console.error('Error fetching featured albums:', error);
     }
   };
 
@@ -50,6 +76,21 @@ function StatisticsPage() {
 
   const isSongFeatured = (spotifyTrackId) => {
     return featuredSongs.some(song => song.spotifyTrackId === spotifyTrackId);
+  };
+
+  const isArtistFeatured = (spotifyArtistId) => {
+    return featuredArtists.some(artist => artist.spotifyArtistId === spotifyArtistId);
+  };
+
+  const isAlbumFeatured = (spotifyAlbumId) => {
+    return featuredAlbums.some(album => album.spotifyAlbumId === spotifyAlbumId);
+  };
+
+  const getIsFeatured = (item) => {
+    if (item.spotifyTrackId) return isSongFeatured(item.spotifyTrackId);
+    if (item.spotifyArtistId) return isArtistFeatured(item.spotifyArtistId);
+    if (item.spotifyAlbumId) return isAlbumFeatured(item.spotifyAlbumId);
+    return false;
   };
 
 
@@ -93,7 +134,7 @@ function StatisticsPage() {
                   key={song.id || index}
                   songData={song}
                   showStar={true}
-                  isFeatured={isSongFeatured(song.spotifyTrackId)}
+                  isFeatured={getIsFeatured(song)}
                 />
             ))
             )}
