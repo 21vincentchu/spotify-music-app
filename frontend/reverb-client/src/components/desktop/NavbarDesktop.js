@@ -1,13 +1,34 @@
 import { Link, NavLink } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import axios from 'axios';
+import config from '../../config';
 
 import tempLogo from "../../assets/pngegg.png";
 import tempProfile from "../../assets/istockphoto-2171382633-612x612.jpg";
 
 function NavbarDesktop() {
   const [showMenu, setShowMenu] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(tempProfile);
   const menuRef = useRef(null);
+
+  // Fetch user profile data
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await axios.get(`${config.API_URL}/api/profile/`, {
+          withCredentials: true
+        });
+        if (response.data.profilePicture) {
+          setProfilePicture(response.data.profilePicture);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+        // Keep using tempProfile as fallback
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -25,7 +46,7 @@ function NavbarDesktop() {
 
   const handleSignOut = () => {
     axios.post(
-      'http://localhost:8000/api/logout', 
+      `${config.API_URL}/api/logout`,
       {}, // no request body
       { withCredentials: true } // config object
     )
@@ -63,9 +84,9 @@ function NavbarDesktop() {
       </div>
       
       <div className="profile-container" ref={menuRef}>
-        <img 
-          src={tempProfile} 
-          className="nav-profile" 
+        <img
+          src={profilePicture}
+          className="nav-profile"
           onClick={() => setShowMenu(!showMenu)}
         />
         

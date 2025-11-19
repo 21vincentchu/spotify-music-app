@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS User (
     userName VARCHAR(255) PRIMARY KEY,
     spotifyId VARCHAR(255) UNIQUE NOT NULL,
     displayName VARCHAR(255),
-    profilePicture VARCHAR(512)
+    profilePicture VARCHAR(512),
+    refreshToken VARCHAR(512)
 );
 
 -- UserFriends table (many-to-many friendship)
@@ -114,5 +115,28 @@ CREATE TABLE IF NOT EXISTS FeaturedSong (
     albumName VARCHAR(255),
     spotifyTrackId VARCHAR(255),
     imageUrl VARCHAR(512),
+    FOREIGN KEY (userName) REFERENCES User(userName) ON DELETE CASCADE
+);
+
+-- FeaturedArtist table
+CREATE TABLE IF NOT EXISTS FeaturedArtist (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userName VARCHAR(255) NOT NULL,
+    artistName VARCHAR(255),
+    spotifyArtistId VARCHAR(255),
+    imageUrl VARCHAR(512),
+    featuredAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userName) REFERENCES User(userName) ON DELETE CASCADE
+);
+
+-- FeaturedAlbum table
+CREATE TABLE IF NOT EXISTS FeaturedAlbum (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userName VARCHAR(255) NOT NULL,
+    albumName VARCHAR(255),
+    artistName VARCHAR(255),
+    spotifyAlbumId VARCHAR(255),
+    imageUrl VARCHAR(512),
+    featuredAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (userName) REFERENCES User(userName) ON DELETE CASCADE
 );

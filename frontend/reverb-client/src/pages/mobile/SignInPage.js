@@ -1,18 +1,28 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import config from '../../config';
+import { useAuth } from '../../context/AuthContext';
 
 import tempLogo from "../../assets/pngegg.png";
 
 function SignInPage() {
-
+    const navigate = useNavigate();
+    const { isAuthenticated, loading } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
+
+    // Redirect to home if already authenticated
+    useEffect(() => {
+        if (!loading && isAuthenticated) {
+            navigate('/home');
+        }
+    }, [isAuthenticated, loading, navigate]);
 
 
     const handleLogin = async () => {
         setIsLoading(true);
         try {
-            const res = await axios.get('http://localhost:8000/api/login', {
+            const res = await axios.get(`${config.API_URL}/api/login`, {
                 withCredentials: true
             });
             

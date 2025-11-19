@@ -1,5 +1,6 @@
 import axios from 'axios';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
+import config from '../../config';
 
 import SongComponent from "../../components/shared/SongComponent";
 import { useEffect, useState } from 'react';
@@ -7,14 +8,53 @@ import { useEffect, useState } from 'react';
 function HomeDesktop() {
     const [isLoadingRecentData, setIsLoadingRecentData] = useState(true);
     const [recentData, setRecentData] = useState([]);
+    const [featuredSongs, setFeaturedSongs] = useState([]);
+    const [featuredArtists, setFeaturedArtists] = useState([]);
+    const [featuredAlbums, setFeaturedAlbums] = useState([]);
 
-    useEffect(() => {   
+    useEffect(() => {
         getRecentData();
+        getFeaturedSongs();
+        getFeaturedArtists();
+        getFeaturedAlbums();
     }, []);
+
+    const getFeaturedSongs = async () => {
+        try {
+            const response = await axios.get(`${config.API_URL}/api/featured-songs/`, {
+                withCredentials: true
+            });
+            setFeaturedSongs(response.data);
+        } catch (error) {
+            console.error('Error fetching featured songs:', error);
+        }
+    };
+
+    const getFeaturedArtists = async () => {
+        try {
+            const response = await axios.get(`${config.API_URL}/api/featured-artists/`, {
+                withCredentials: true
+            });
+            setFeaturedArtists(response.data);
+        } catch (error) {
+            console.error('Error fetching featured artists:', error);
+        }
+    };
+
+    const getFeaturedAlbums = async () => {
+        try {
+            const response = await axios.get(`${config.API_URL}/api/featured-albums/`, {
+                withCredentials: true
+            });
+            setFeaturedAlbums(response.data);
+        } catch (error) {
+            console.error('Error fetching featured albums:', error);
+        }
+    };
 
     const getRecentData = async () => {
         setIsLoadingRecentData(true);
-        axios.get('http://localhost:8000/api/recently-played', {
+        axios.get(`${config.API_URL}/api/recently-played`, {
             withCredentials: true
           })
           .then((response) => {
@@ -28,6 +68,25 @@ function HomeDesktop() {
             setIsLoadingRecentData(false);
           });
     }
+
+    const isSongFeatured = (spotifyTrackId) => {
+        return featuredSongs.some(song => song.spotifyTrackId === spotifyTrackId);
+    };
+
+    const isArtistFeatured = (spotifyArtistId) => {
+        return featuredArtists.some(artist => artist.spotifyArtistId === spotifyArtistId);
+    };
+
+    const isAlbumFeatured = (spotifyAlbumId) => {
+        return featuredAlbums.some(album => album.spotifyAlbumId === spotifyAlbumId);
+    };
+
+    const getIsFeatured = (item) => {
+        if (item.spotifyTrackId) return isSongFeatured(item.spotifyTrackId);
+        if (item.spotifyArtistId) return isArtistFeatured(item.spotifyArtistId);
+        if (item.spotifyAlbumId) return isAlbumFeatured(item.spotifyAlbumId);
+        return false;
+    };
     
 
   return (
@@ -38,9 +97,13 @@ function HomeDesktop() {
             {isLoadingRecentData ? (
             <LoadingSpinner message="Loading statistics..." />
             ) : (
-            recentData.top_songs.map((song, index) => (
-                <div>
-                    <SongComponent key={song.id || index} songData={song} />
+            recentData.top_songs.slice(0, 50).map((song, index) => (
+                <div key={song.id || index}>
+                    <SongComponent
+                        songData={song}
+                        showStar={true}
+                        isFeatured={getIsFeatured(song)}
+                    />
                 </div>
             ))
             )}

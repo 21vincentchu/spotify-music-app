@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import config from '../config';
 
 const AuthContext = createContext();
 
@@ -10,7 +11,7 @@ export function AuthProvider({ children }) {
 
     const checkAuthStatus = async () => {
         try {
-            const res = await axios.get('http://localhost:8000/api/auth/status', {
+            const res = await axios.get(`${config.API_URL}/api/auth/status`, {
                 withCredentials: true
             });
             
@@ -32,7 +33,7 @@ export function AuthProvider({ children }) {
 
     const logout = async () => {
         try {
-            await axios.post('http://localhost:8000/api/logout', {}, {
+            await axios.post(`${config.API_URL}/api/logout`, {}, {
                 withCredentials: true
             });
             setIsAuthenticated(false);

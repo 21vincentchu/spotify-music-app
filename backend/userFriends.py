@@ -1,7 +1,7 @@
 ##insert user friend into database
 from db import get_db
 from typing import List, Dict
-
+from flask import session
 
 def insert_friend(userName: str, friendUserName: str):
     '''
@@ -20,23 +20,23 @@ def insert_friend(userName: str, friendUserName: str):
 
     try:
         cursor.execute("""
-    SELECT from userFriends WHERE userFriends = %s AND friendUserName = %s
-                """, (userName, friendUserName))
+    SELECT 1 from UserFriends WHERE (userName = %s AND friendUserName = %s) OR (userName = %s AND friendUserName = %s)
+                """, (userName, friendUserName, friendUserName, userName))
 
         if cursor.fetchone():
             return False ##if exists, return false'
         
         ##insert relationship
-        cursor.execute("""
+        cursor.executemany("""
             INSERT INTO UserFriends (userName, friendUserName)
-            VALUES (%s, %s), (%s, %s)
-        """, (userName, friendUserName, friendUserName, userName))
+            VALUES (%s, %s)
+        """, [(userName, friendUserName), (friendUserName, userName)])
 
         conn.commit()
         return True
 
     except Exception as e:
-        conn.rollback
+        conn.rollback()
         raise e 
     finally:
         cursor.close()
@@ -62,14 +62,13 @@ def delete_friend(userName: str, friendUserName: str):
     ##delete from a relationship
     try:
         cursor.execute("""
-    Delete from userFriends WHERE (userFriends = %s AND friendUserName = %s) OR (userFriends = %s AND friendUserName = %s)
+    Delete FROM UserFriends WHERE (userName = %s AND friendUserName = %s) OR (userName = %s AND friendUserName = %s)
                 """, (userName, friendUserName, friendUserName, userName))
 
         conn.commit()
-        return True
-
+        return cursor.rowcount > 0
     except Exception as e:
-        conn.rollback
+        conn.rollback()
         raise e 
     finally:
         cursor.close()
@@ -87,15 +86,18 @@ def get_friend(userName: str) -> List[Dict]:
 
     try:
         cursor.execute("""
-                        SELECT u.userName. u.spotifyId, u.profilePic, u.displayName FROM userFriends uf JOIN User u on uf.friendUserName = u.userName
-                        LEFT JOIN RecentlyPlayed rp ON u.userName = rp.userName
+                        SELECT u.userName, u.spotifyId, u.profilePicture, u.displayName
+                        FROM UserFriends uf
+                        JOIN User u ON uf.friendUserName = u.userName
                         WHERE uf.userName = %s
-                        GROUP BY u.userName, u.displayName, u.profilePicture, u.spotifyId
-                        ORDER BY lastActive DESC, u.displayName
+                        ORDER BY u.displayName
                     """, (userName,))
-        
+
         return cursor.fetchall()
-    except:
+    except Exception as e:
+        print(f"Error getting friends: {e}")
+        return []
+    finally:
         cursor.close()
         conn.close()
 
@@ -142,15 +144,14 @@ def get_top_songs(friendUserName: str, timeframe: str = 'short_term', limit: int
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
     try:
-        cursor.execute
-        ("""
+        cursor.execute("""
         SELECT
             ts.songName,
-            ts.artistName
-            ts.spotifyTrackId
-            ts.rank
-            ts.playCount
-            ts.imageUrl
+            ts.artistName,
+            ts.spotifyTrackId,
+            ts.rank,
+            ts.playCount,
+            ts.imageUrl,
             s.timeframe
         FROM topSong ts
         JOIN Stats s ON ts.statsID = s.uniqueID
@@ -178,8 +179,7 @@ def get_friend_top_artists(friendUserName: str, timeframe: str = 'short_term', l
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
     try:
-        cursor.execute
-        ("""
+        cursor.execute("""
         SELECT
              ta.artistName,
                 ta.spotifyArtistId,
@@ -235,7 +235,76 @@ def get_friend_top_albums(friendUserName: str, timeframe: str = 'short_term', li
         cursor.close()
         conn.close()
 
-         
-                    
+def get_friend_recently_played(friendUserName: str, limit: int = 50):
+    """
+    
+    Get a friend's complete profile with stats.
 
+    Args:
+        friendUserName: The friend's userName
+
+    Returns:
+        Dictionary with profile information or None if not found
+
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT
+            u.userName,
+            u.displayName,
+            u.profilePicture,
+            fs.songName as featuredSongName,
+            fs.artistName as featuredArtistName,
+            fs.imageUrl as featuredSongImage,
+            (SELECT COUNT(*) FROM RatedAlbum WHERE userName = u.userName) as ratedAlbumsCount,
+             (SELECT COUNT(*) FROM RatedSong WHERE userName = u.userName) as ratedSongsCount,
+                (SELECT MAX(playedAt) FROM RecentlyPlayed WHERE userName = u.userName) as lastActive
+            FROM User u
+            LEFT JOIN FeaturedSong fs ON u.userName = fs.userName
+            WHERE u.userName = %s
+            """, (friendUserName,))
+        return cursor.fetchone()
+    finally:
+            cursor.close()
+            conn.close()
+def search_users(SearchQuery: str, currentUserName: str, limit: int = 20) -> List[Dict]:
+    """
+    search for users by username or displayname 
+    Args: 
+    searchquery: searches 
+    currentusername: current users username
+    limit: maximum number of results
+    returns:
+    list of user dictionaries of friendship staus
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        search_pattern = f"{SearchQuery}%"
+
+        cursor.execute("""
+            SELECT
+            u.userName,
+            u.displayName,
+            u.profilePicture,
+            CASE
+                WHEN uf.friendUserName is NOT NULL THEN TRUE
+                ELSE FALSE
+            END as isFriend
+            FROM User u 
+            LEFT JOIN UserFriends uf 
+                ON u.userName = uf.friendUserName AND uf.userName = %s
+                       WHERE(u.userName LIKE %s OR u.displayName LIKE %s)
+                       AND u.userName != %s
+                       LIMIT %s
+                       """, (currentUserName, search_pattern, search_pattern, currentUserName, limit))
+        
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
                     
