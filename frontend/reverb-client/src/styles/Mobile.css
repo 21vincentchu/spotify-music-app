@@ -266,10 +266,10 @@
 .mobile-layout .home-page {
   display: flex !important;
   flex-direction: column !important;
-  align-items: stretch !important;
-  justify-content: flex-start !important;
-  gap: 32px !important;
-  width: 100% !important;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 32px;
+  width: 100%;
   height: calc(100vh - 120px);
 }
 
