@@ -5,7 +5,7 @@ import config from '../../config';
 
 
 
-function FriendComponentDesktop({friendData}) {
+function FriendComponentDesktop({friendData, onFriendAdded}) {
 
     useEffect(() => {
         console.log("Friend Data:", friendData);
@@ -21,6 +21,10 @@ function FriendComponentDesktop({friendData}) {
         })
         .then((response) => {
             console.log('Friend request sent:', response.data);
+            // Refresh the friends list after successfully adding a friend
+            if (response.data.success && onFriendAdded) {
+                onFriendAdded();
+            }
         })
         .catch((error) => {
             console.error('Error sending friend request:', error);

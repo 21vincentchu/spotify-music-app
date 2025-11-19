@@ -104,11 +104,15 @@ function FriendsPage() {
         {query.trim() && (
         searchResults.length > 0 ? (
             <div>
-              {searchResults.map((result, index) => ( 
-                <AddFriendComponentDesktop key={result.userName || index} friendData={result} />
+              {searchResults.map((result, index) => (
+                <AddFriendComponentDesktop
+                  key={result.userName || index}
+                  friendData={result}
+                  onFriendAdded={getFriendsList}
+                />
               ))}
 
-            </div>  
+            </div>
         ) : (
             <div>No search results</div>   // Shows when there are NO results
         )
