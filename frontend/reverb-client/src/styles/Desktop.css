@@ -96,6 +96,36 @@ nav {
     color: #1282A2;
   }
 
+  .splash-nav {
+    display: flex;
+    justify-content: space-between;  /* pushes left + right apart */
+    align-items: center;
+    padding: 1rem 2rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .splash-nav .nav-logo {
+    height: 48px;
+  }
+
+  .splash-nav .nav-links {
+    left: 90%;
+
+  }
+  
+  .splash-nav .nav-links a {
+    text-decoration: none;
+    color: black;
+    font-size: 1.1rem;
+  }
+  
+  .splash-nav .nav-links a.active {
+    font-weight: bold;
+    color: white;
+  }
+  
+
 /* SIGN IN PAGE-------------------------------------------------------------------------------------  */
 
 .signin-page {
@@ -193,6 +223,7 @@ nav {
     color: #999;
   }
 
+/* ABOUT PAGE ------------------------------------------------------------------------------------- */
 
 
 /* HOME PAGE ------------------------------------------------------------------------------------- */

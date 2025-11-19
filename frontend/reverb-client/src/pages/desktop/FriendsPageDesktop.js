@@ -3,10 +3,12 @@ import { useEffect, useState } from 'react';
 import config from '../../config';
 
 import FriendComponentDesktop from "../../components/desktop/FriendComponentDesktop";
+import AddFriendComponentDesktop from '../../components/desktop/AddFriendComponentDesktop';
 
 function FriendsPage() {
 
-  const [isLoadingData, setIsLoadingRecentData] = useState(true);
+  const [isLoadingFriends, setIsLoadingFriends] = useState(true);
+  const [isLoadingSearch, setIsLoadingSearch] = useState(false);
   const [friends, setFriends] = useState([]);
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -16,10 +18,24 @@ function FriendsPage() {
     getFriendsList();
   }, []);
 
+  useEffect(() => {
+    if (query.trim() === "") {
+      setSearchResults([]);   // clear results when field is empty
+      return;
+    }
+  
+    const delayDebounce = setTimeout(() => {
+      getSearchResults(query);
+    }, 300); // <— debounce so you don't spam the API
+  
+    return () => clearTimeout(delayDebounce);
+  }, [query]);
+  
+
 
   const getFriendsList = async () => {
-    setIsLoadingRecentData(true);
-    axios.get(`${config.API_URL}/api/friends/`, {
+    setIsLoadingFriends(true);
+    axios.get(`${config.API_URL}/api/friends`, {
         withCredentials: true
       })
       .then((response) => {
@@ -30,7 +46,7 @@ function FriendsPage() {
         console.error('Error fetching friends:', error);
       })
       .finally(() => {
-        setIsLoadingRecentData(false);
+        setIsLoadingFriends(false);
       });
   }
 
@@ -48,20 +64,16 @@ function FriendsPage() {
         console.error('Error fetching search results:', error);
       })
       .finally(() => {
-        setIsLoadingRecentData(false);
+        setIsLoadingSearch(false);
       });
   }
   
-
-
-
-
   return (
     <div className="page">
       <div className="data-container round-outline blue-box-shadow">
         <h2>Friends</h2>
         <div className="data-container-list">
-          {isLoadingData ? (
+          {isLoadingFriends ? (
             <p>Loading friends...</p>
           ) : friends.length > 0 ? (
             friends.map((friend, index) => (
@@ -89,10 +101,21 @@ function FriendsPage() {
               Search
           </button>
         </div>
+        {query.trim() && (
+        searchResults.length > 0 ? (
+            <div>
+              {searchResults.map((result, index) => ( 
+                <AddFriendComponentDesktop key={result.userName || index} friendData={result} />
+              ))}
+
+            </div>  
+        ) : (
+            <div>No search results</div>   // Shows when there are NO results
+        )
+    )}
+
+
       </div>
-      {/* {(searchResults.result.friends).map((friend, index) => (
-        <FriendComponentDesktop key={index} friend={friend} />
-      ))} */}
     </div>
   );
 }
