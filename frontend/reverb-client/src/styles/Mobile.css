@@ -277,13 +277,13 @@ h2 {
 /* ========================================================= */
 /* ======================== HOME PAGE ===================== */
 /* ========================================================= */
-.home-page {
-  display: flex !important;
+.mobile-layout .home-page {
+  display: flex;
   flex-direction: column !important;
-  align-items: stretch !important;
-  justify-content: flex-start !important;
-  gap: 32px !important;
-  width: 100% !important;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 32px;
+  width: 100%;
   height: calc(100vh - 120px);
 }
 
@@ -796,9 +796,3 @@ h2 {
   gap: 12px;
 }
 
-
-/* ========================================================= */
-/* ===================== CUSTOM SCROLLBAR ================= */
-*::-webkit-scrollbar-thumb {
-  background: red !important;
-}

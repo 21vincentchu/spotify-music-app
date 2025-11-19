@@ -227,7 +227,7 @@ nav {
 
 
 /* HOME PAGE ------------------------------------------------------------------------------------- */
-.home-page{
+.desktop-layout .home-page{
     display: flex;
     flex-direction: row;
     padding-top: 50px;
