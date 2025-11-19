@@ -4,6 +4,7 @@ import config from '../../config';
 
 import FriendComponentDesktop from "../../components/desktop/FriendComponentDesktop";
 import AddFriendComponentDesktop from '../../components/desktop/AddFriendComponentDesktop';
+import Footer from '../../components/shared/Footer';
 
 function FriendsPage() {
 
@@ -120,6 +121,7 @@ function FriendsPage() {
 
 
       </div>
+      <Footer />
     </div>
   );
 }

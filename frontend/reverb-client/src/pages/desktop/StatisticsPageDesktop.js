@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import SongComponent from '../../components/shared/SongComponent';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
+import Footer from '../../components/shared/Footer';
 import config from '../../config';
 
 function StatisticsPage() {
@@ -162,6 +163,7 @@ function StatisticsPage() {
           </button>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

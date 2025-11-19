@@ -225,6 +225,62 @@ nav {
 
 /* ABOUT PAGE ------------------------------------------------------------------------------------- */
 
+.about-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.about-section {
+  margin-bottom: 40px;
+}
+
+.about-section h1 {
+  color: #034078;
+  font-size: 2rem;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.about-section h2 {
+  color: #034078;
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  margin-top: 0;
+}
+
+.about-section p {
+  line-height: 1.6;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.about-section ul {
+  line-height: 1.8;
+  color: #333;
+  padding-left: 20px;
+}
+
+.about-section li {
+  margin-bottom: 10px;
+}
+
+.back-button {
+  background-color: #034078;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 30px;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #1282A2;
+}
+
 
 /* HOME PAGE ------------------------------------------------------------------------------------- */
 .desktop-layout .home-page{
@@ -453,7 +509,7 @@ nav {
     background: red !important;
   }
   .page {
-    height: calc(100vh-100px);
+    height: calc(100vh - 100px);
     display: flex;
     flex-direction: row;
     padding: 20px;
@@ -796,4 +852,55 @@ nav {
   .star-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  /* FOOTER -------------------------------------------------------------------------------------  */
+
+  .app-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background-color: transparent;
+    padding: 30px 0;
+    z-index: 1500;
+    box-sizing: border-box;
+  }
+
+  .footer-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #999;
+    width: 100%;
+    white-space: nowrap;
+  }
+
+  .footer-left {
+    position: absolute;
+    right: calc(50% + 50px);
+  }
+
+  .footer-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .footer-right {
+    position: absolute;
+    left: calc(50% + 50px);
+  }
+
+  .footer-link {
+    color: #034078;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-link:hover {
+    color: #1282A2;
   }

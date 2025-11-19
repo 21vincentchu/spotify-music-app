@@ -3,6 +3,7 @@ import LoadingSpinner from '../../components/shared/LoadingSpinner';
 import config from '../../config';
 
 import SongComponent from "../../components/shared/SongComponent";
+import Footer from "../../components/shared/Footer";
 import { useEffect, useState } from 'react';
 
 function HomeDesktop() {
@@ -135,10 +136,10 @@ function HomeDesktop() {
               </div>
             )}
           
-        </div>
-
+          </div>
+        <Footer />
     </div>
-    )   
+    )
 }
 
 export default HomeDesktop;

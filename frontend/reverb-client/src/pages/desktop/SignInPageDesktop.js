@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Link, NavLink } from "react-router-dom";
 import config from '../../config';
 
 import tempLogo from "../../assets/pngegg.png";
+import Footer from "../../components/shared/Footer";
 
 function SignInPage() {
 
@@ -32,14 +32,6 @@ function SignInPage() {
             <a href="/">
             <img src={tempLogo} className="nav-logo" alt="Logo" />
             </a>
-            <div className="nav-links">
-            <NavLink
-                to="/about"
-                className={({ isActive }) => (isActive ? "active" : "")}
-            >
-                About
-            </NavLink>
-            </div>
         </nav>
       <div className="signin-container round-outline blue-box-shadow">
         <div className="signin-content">
@@ -71,6 +63,7 @@ function SignInPage() {
           </p>
         </div>
       </div>
+      <Footer />
     </div>
     )
 }

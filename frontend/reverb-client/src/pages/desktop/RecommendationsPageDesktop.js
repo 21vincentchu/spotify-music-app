@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import SongComponent from '../../components/shared/SongComponent';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
+import Footer from '../../components/shared/Footer';
 import config from '../../config';
 
 function RecommendationsPage() {
@@ -315,6 +316,7 @@ function RecommendationsPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
