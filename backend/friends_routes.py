@@ -97,9 +97,26 @@ def friend_stats(friendUserName):
         if not friend_profile:
             return jsonify({'error': 'Friend not found'})
 
-        friend_songs = get_top_songs(friendUserName, timeframe, song_limit)
-        friend_albums = get_friend_top_albums(friendUserName, timeframe, song_limit)
-        friend_artists = get_friend_top_artists(friendUserName, timeframe, song_limit)
+        # Try to get top songs/artists/albums, but don't fail if tables don't exist
+        try:
+            friend_songs = get_top_songs(friendUserName, timeframe, song_limit)
+        except Exception as e:
+            print(f"Error fetching top songs: {e}")
+            friend_songs = []
+
+        try:
+            friend_albums = get_friend_top_albums(friendUserName, timeframe, song_limit)
+        except Exception as e:
+            print(f"Error fetching top albums: {e}")
+            friend_albums = []
+
+        try:
+            friend_artists = get_friend_top_artists(friendUserName, timeframe, song_limit)
+        except Exception as e:
+            print(f"Error fetching top artists: {e}")
+            friend_artists = []
+
+        # Get recent songs from Spotify API
         recent_songs = get_friend_recent_songs(friendUserName, song_limit)
 
         friend_profile.update({

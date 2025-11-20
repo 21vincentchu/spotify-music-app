@@ -96,6 +96,7 @@ function FriendsPage() {
       })
       .then((response) => {
         console.log('Friend Stats:', response.data);
+        console.log('Recent Songs:', response.data.recentSongs);
         setFriendStats(response.data);
       })
       .catch((error) => {
