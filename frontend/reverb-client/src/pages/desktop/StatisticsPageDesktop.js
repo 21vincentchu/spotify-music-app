@@ -120,7 +120,7 @@ function StatisticsPage() {
           </button>
         </div>
         <div className="stats-data round-outline blue-box-shadow">
-
+            <h2>Top {category.charAt(0).toUpperCase() + category.slice(1)}</h2>
             <div className='song-list'>
               {loading ? (
             <LoadingSpinner message="Loading statistics..." />
@@ -130,7 +130,7 @@ function StatisticsPage() {
                 <p style={{ fontSize: '14px' }}>This may take 2-3 minutes. Your songs and artists are ready to view!</p>
               </div>
             ) : (
-            songs.slice(0, 10).map((song, index) => (
+            songs.slice(0, 150).map((song, index) => (
                 <SongComponent
                   key={song.id || index}
                   songData={song}

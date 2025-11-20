@@ -36,6 +36,25 @@ function AboutPage() {
             <div className="about-section">
                 <h2>Privacy & Security</h2>
                 <p>We use Spotify's secure OAuth 2.0 authentication to access your listening data. We never store your Spotify password, and you can revoke access at any time through your Spotify account settings.</p>
+                <p>For more information about how Spotify handles your data, please review{' '}
+                    <a
+                        href="https://www.spotify.com/us/privacy"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="spotify-link"
+                    >
+                        Spotify's Privacy Policy
+                    </a>
+                    {' '}and{' '}
+                    <a
+                        href="https://www.spotify.com/us/legal/privacy-policy/#s3"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="spotify-link"
+                    >
+                        Third-Party Application Privacy
+                    </a>.
+                </p>
             </div>
 
             <div className="about-section">
