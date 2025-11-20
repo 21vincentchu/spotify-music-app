@@ -312,10 +312,10 @@ nav {
   }
   
   .home-recommended-songs {
-    flex: 1; 
-    overflow-y: auto; 
-    padding-right: 8px; 
-    width: 95%;
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+    width: 100%;
     padding-bottom: 10px;
     display: flex;
     flex-direction: column;
@@ -406,13 +406,17 @@ nav {
   
   .stats-data {
     flex: 1; /* Takes up remaining space */
-    overflow-y: visible;
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow: hidden;
     padding: 20px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
   }
 
   .stats-data .song-list{
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -459,7 +463,7 @@ nav {
     flex: 1;
     overflow-y: auto;
     padding-right: 8px;
-    width: 95%;
+    width: 100%;
     padding-bottom: 10px;
     display: flex;
     flex-direction: column;
@@ -521,7 +525,7 @@ nav {
     flex: 1;
     overflow-y: auto;
     padding-right: 8px;
-    width: 95%;
+    width: 100%;
     padding-bottom: 10px;
     display: flex;
     flex-direction: column;
@@ -552,8 +556,22 @@ nav {
     margin: 0 0 10px 0;
   }
 
+  *::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
   *::-webkit-scrollbar-thumb {
-    background: red !important;
+    background: #888;
+    border-radius: 10px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: #555;
   }
   .desktop-layout .page {
     height: 100vh;
