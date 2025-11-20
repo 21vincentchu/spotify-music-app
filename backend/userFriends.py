@@ -237,7 +237,7 @@ def get_friend_top_albums(friendUserName: str, timeframe: str = 'short_term', li
 
 def get_friend_recently_played(friendUserName: str, limit: int = 50):
     """
-    
+
     Get a friend's complete profile with stats.
 
     Args:
@@ -270,6 +270,38 @@ def get_friend_recently_played(friendUserName: str, limit: int = 50):
     finally:
             cursor.close()
             conn.close()
+
+def get_friend_recent_songs(friendUserName: str, limit: int = 50) -> List[Dict]:
+    """
+    Get a friend's recently played songs from the RecentlyPlayed table.
+
+    Args:
+        friendUserName: The friend's userName
+        limit: Maximum number of songs to return
+
+    Returns:
+        List of recently played songs with details
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT
+                songName,
+                artistName,
+                albumName,
+                spotifyTrackId,
+                playedAt
+            FROM RecentlyPlayed
+            WHERE userName = %s
+            ORDER BY playedAt DESC
+            LIMIT %s
+        """, (friendUserName, limit))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
 def search_users(SearchQuery: str, currentUserName: str, limit: int = 20) -> List[Dict]:
     """
     search for users by username or displayname 

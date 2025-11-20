@@ -7,6 +7,7 @@ from userFriends import (insert_friend,
     get_friend_top_artists,
     get_friend_top_albums,
     get_friend_recently_played,
+    get_friend_recent_songs,
     search_users
 )
 
@@ -95,20 +96,22 @@ def friend_stats(friendUserName):
 
         if not friend_profile:
             return jsonify({'error': 'Friend not found'})
-        
+
         friend_songs = get_top_songs(friendUserName, timeframe, song_limit)
         friend_albums = get_friend_top_albums(friendUserName, timeframe, song_limit)
         friend_artists = get_friend_top_artists(friendUserName, timeframe, song_limit)
+        recent_songs = get_friend_recent_songs(friendUserName, song_limit)
 
         friend_profile.update({
             'timeframe': timeframe,
             'topSongs': friend_songs,
             'topArtists': friend_artists,
-            'topAlbums': friend_albums
+            'topAlbums': friend_albums,
+            'recentSongs': recent_songs
         })
 
         return jsonify(friend_profile)
-    
+
     except Exception as e:
         print(f"Error fetching friend profile: {e}")
         return jsonify({'error': str(e)})

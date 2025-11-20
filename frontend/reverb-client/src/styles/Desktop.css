@@ -947,6 +947,119 @@ nav {
     padding: 10px;
     border: none;
     box-shadow: none;
+    transition: background-color 0.2s, transform 0.1s;
+  }
+
+  .desktop-layout .friend-component:hover {
+    background-color: #e8e8e8;
+    transform: translateX(2px);
+  }
+
+  .desktop-layout .friend-component.selected {
+    background-color: #1282A2;
+    color: white;
+  }
+
+  .desktop-layout .friend-component.selected .friend-name,
+  .desktop-layout .friend-component.selected .friend-user {
+    color: white;
+  }
+
+  .friends-stats-container {
+    width: 40vw;
+    height: 80vh;
+    margin: 5%;
+    padding: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stats-placeholder,
+  .stats-loading,
+  .stats-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: #666;
+    font-size: 1.1rem;
+  }
+
+  .stats-header {
+    flex-shrink: 0;
+    margin: 0 0 15px 0;
+  }
+
+  .stats-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+
+  .stats-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+  }
+
+  .recent-songs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .recent-song-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background-color: #F8F8F8;
+    border-radius: 12px;
+    transition: background-color 0.2s;
+  }
+
+  .recent-song-item:hover {
+    background-color: #e8e8e8;
+  }
+
+  .song-rank {
+    font-weight: bold;
+    color: #034078;
+    min-width: 30px;
+  }
+
+  .song-info {
+    flex: 1;
+  }
+
+  .song-name {
+    font-weight: bold;
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+  }
+
+  .song-artist {
+    color: #666;
+    margin: 0 0 4px 0;
+    font-size: 0.9rem;
+  }
+
+  .song-time {
+    color: #999;
+    margin: 0;
+    font-size: 0.85rem;
+  }
+
+  .ratings-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    text-align: center;
+    color: #999;
+    font-size: 1.2rem;
+    font-style: italic;
   }
 
   /* Legacy data-container support */
