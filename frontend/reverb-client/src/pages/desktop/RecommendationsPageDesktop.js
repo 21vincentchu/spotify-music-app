@@ -297,6 +297,17 @@ function RecommendationsPage() {
                         <div key={artist.featuredArtistId || artistIndex} className="featured-artist-display">
                           <img src={artist.imageUrl} alt={artist.artistName} className="artist-image circle" />
                           <span className="artist-name">{artist.artistName}</span>
+                          {artist.spotifyArtistId && (
+                            <a
+                              href={`https://open.spotify.com/artist/${artist.spotifyArtistId}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="play-button"
+                              title="Open in Spotify"
+                            >
+                              ▶
+                            </a>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -325,6 +336,17 @@ function RecommendationsPage() {
                             <span className="album-name">{album.albumName}</span>
                             <span className="album-artist">{album.artistName}</span>
                           </div>
+                          {album.spotifyAlbumId && (
+                            <a
+                              href={`https://open.spotify.com/album/${album.spotifyAlbumId}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="play-button"
+                              title="Open in Spotify"
+                            >
+                              ▶
+                            </a>
+                          )}
                         </div>
                       ))}
                     </div>
