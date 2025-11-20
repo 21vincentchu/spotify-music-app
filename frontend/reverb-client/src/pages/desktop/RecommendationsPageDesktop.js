@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import SongComponent from '../../components/shared/SongComponent';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
 import Footer from '../../components/shared/Footer';
@@ -16,6 +16,10 @@ function RecommendationsPage() {
   const [loadingFriendsFeatured, setLoadingFriendsFeatured] = useState(true);
   const [myFeaturedTab, setMyFeaturedTab] = useState('songs');
   const [friendsFeaturedTab, setFriendsFeaturedTab] = useState('songs');
+  const [friends, setFriends] = useState([]);
+  const [selectedFriends, setSelectedFriends] = useState([]);
+  const [showFriendFilter, setShowFriendFilter] = useState(false);
+  const filterRef = useRef(null);
 
   useEffect(() => {
     fetchMyFeaturedSongs();
@@ -24,7 +28,36 @@ function RecommendationsPage() {
     fetchFriendsFeaturedSongs();
     fetchFriendsFeaturedArtists();
     fetchFriendsFeaturedAlbums();
+    fetchFriends();
   }, []);
+
+  // Close filter dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setShowFriendFilter(false);
+      }
+    };
+
+    if (showFriendFilter) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showFriendFilter]);
+
+  const fetchFriends = async () => {
+    try {
+      const response = await axios.get(`${config.API_URL}/api/friends/`, {
+        withCredentials: true
+      });
+      setFriends(response.data.friends || []);
+    } catch (error) {
+      console.error('Error fetching friends:', error);
+    }
+  };
 
   const fetchMyFeaturedSongs = async () => {
     setLoadingMyFeatured(true);
@@ -108,10 +141,29 @@ function RecommendationsPage() {
     }
   };
 
+  const toggleFriendSelection = (userName) => {
+    setSelectedFriends(prev => {
+      if (prev.includes(userName)) {
+        return prev.filter(u => u !== userName);
+      } else {
+        return [...prev, userName];
+      }
+    });
+  };
+
+  const clearFriendFilter = () => {
+    setSelectedFriends([]);
+  };
+
   // Group items by friend
   const groupByFriend = (items) => {
+    // Filter items if friends are selected
+    const filteredItems = selectedFriends.length > 0
+      ? items.filter(item => selectedFriends.includes(item.userName))
+      : items;
+
     const grouped = {};
-    items.forEach(item => {
+    filteredItems.forEach(item => {
       const key = item.userName || item.displayName;
       if (!grouped[key]) {
         grouped[key] = {
@@ -228,7 +280,7 @@ function RecommendationsPage() {
         <div className="friends-featured-section round-outline blue-box-shadow">
           <h2>Friends' Featured</h2>
 
-          {/* Tab Buttons */}
+          {/* Tab Buttons with Filter */}
           <div className="featured-tabs">
             <button
               className={friendsFeaturedTab === 'songs' ? 'active' : ''}
@@ -248,6 +300,42 @@ function RecommendationsPage() {
             >
               Albums
             </button>
+            <div className="filter-container" ref={filterRef}>
+              <button
+                className="filter-button"
+                onClick={() => setShowFriendFilter(!showFriendFilter)}
+                title="Filter friends"
+              >
+                <svg className="filter-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 4H21V6.5L14 13.5V20L10 22V13.5L3 6.5V4Z" fill="currentColor"/>
+                </svg>
+                {selectedFriends.length > 0 && <span className="filter-count">{selectedFriends.length}</span>}
+              </button>
+              {showFriendFilter && (
+                <div className="filter-dropdown">
+                  <div className="filter-dropdown-header">
+                    <span>Select Friends</span>
+                    {selectedFriends.length > 0 && (
+                      <button className="clear-filter-btn" onClick={clearFriendFilter}>
+                        Clear All
+                      </button>
+                    )}
+                  </div>
+                  <div className="filter-options">
+                    {friends.map(friend => (
+                      <label key={friend.userName} className="filter-option">
+                        <input
+                          type="checkbox"
+                          checked={selectedFriends.includes(friend.userName)}
+                          onChange={() => toggleFriendSelection(friend.userName)}
+                        />
+                        <span>{friend.displayName || friend.userName}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Tab Content */}

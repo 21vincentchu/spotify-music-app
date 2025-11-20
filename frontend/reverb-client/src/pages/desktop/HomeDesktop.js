@@ -88,7 +88,21 @@ function HomeDesktop() {
         if (item.spotifyAlbumId) return isAlbumFeatured(item.spotifyAlbumId);
         return false;
     };
-    
+
+    const getRelativeTime = (playedAt) => {
+        const now = new Date();
+        const played = new Date(playedAt);
+        const diffInMs = now - played;
+        const diffInMinutes = Math.floor(diffInMs / 60000);
+        const diffInHours = Math.floor(diffInMs / 3600000);
+        const diffInDays = Math.floor(diffInMs / 86400000);
+
+        if (diffInMinutes < 1) return 'Just now';
+        if (diffInMinutes < 60) return `${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`;
+        if (diffInHours < 24) return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`;
+        return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`;
+    };
+
 
   return (
     <div className="home-page">
@@ -98,15 +112,27 @@ function HomeDesktop() {
             {isLoadingRecentData ? (
             <LoadingSpinner message="Loading statistics..." />
             ) : (
-            recentData.top_songs.slice(0, 50).map((song, index) => (
-                <div key={song.id || index}>
-                    <SongComponent
-                        songData={song}
-                        showStar={true}
-                        isFeatured={getIsFeatured(song)}
-                    />
-                </div>
-            ))
+            recentData.recent_tracks.map((item, index) => {
+                const track = item.track;
+                const songData = {
+                    songName: track.name,
+                    artistName: track.artists?.[0]?.name || 'Unknown Artist',
+                    spotifyTrackId: track.id,
+                    imageUrl: track.album?.images?.[0]?.url,
+                    playedAt: item.played_at,
+                    rank: index + 1
+                };
+                return (
+                    <div key={`${track.id}-${index}`}>
+                        <SongComponent
+                            songData={songData}
+                            showStar={true}
+                            isFeatured={getIsFeatured(songData)}
+                            timestamp={getRelativeTime(item.played_at)}
+                        />
+                    </div>
+                );
+            })
             )}
             </div>
         </div>

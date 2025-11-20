@@ -72,7 +72,10 @@ function FriendsPage() {
   return (
     <div className="friends-page">
       <div className="friends-list-container round-outline blue-box-shadow">
-        <h2>Friends</h2>
+        <div className="friends-header">
+          <h2>Friends</h2>
+          <span className="friend-count">{friends.length} {friends.length === 1 ? 'friend' : 'friends'}</span>
+        </div>
         <div className="data-container-list">
           {isLoadingFriends ? (
             <p>Loading friends...</p>
