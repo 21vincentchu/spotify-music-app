@@ -8,7 +8,8 @@ from userFriends import (insert_friend,
     get_friend_top_albums,
     get_friend_recently_played,
     get_friend_recent_songs,
-    search_users
+    search_users,
+    is_friend
 )
 
 friends_bp = Blueprint('friends_bp', __name__, url_prefix='/api/friends')
@@ -55,7 +56,7 @@ def remove_friend():
     data = request.get_json()
     friendUserName = data.get('friendUserName')
 
-    if not userName or friendUserName:
+    if not userName or not friendUserName:
         return jsonify({'error': 'Missing username or friendUserName'})
     try:
         successful_deletion = delete_friend(userName, friendUserName)
@@ -87,6 +88,13 @@ def friend_stats(friendUserName):
     Gets a friend's stats including top songs, artists, albums as well as recently played
     params include timeframe and limit
     """
+    userName = session.get('userName')
+    if not userName:
+        return jsonify({'error': 'Not authenticated'}), 401
+
+    # Check if the logged-in user has added this person as a friend
+    if not is_friend(userName, friendUserName):
+        return jsonify({'error': 'You must add this user as a friend to view their stats'}), 403
 
     timeframe = request.args.get('timeframe', 'short_term')
     song_limit = int(request.args.get('limit', 10))

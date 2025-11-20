@@ -976,6 +976,61 @@ nav {
     color: white;
   }
 
+  /* Add/Remove Friend Button Styles */
+  .friend-component button,
+  .remove-friend-btn,
+  .add-friend-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+  }
+
+  .remove-friend-btn {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  .remove-friend-btn:hover {
+    background-color: #c82333;
+    transform: scale(1.02);
+  }
+
+  .friend-component button {
+    background-color: #1282A2;
+    color: white;
+  }
+
+  .friend-component button:hover {
+    background-color: #034078;
+    transform: scale(1.02);
+  }
+
+  .friend-component .added-btn {
+    background-color: #28a745;
+    color: white;
+    cursor: default;
+    opacity: 0.9;
+  }
+
+  .friend-component .added-btn:hover {
+    background-color: #28a745;
+    transform: none;
+  }
+
+  .desktop-layout .friend-component.selected .remove-friend-btn {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid white;
+  }
+
+  .desktop-layout .friend-component.selected .remove-friend-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
   .friends-stats-container {
     width: 40vw;
     height: 80vh;

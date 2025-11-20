@@ -112,6 +112,36 @@ function FriendsPage() {
     setActiveTab('recents');
     getFriendStats(friend.userName);
   }
+
+  const handleRemoveFriend = async (friendUserName) => {
+    try {
+      const response = await axios.post(`${config.API_URL}/api/friends/remove`, {
+        friendUserName: friendUserName
+      }, {
+        withCredentials: true
+      });
+
+      if (response.data.success) {
+        // If we removed the currently selected friend, clear the selection
+        if (selectedFriend?.userName === friendUserName) {
+          setSelectedFriend(null);
+          setFriendStats(null);
+        }
+        // Refresh the friends list
+        getFriendsList();
+      }
+    } catch (error) {
+      console.error('Error removing friend:', error);
+    }
+  }
+
+  const handleFriendAdded = () => {
+    // Refresh both the friends list AND search results
+    getFriendsList();
+    if (query.trim()) {
+      getSearchResults(query);
+    }
+  }
   
   return (
     <div className="friends-page">
@@ -144,7 +174,7 @@ function FriendsPage() {
                 <AddFriendComponentDesktop
                   key={result.userName || index}
                   friendData={result}
-                  onFriendAdded={getFriendsList}
+                  onFriendAdded={handleFriendAdded}
                 />
               ))}
             </div>
@@ -164,6 +194,7 @@ function FriendsPage() {
                   friendData={friend}
                   onClick={() => handleFriendClick(friend)}
                   isSelected={selectedFriend?.userName === friend.userName}
+                  onRemoveFriend={handleRemoveFriend}
                 />
               ))
             ) : (

@@ -23,17 +23,17 @@ def insert_friend(userName: str, friendUserName: str):
 
     try:
         cursor.execute("""
-    SELECT 1 from UserFriends WHERE (userName = %s AND friendUserName = %s) OR (userName = %s AND friendUserName = %s)
-                """, (userName, friendUserName, friendUserName, userName))
+    SELECT 1 from UserFriends WHERE userName = %s AND friendUserName = %s
+                """, (userName, friendUserName))
 
         if cursor.fetchone():
             return False ##if exists, return false'
-        
-        ##insert relationship
-        cursor.executemany("""
+
+        ##insert one-directional relationship
+        cursor.execute("""
             INSERT INTO UserFriends (userName, friendUserName)
             VALUES (%s, %s)
-        """, [(userName, friendUserName), (friendUserName, userName)])
+        """, (userName, friendUserName))
 
         conn.commit()
         return True
@@ -62,11 +62,11 @@ def delete_friend(userName: str, friendUserName: str):
     cursor = conn.cursor()
 
         
-    ##delete from a relationship
+    ##delete from a relationship (one-directional)
     try:
         cursor.execute("""
-    Delete FROM UserFriends WHERE (userName = %s AND friendUserName = %s) OR (userName = %s AND friendUserName = %s)
-                """, (userName, friendUserName, friendUserName, userName))
+    Delete FROM UserFriends WHERE userName = %s AND friendUserName = %s
+                """, (userName, friendUserName))
 
         conn.commit()
         return cursor.rowcount > 0
@@ -104,7 +104,31 @@ def get_friend(userName: str) -> List[Dict]:
         cursor.close()
         conn.close()
 
-## check friendship 
+## check friendship
+def is_friend(userName: str, friendUserName: str) -> bool:
+    """
+    Check if userName has added friendUserName as a friend
+
+    Args:
+        userName: The user who may have added the friend
+        friendUserName: The potential friend
+
+    Returns:
+        bool: True if userName has added friendUserName, False otherwise
+    """
+    conn = get_db()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            SELECT 1 FROM UserFriends
+            WHERE userName = %s AND friendUserName = %s
+        """, (userName, friendUserName))
+
+        return cursor.fetchone() is not None
+    finally:
+        cursor.close()
+        conn.close()
 
 
 ##gets friend count 
