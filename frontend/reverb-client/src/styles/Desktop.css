@@ -547,7 +547,7 @@ nav {
     flex: 1;
     margin: 5%;
     padding: 20px;
-    overflow-y: visible;
+    overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
@@ -592,7 +592,7 @@ nav {
 
   .featured-section .song-list {
     flex: 1;
-    overflow-y: visible;
+    overflow-y: auto;
     overflow-x: hidden;
     padding-right: 8px;
   }
@@ -606,7 +606,7 @@ nav {
 
   .friends-feed {
     flex: 1;
-    overflow-y: visible;
+    overflow-y: auto;
     padding-right: 8px;
     display: flex;
     flex-direction: column;
