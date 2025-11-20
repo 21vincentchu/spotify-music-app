@@ -225,10 +225,18 @@ nav {
 
 /* ABOUT PAGE ------------------------------------------------------------------------------------- */
 
+.desktop-layout .about-page {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
 .about-content {
   max-width: 800px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 20px;
+  overflow-y: auto;
+  height: calc(100vh - 60px);
 }
 
 .about-section {
@@ -934,11 +942,201 @@ nav {
   }
 
   .desktop-layout .friend-component {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     background-color: #F8F8F8;
     border-radius: 12px;
     padding: 10px;
     border: none;
     box-shadow: none;
+    transition: background-color 0.2s, transform 0.1s;
+  }
+
+  .friend-component .circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .desktop-layout .friend-component:hover {
+    background-color: #e8e8e8;
+    transform: translateX(2px);
+  }
+
+  .desktop-layout .friend-component.selected {
+    background-color: #1282A2;
+    color: white;
+  }
+
+  .desktop-layout .friend-component.selected .friend-name,
+  .desktop-layout .friend-component.selected .friend-user {
+    color: white;
+  }
+
+  /* Add/Remove Friend Button Styles */
+  .friend-component button,
+  .remove-friend-btn,
+  .add-friend-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+  }
+
+  .remove-friend-btn {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  .remove-friend-btn:hover {
+    background-color: #c82333;
+    transform: scale(1.02);
+  }
+
+  .friend-component button {
+    background-color: #1282A2;
+    color: white;
+  }
+
+  .friend-component button:hover {
+    background-color: #034078;
+    transform: scale(1.02);
+  }
+
+  .friend-component .added-btn {
+    background-color: #28a745;
+    color: white;
+    cursor: default;
+    opacity: 0.9;
+  }
+
+  .friend-component .added-btn:hover {
+    background-color: #28a745;
+    transform: none;
+  }
+
+  .desktop-layout .friend-component.selected .remove-friend-btn {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid white;
+  }
+
+  .desktop-layout .friend-component.selected .remove-friend-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .friends-stats-container {
+    width: 40vw;
+    height: 80vh;
+    margin: 5%;
+    padding: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stats-placeholder,
+  .stats-loading,
+  .stats-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: #666;
+    font-size: 1.1rem;
+  }
+
+  .stats-header {
+    flex-shrink: 0;
+    margin: 0 0 15px 0;
+  }
+
+  .stats-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+
+  .stats-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+  }
+
+  .recent-songs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .recent-song-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background-color: #F8F8F8;
+    border-radius: 12px;
+    transition: background-color 0.2s;
+  }
+
+  .recent-song-item:hover {
+    background-color: #e8e8e8;
+  }
+
+  .song-rank {
+    font-weight: bold;
+    color: #034078;
+    min-width: 30px;
+    flex-shrink: 0;
+  }
+
+  .song-album-cover {
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .song-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .song-name {
+    font-weight: bold;
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+  }
+
+  .song-artist {
+    color: #666;
+    margin: 0 0 4px 0;
+    font-size: 0.9rem;
+  }
+
+  .song-time {
+    color: #999;
+    margin: 0;
+    font-size: 0.85rem;
+  }
+
+  .ratings-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    text-align: center;
+    color: #999;
+    font-size: 1.2rem;
+    font-style: italic;
   }
 
   /* Legacy data-container support */
@@ -1206,6 +1404,37 @@ nav {
     background: #f8f9fa;
     border-radius: 12px;
     text-align: left;
+  }
+
+  .friend-component .friend-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    gap: 2px;
+  }
+
+  .friend-component .friend-name {
+    font-weight: bold;
+    color: #034078;
+    font-size: 16px;
+    margin: 0;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .friend-component .friend-user {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .friend-info {

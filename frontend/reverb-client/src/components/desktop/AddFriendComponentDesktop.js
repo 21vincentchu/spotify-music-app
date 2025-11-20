@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import axios from 'axios';
 import config from '../../config';
@@ -7,12 +7,17 @@ import config from '../../config';
 
 function FriendComponentDesktop({friendData, onFriendAdded}) {
 
+    const [isAdded, setIsAdded] = useState(false);
+
     useEffect(() => {
         console.log("Friend Data:", friendData);
+        // Reset isAdded when friendData changes (e.g., search results refresh)
+        setIsAdded(friendData?.isFriend !== 0);
     },[friendData]);
 
     function handleAddFriend() {
         console.log(`Sending friend request to ${friendData.userName}`);
+        setIsAdded(true);
 
         axios.post(`${config.API_URL}/api/friends/add`,{
             friendUserName: friendData.userName
@@ -28,6 +33,7 @@ function FriendComponentDesktop({friendData, onFriendAdded}) {
         })
         .catch((error) => {
             console.error('Error sending friend request:', error);
+            setIsAdded(false); // Reset on error
         });
     }
     if (!friendData) return null;
@@ -44,12 +50,11 @@ function FriendComponentDesktop({friendData, onFriendAdded}) {
                 <p className="friend-user">@{friendData?.userName}</p>
             </div>
             <div>
-                {friendData?.isFriend == 0 && (
-                    <div>
-                        <button onClick={handleAddFriend}>Add</button>
-                    </div>
+                {!isAdded ? (
+                    <button onClick={handleAddFriend}>Add</button>
+                ) : (
+                    <button disabled className="added-btn">Added!</button>
                 )}
-                
             </div>
         </div>
       )}

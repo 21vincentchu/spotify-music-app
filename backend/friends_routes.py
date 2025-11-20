@@ -7,7 +7,9 @@ from userFriends import (insert_friend,
     get_friend_top_artists,
     get_friend_top_albums,
     get_friend_recently_played,
-    search_users
+    get_friend_recent_songs,
+    search_users,
+    is_friend
 )
 
 friends_bp = Blueprint('friends_bp', __name__, url_prefix='/api/friends')
@@ -54,7 +56,7 @@ def remove_friend():
     data = request.get_json()
     friendUserName = data.get('friendUserName')
 
-    if not userName or friendUserName:
+    if not userName or not friendUserName:
         return jsonify({'error': 'Missing username or friendUserName'})
     try:
         successful_deletion = delete_friend(userName, friendUserName)
@@ -86,6 +88,13 @@ def friend_stats(friendUserName):
     Gets a friend's stats including top songs, artists, albums as well as recently played
     params include timeframe and limit
     """
+    userName = session.get('userName')
+    if not userName:
+        return jsonify({'error': 'Not authenticated'}), 401
+
+    # Check if the logged-in user has added this person as a friend
+    if not is_friend(userName, friendUserName):
+        return jsonify({'error': 'You must add this user as a friend to view their stats'}), 403
 
     timeframe = request.args.get('timeframe', 'short_term')
     song_limit = int(request.args.get('limit', 10))
@@ -95,20 +104,39 @@ def friend_stats(friendUserName):
 
         if not friend_profile:
             return jsonify({'error': 'Friend not found'})
-        
-        friend_songs = get_top_songs(friendUserName, timeframe, song_limit)
-        friend_albums = get_friend_top_albums(friendUserName, timeframe, song_limit)
-        friend_artists = get_friend_top_artists(friendUserName, timeframe, song_limit)
+
+        # Try to get top songs/artists/albums, but don't fail if tables don't exist
+        try:
+            friend_songs = get_top_songs(friendUserName, timeframe, song_limit)
+        except Exception as e:
+            print(f"Error fetching top songs: {e}")
+            friend_songs = []
+
+        try:
+            friend_albums = get_friend_top_albums(friendUserName, timeframe, song_limit)
+        except Exception as e:
+            print(f"Error fetching top albums: {e}")
+            friend_albums = []
+
+        try:
+            friend_artists = get_friend_top_artists(friendUserName, timeframe, song_limit)
+        except Exception as e:
+            print(f"Error fetching top artists: {e}")
+            friend_artists = []
+
+        # Get recent songs from Spotify API
+        recent_songs = get_friend_recent_songs(friendUserName, song_limit)
 
         friend_profile.update({
             'timeframe': timeframe,
             'topSongs': friend_songs,
             'topArtists': friend_artists,
-            'topAlbums': friend_albums
+            'topAlbums': friend_albums,
+            'recentSongs': recent_songs
         })
 
         return jsonify(friend_profile)
-    
+
     except Exception as e:
         print(f"Error fetching friend profile: {e}")
         return jsonify({'error': str(e)})
