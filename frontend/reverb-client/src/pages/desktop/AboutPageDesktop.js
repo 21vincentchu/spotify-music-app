@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import tempLogo from "../../assets/pngegg.png";
 import Footer from "../../components/shared/Footer";
 
 function AboutPage() {
@@ -7,12 +6,6 @@ function AboutPage() {
 
   return (
     <div className="about-page page">
-      {/* Navigation */}
-        <nav className="splash-nav">
-            <a href="/">
-            <img src={tempLogo} className="nav-logo" alt="Logo" />
-            </a>
-        </nav>
         <div className="about-content">
             <button onClick={() => navigate('/home')} className="back-button">
               ← Back to Home
