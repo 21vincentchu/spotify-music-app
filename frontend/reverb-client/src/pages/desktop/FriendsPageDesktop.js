@@ -208,6 +208,13 @@ function FriendsPage() {
                     friendStats.recentSongs.map((song, index) => (
                       <div key={index} className="recent-song-item">
                         <span className="song-rank">#{index + 1}</span>
+                        {song.imageUrl && (
+                          <img
+                            src={song.imageUrl}
+                            alt={song.albumName}
+                            className="song-album-cover"
+                          />
+                        )}
                         <div className="song-info">
                           <p className="song-name">{song.songName}</p>
                           <p className="song-artist">{song.artistName}</p>
