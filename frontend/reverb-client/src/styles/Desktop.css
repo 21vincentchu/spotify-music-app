@@ -1001,3 +1001,46 @@ nav {
   .footer-link:hover {
     color: #1282A2;
   }
+
+  /* RATINGS -------------------------------------------------------------------------------------  */
+
+  .recommendations-page {
+    position: relative;
+  }
+
+  .ratings-container {
+    width: 40vw;
+    height: 80vh;
+    margin: auto;
+    padding: 10px;
+    overflow: hidden;
+    background-color: white;
+  }
+
+  .type-tabs{
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+    z-index: -10;
+    position: absolute;
+    left: calc(30vw - 60px);
+    top: calc(10vh + 120px);
+  }
+
+  .type-tabs .type-button{
+    padding: 10px 20px;
+    background-color: white;
+    border: 1px solid black;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    cursor: pointer;
+    transform: rotate(-90deg);
+    white-space: nowrap;
+    transition: all 0.2s;
+    /* margin: 50px 0px; */
+  }
+
+  .type-tabs .type-button:hover{
+    background-color: #f0f0f0;
+    color: #1282A2;
+  }
