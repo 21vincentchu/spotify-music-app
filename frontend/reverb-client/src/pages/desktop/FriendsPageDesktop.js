@@ -70,8 +70,8 @@ function FriendsPage() {
   }
   
   return (
-    <div className="page">
-      <div className="data-container round-outline blue-box-shadow">
+    <div className="friends-page">
+      <div className="friends-list-container round-outline blue-box-shadow">
         <h2>Friends</h2>
         <div className="data-container-list">
           {isLoadingFriends ? (
@@ -85,26 +85,26 @@ function FriendsPage() {
           )}
         </div>
       </div>
-      <div className="data-container round-outline blue-box-shadow">
+      <div className="friends-search-container round-outline blue-box-shadow">
         <div className="search-bar">
           <div className="search-input-container round-outline">
-            <input 
+            <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              type="text" 
-              placeholder="Search username..." 
-              className="search-input round-outline" 
+              type="text"
+              placeholder="Search username..."
+              className="search-input round-outline"
             />
           </div>
-          
-          <button className="search-button round-outline" 
+
+          <button className="search-button round-outline"
             onClick={() => getSearchResults(query)}>
               Search
           </button>
         </div>
         {query.trim() && (
         searchResults.length > 0 ? (
-            <div>
+            <div className="search-results-list">
               {searchResults.map((result, index) => (
                 <AddFriendComponentDesktop
                   key={result.userName || index}

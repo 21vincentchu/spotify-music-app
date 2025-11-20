@@ -432,91 +432,136 @@ nav {
 
   /* FRIENDS PAGE -------------------------------------------------------------------------------------  */
 
+  .desktop-layout .friends-page {
+    display: flex;
+    flex-direction: row;
+    padding-top: 50px;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .friends-list-container {
+    width: 40vw;
+    height: 80vh;
+    margin: 5%;
+    padding: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .friends-list-container h2 {
+    flex-shrink: 0;
+    margin: 0 0 10px 0;
+  }
+
+  .data-container-list {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+    width: 95%;
+    padding-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .friends-search-container {
+    width: 40vw;
+    height: 80vh;
+    margin: 5%;
+    padding: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
 
   .search-bar {
     display: flex;
     align-items: center;
     gap: 10px;
-    width: 90%;
+    width: 100%;
     height: 50px;
-    margin: 10px auto;   
-    overflow: hidden;       
-    padding: 0 5px; /* optional inner padding */
+    margin: 0 0 10px 0;
+    flex-shrink: 0;
   }
-  
 
-  .search-input-container{
+  .search-input-container {
     flex: 5;
-    height: 90%;
+    height: 100%;
     display: flex;
     justify-content: center;
   }
 
   .desktop-layout .search-input {
     margin: auto;
-    padding: 10px 15px;
     border: none;
     outline: none;
     font-size: 1rem;
     width: 95%;
-    overflow-y: auto;
-    box-sizing: border-box; /* prevents padding from cutting off content */
-    }
-    
-    .search-bar button{
-      flex: 1;
-      border: 1px solid black;
-      border-radius: 8px;
-      height: 80%;
-      margin: 20px auto;
-      padding: 10px 30px;
-      font-weight: bold;
-      background-color: #034078;
-      color: white;
-    }
-    
-    .search-bar button:hover {
-      opacity: 0.8;
-    }
-  
-  
-
-
-  .data-container{
-    width: 40vw;
-    margin: 0 5%;
-    padding: 10px;
-    overflow: visible;
+    box-sizing: border-box;
   }
-  
-  .data-container h2 {
-    flex-shrink: 0; 
-    margin: 20px;
 
-  }
-  
-  .data-container-list {
+  .search-bar button {
     flex: 1;
-    overflow-y: visible;
+    border: 1px solid black;
+    border-radius: 8px;
+    height: 100%;
+    padding: 10px 30px;
+    font-weight: bold;
+    background-color: #034078;
+    color: white;
+  }
+
+  .search-bar button:hover {
+    opacity: 0.8;
+  }
+
+  .search-results-list {
+    flex: 1;
+    overflow-y: auto;
     padding-right: 8px;
-    padding-top: 5px;
     width: 95%;
+    padding-bottom: 10px;
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
 
+  .desktop-layout .friend-component {
+    background-color: #F8F8F8;
+    border-radius: 12px;
+    padding: 10px;
+    border: none;
+    box-shadow: none;
+  }
+
+  /* Legacy data-container support */
+  .data-container {
+    width: 40vw;
+    height: 80vh;
+    margin: 5%;
+    padding: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .data-container h2 {
+    flex-shrink: 0;
+    margin: 0 0 10px 0;
+  }
+
   *::-webkit-scrollbar-thumb {
     background: red !important;
   }
-  .page {
-    height: calc(100vh - 100px);
+  .desktop-layout .page {
+    height: 100vh;
     display: flex;
     flex-direction: row;
-    padding: 20px;
-    padding-top: 50px;
     justify-content: center;
     overflow: hidden;
+    padding-top: 50px;
   }
 
   .song-list{
@@ -528,11 +573,11 @@ nav {
   /* RECOMMENDATIONS PAGE ------------------------------------------------------------------------------- */
 
   .recommendations-page {
-    height: 100vh;
+    height: 95vh;
     display: flex;
     flex-direction: column;
     padding: 10px;
-    padding-top: 50px;
+    padding-top: 60px;
     overflow: hidden;
   }
 
@@ -540,6 +585,7 @@ nav {
     display: flex;
     flex-direction: row;
     flex: 1;
+    min-height: 0;
   }
 
   .featured-section,
@@ -551,6 +597,7 @@ nav {
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
+    min-height: 0;
   }
 
   .featured-section h2,
@@ -595,6 +642,7 @@ nav {
     overflow-y: auto;
     overflow-x: hidden;
     padding-right: 8px;
+    min-height: 0;
   }
 
   .featured-section .song-component,
@@ -611,6 +659,7 @@ nav {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    min-height: 0;
   }
 
   .friend-group {
