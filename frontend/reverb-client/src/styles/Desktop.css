@@ -942,12 +942,23 @@ nav {
   }
 
   .desktop-layout .friend-component {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     background-color: #F8F8F8;
     border-radius: 12px;
     padding: 10px;
     border: none;
     box-shadow: none;
     transition: background-color 0.2s, transform 0.1s;
+  }
+
+  .friend-component .circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
   }
 
   .desktop-layout .friend-component:hover {
@@ -1327,6 +1338,37 @@ nav {
     background: #f8f9fa;
     border-radius: 12px;
     text-align: left;
+  }
+
+  .friend-component .friend-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    gap: 2px;
+  }
+
+  .friend-component .friend-name {
+    font-weight: bold;
+    color: #034078;
+    font-size: 16px;
+    margin: 0;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .friend-component .friend-user {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .friend-info {

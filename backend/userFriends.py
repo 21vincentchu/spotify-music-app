@@ -2,6 +2,9 @@
 from db import get_db
 from typing import List, Dict
 from flask import session
+import os
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
 
 def insert_friend(userName: str, friendUserName: str):
     '''
@@ -137,12 +140,12 @@ def get_top_songs(friendUserName: str, timeframe: str = 'short_term', limit: int
     Args:
         friendUserName: The friend's userName
         timeframe: the timeframe of the top songs
-        limit: max number of songs that are returned           
-    Return: 
+        limit: max number of songs that are returned
+    Return:
         A list of song dictionaries
     """
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(dictionary=True, buffered=True)
     try:
         cursor.execute("""
         SELECT
@@ -159,7 +162,7 @@ def get_top_songs(friendUserName: str, timeframe: str = 'short_term', limit: int
         ORDER BY ts.rank
         LIMIT %s
     """, (friendUserName, timeframe, limit))
-        
+
         return cursor.fetchall()
     finally:
         cursor.close()
@@ -172,12 +175,12 @@ def get_friend_top_artists(friendUserName: str, timeframe: str = 'short_term', l
     Args:
         friendUserName: The friend's userName
         timeframe: the timeframe of the top songs
-        limit: max number of artists that are returned           
-    Return: 
+        limit: max number of artists that are returned
+    Return:
         A list of artists dictionaries
-    """                      
+    """
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(dictionary=True, buffered=True)
     try:
         cursor.execute("""
         SELECT
@@ -207,12 +210,12 @@ def get_friend_top_albums(friendUserName: str, timeframe: str = 'short_term', li
     Args:
         friendUserName: The friend's userName
         timeframe: the timeframe of the top albums
-        limit: max number of albums that are returned           
-    Return: 
+        limit: max number of albums that are returned
+    Return:
         A list of albums dictionaries
-    """ 
+    """
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(dictionary=True, buffered=True)
 
     try:
         cursor.execute("""
@@ -248,7 +251,7 @@ def get_friend_recently_played(friendUserName: str, limit: int = 50):
 
     """
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(dictionary=True, buffered=True)
 
     try:
         cursor.execute("""
@@ -273,35 +276,74 @@ def get_friend_recently_played(friendUserName: str, limit: int = 50):
 
 def get_friend_recent_songs(friendUserName: str, limit: int = 50) -> List[Dict]:
     """
-    Get a friend's recently played songs from the RecentlyPlayed table.
+    Get a friend's recently played songs from Spotify API using their stored refresh token.
 
     Args:
         friendUserName: The friend's userName
-        limit: Maximum number of songs to return
+        limit: Maximum number of songs to return (max 50 per Spotify API)
 
     Returns:
         List of recently played songs with details
     """
+    # First, get the friend's refresh token from the database
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(dictionary=True, buffered=True)
 
     try:
         cursor.execute("""
-            SELECT
-                songName,
-                artistName,
-                albumName,
-                spotifyTrackId,
-                playedAt
-            FROM RecentlyPlayed
+            SELECT refreshToken
+            FROM User
             WHERE userName = %s
-            ORDER BY playedAt DESC
-            LIMIT %s
-        """, (friendUserName, limit))
-        return cursor.fetchall()
+        """, (friendUserName,))
+        user_data = cursor.fetchone()
+
+        if not user_data or not user_data.get('refreshToken'):
+            return []
+
+        refresh_token = user_data['refreshToken']
+
     finally:
         cursor.close()
         conn.close()
+
+    # Now use the refresh token to get an access token and fetch recently played from Spotify
+    try:
+        sp_oauth = SpotifyOAuth(
+            client_id=os.getenv("SPOTIFY_CLIENT_ID"),
+            client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
+            redirect_uri="http://localhost:8000/callback",
+            scope='user-read-recently-played'
+        )
+
+        # Get access token using refresh token
+        token_info = sp_oauth.refresh_access_token(refresh_token)
+        access_token = token_info['access_token']
+
+        # Create Spotify client with the friend's access token
+        sp = spotipy.Spotify(auth=access_token)
+
+        # Fetch recently played tracks (max 50 per Spotify API)
+        results = sp.current_user_recently_played(limit=min(limit, 50))
+
+        # Format the results
+        recent_songs = []
+        if results and 'items' in results:
+            for item in results['items']:
+                track = item['track']
+                recent_songs.append({
+                    'songName': track['name'],
+                    'artistName': track['artists'][0]['name'] if track.get('artists') else 'Unknown',
+                    'albumName': track['album']['name'] if track.get('album') else 'Unknown',
+                    'spotifyTrackId': track['id'],
+                    'playedAt': item['played_at'],
+                    'imageUrl': track['album']['images'][0]['url'] if track.get('album') and track['album'].get('images') else None
+                })
+
+        return recent_songs
+
+    except Exception as e:
+        print(f"Error fetching friend's recently played from Spotify: {e}")
+        return []
 def search_users(SearchQuery: str, currentUserName: str, limit: int = 20) -> List[Dict]:
     """
     search for users by username or displayname 

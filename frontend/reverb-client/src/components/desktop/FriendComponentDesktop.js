@@ -11,7 +11,7 @@ function FriendComponentDesktop({friendData, onClick, isSelected}) {
                 alt={friendData?.displayName || friendData?.userName}
             />
             <div className="friend-info">
-                <p className="friend-name">{friendData?.userName}</p>
+                <p className="friend-name">{friendData?.displayName || friendData?.userName}</p>
                 <p className="friend-user">@{friendData?.userName}</p>
             </div>
         </div>
