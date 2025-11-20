@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 
 import SongComponent from '../../components/shared/SongComponent';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
+import Footer from '../../components/shared/Footer';
+import config from '../../config';
 
 function StatisticsPage() {
   const [category, setCategory] = useState('songs');
@@ -11,15 +13,55 @@ function StatisticsPage() {
   const [loading, setLoading] = useState(false);
   const [songs, setSongs] = useState([]);
   const [artists, setArtists] = useState([]);
+  const [albums, setAlbums] = useState([]);
+  const [featuredSongs, setFeaturedSongs] = useState([]);
+  const [featuredArtists, setFeaturedArtists] = useState([]);
+  const [featuredAlbums, setFeaturedAlbums] = useState([]);
 
 
   useEffect(() => {
    getSongs();
+   getFeaturedSongs();
+   getFeaturedArtists();
+   getFeaturedAlbums();
   }, [category, timeframe]); // Runs whenever category or timeframe changes
+
+  const getFeaturedSongs = async () => {
+    try {
+      const response = await axios.get(`${config.API_URL}/api/featured-songs/`, {
+        withCredentials: true
+      });
+      setFeaturedSongs(response.data);
+    } catch (error) {
+      console.error('Error fetching featured songs:', error);
+    }
+  };
+
+  const getFeaturedArtists = async () => {
+    try {
+      const response = await axios.get(`${config.API_URL}/api/featured-artists/`, {
+        withCredentials: true
+      });
+      setFeaturedArtists(response.data);
+    } catch (error) {
+      console.error('Error fetching featured artists:', error);
+    }
+  };
+
+  const getFeaturedAlbums = async () => {
+    try {
+      const response = await axios.get(`${config.API_URL}/api/featured-albums/`, {
+        withCredentials: true
+      });
+      setFeaturedAlbums(response.data);
+    } catch (error) {
+      console.error('Error fetching featured albums:', error);
+    }
+  };
 
   const getSongs = async () => {
     setLoading(true);
-    axios.get(`http://localhost:8000/api/top-${category}/${timeframe}`, {
+    axios.get(`${config.API_URL}/api/top-${category}/${timeframe}`, {
       withCredentials: true
     })
     .then((response) => {
@@ -32,6 +74,25 @@ function StatisticsPage() {
       setLoading(false);
     });
 }
+
+  const isSongFeatured = (spotifyTrackId) => {
+    return featuredSongs.some(song => song.spotifyTrackId === spotifyTrackId);
+  };
+
+  const isArtistFeatured = (spotifyArtistId) => {
+    return featuredArtists.some(artist => artist.spotifyArtistId === spotifyArtistId);
+  };
+
+  const isAlbumFeatured = (spotifyAlbumId) => {
+    return featuredAlbums.some(album => album.spotifyAlbumId === spotifyAlbumId);
+  };
+
+  const getIsFeatured = (item) => {
+    if (item.spotifyTrackId) return isSongFeatured(item.spotifyTrackId);
+    if (item.spotifyArtistId) return isArtistFeatured(item.spotifyArtistId);
+    if (item.spotifyAlbumId) return isAlbumFeatured(item.spotifyAlbumId);
+    return false;
+  };
 
 
 
@@ -51,15 +112,31 @@ function StatisticsPage() {
           >
             Artists
           </button>
+          <button
+            className={category === 'albums' ? 'active' : ''}
+            onClick={() => setCategory('albums')}
+          >
+            Albums
+          </button>
         </div>
         <div className="stats-data round-outline blue-box-shadow">
 
             <div className='song-list'>
               {loading ? (
             <LoadingSpinner message="Loading statistics..." />
+            ) : songs.length === 0 && category === 'albums' ? (
+              <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
+                <p style={{ fontSize: '18px', marginBottom: '10px' }}>⏳ Calculating your top albums...</p>
+                <p style={{ fontSize: '14px' }}>This may take 2-3 minutes. Your songs and artists are ready to view!</p>
+              </div>
             ) : (
             songs.slice(0, 10).map((song, index) => (
-                <SongComponent key={song.id || index} songData={song} />
+                <SongComponent
+                  key={song.id || index}
+                  songData={song}
+                  showStar={true}
+                  isFeatured={getIsFeatured(song)}
+                />
             ))
             )}
             </div>
@@ -86,6 +163,7 @@ function StatisticsPage() {
           </button>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

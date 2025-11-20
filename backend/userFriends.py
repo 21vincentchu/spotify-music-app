@@ -20,7 +20,7 @@ def insert_friend(userName: str, friendUserName: str):
 
     try:
         cursor.execute("""
-    SELECT 1 from userFriends WHERE (userName = %s AND friendUserName = %s) OR (userName = %s AND friendUserName = %s)
+    SELECT 1 from UserFriends WHERE (userName = %s AND friendUserName = %s) OR (userName = %s AND friendUserName = %s)
                 """, (userName, friendUserName, friendUserName, userName))
 
         if cursor.fetchone():
@@ -62,7 +62,7 @@ def delete_friend(userName: str, friendUserName: str):
     ##delete from a relationship
     try:
         cursor.execute("""
-    Delete FROM userFriends WHERE (userName = %s AND friendUserName = %s) OR (userName = %s AND friendUserName = %s)
+    Delete FROM UserFriends WHERE (userName = %s AND friendUserName = %s) OR (userName = %s AND friendUserName = %s)
                 """, (userName, friendUserName, friendUserName, userName))
 
         conn.commit()
@@ -86,15 +86,18 @@ def get_friend(userName: str) -> List[Dict]:
 
     try:
         cursor.execute("""
-                        SELECT u.userName, u.spotifyId, u.profilePicture, u.displayName FROM userFriends uf JOIN User u on uf.friendUserName = u.userName
-                        LEFT JOIN RecentlyPlayed rp ON u.userName = rp.userName
+                        SELECT u.userName, u.spotifyId, u.profilePicture, u.displayName
+                        FROM UserFriends uf
+                        JOIN User u ON uf.friendUserName = u.userName
                         WHERE uf.userName = %s
-                        GROUP BY u.userName, u.displayName, u.profilePicture, u.spotifyId
-                        ORDER BY lastActive DESC, u.displayName
+                        ORDER BY u.displayName
                     """, (userName,))
-        
+
         return cursor.fetchall()
-    except:
+    except Exception as e:
+        print(f"Error getting friends: {e}")
+        return []
+    finally:
         cursor.close()
         conn.close()
 
@@ -281,7 +284,7 @@ def search_users(SearchQuery: str, currentUserName: str, limit: int = 20) -> Lis
     cursor = conn.cursor(dictionary=True)
 
     try:
-        search_pattern = f"%{SearchQuery}%"
+        search_pattern = f"{SearchQuery}%"
 
         cursor.execute("""
             SELECT

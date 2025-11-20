@@ -30,9 +30,11 @@ def list_friends():
 def add_friend():
     userName = session.get('userName')
     data = request.get_json()
+
+    print("ADD DATA:",data)
     friendUserName = data.get('friendUserName')
    
-    if not userName or friendUserName:
+    if not userName or not friendUserName:
         return jsonify({'error': 'Missing username or friendUserName'})
     try:
         successful_insert = insert_friend(userName, friendUserName)

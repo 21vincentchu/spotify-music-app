@@ -21,6 +21,9 @@ from scheduler import init_scheduler
 from background_tasks import quick_prefetch_on_login, prefetch_all_stats
 from friends_routes import friends_bp
 from profile_routes import profile_bp
+from featured_songs_route import featured_songs_bp
+from featured_artists_route import featured_artists_bp
+from featured_albums_route import featured_albums_bp
 
 # Configure Flask to serve React's static files
 app = Flask(__name__, static_folder='frontend_build/static', static_url_path='/static')
@@ -73,8 +76,11 @@ app.config["SESSION_PERMANENT"] = False
 ### ----- REGISTER BLUEPRINTS ----- ###
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
-app.register_blueprint(friends_bp)   
+app.register_blueprint(friends_bp)
 app.register_blueprint(profile_bp)
+app.register_blueprint(featured_songs_bp)
+app.register_blueprint(featured_artists_bp)
+app.register_blueprint(featured_albums_bp)
 
 ### ----- INITIALIZE SCHEDULER ----- ###
 # Start background scheduler for weekly stats refresh
@@ -279,17 +285,20 @@ def callback():
     print(f"Session ID: {session.get('session_id')}")
     print(f"Session saved: {userName}")
 
-    # Quick pull (foreground) - limited to 150, fast
-    quick_prefetch_on_login(token_info['access_token'], userName)
-
-    # Full pull (background thread) - ONLY for brand new users
-    # Check if user has ANY stats in database
+    # Check if user has ANY stats in database BEFORE running quick pull
+    # This determines if they're a brand new user
     has_existing_stats = any([
         get_cached_stats_id(userName, 'short_term', max_age_hours=999999),
         get_cached_stats_id(userName, 'medium_term', max_age_hours=999999),
         get_cached_stats_id(userName, 'long_term', max_age_hours=999999)
     ])
 
+    # Quick pull (foreground) - limited to 150, fast
+    # Runs for ALL users so they see results immediately
+    quick_prefetch_on_login(token_info['access_token'], userName)
+
+    # Full pull (background thread) - ONLY for brand new users
+    # Runs comprehensive pull including albums (takes 2-3 minutes)
     if not has_existing_stats:
         print(f"[NEW USER] Starting full pull for brand new user: {userName}", flush=True)
         Thread(

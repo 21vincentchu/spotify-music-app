@@ -1,30 +1,269 @@
-/*MOBILE CONTENT*/
-.mobile-content {
-  flex: 1;
-  overflow-y: auto; /* global scroll */
-  padding-bottom: 60px; /* prevents content from hiding behind navbar */
-  padding-top: 0; /* remove extra space above sections */
+/* ========================================================= */
+/* ===================== BASE LAYOUT ====================== */
+/* ========================================================= */
+* {
+  box-sizing: border-box;
 }
 
-/*NAVBAR*/
+.mobile-logo {
+  position: sticky;
+  width: 55px;
+  height: auto;
+  top: 20px;
+  left: 20px;
+  z-index: 2000;
+}
+
+/* Wrapper for page */
+.ratings-page-wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+}
+
+
+/* Override mobile-content padding ONLY for ratings page */
+.ratings-fullscreen {
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100%;
+  height: 100%;
+}
+
+.ratings-fullscreen .mobile-content {
+  padding: 0 !important;
+}
+
+
+
+/* Scrollable content below search bar */
+.ratings-page-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+
+.rating-stars {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+
+
+.mobile-layout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background-color: #ffffff;
+
+}
+
+/* Scrollable content area */
+.mobile-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 90px 16px 80px;
+}
+
+/* ========================================================= */
+/* ====================== SEARCH BAR ====================== */
+/* ========================================================= */
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+
+.search-input-container {
+  flex: 5;
+}
+
+.mobile-layout .search-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  border-radius: 8px;
+  background-color: #f0f0f0;
+}
+
+/* Button */
+.search-bar button {
+  flex: 1;
+  height: 100%;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  font-weight: bold;
+  background-color: #034078;
+  color: white;
+  cursor: pointer;
+}
+
+/* Fixed search bar */
+.search-bar-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: white;
+  padding: 12px 16px;
+  border-bottom: 1px solid #ddd;
+}
+
+
+
+.search-bar button:hover {
+  opacity: 0.8;
+}
+
+/* ========================================================= */
+/* ===================== DATA CONTAINERS ================== */
+/* ========================================================= */
+.data-container {
+  width: 40vw;
+  height: 80vh;
+  margin: 0 5%;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.data-container h2 {
+  flex-shrink: 0;
+  margin: 20px;
+}
+
+.data-container-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 5px;
+  padding-right: 8px;
+  width: 95%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Page layout helper */
+.page {
+  height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: row;
+  padding: 20px;
+  margin-top: 100px;
+  justify-content: center;
+}
+
+.song-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Medium-sized song image for stats page only */
+.stats-circle {
+  width: 70px !important;
+  height: 70px !important;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* ========================================================= */
+/* ====================== USER PROFILE ==================== */
+/* ========================================================= */
+.user-info-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 15px;
+}
+
+.user-info-box .circle {
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #000;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0 0 4px 0;
+  color: #034078;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spotify-user-name {
+  font-size: 0.85rem;
+  color: #555;
+  margin: 0;
+}
+
+/* ========================================================= */
+/* ======================== HEADINGS ====================== */
+/* ========================================================= */
+h1 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 300;
+  font-size: 2.2rem;
+  margin: 0 0 12px 0;
+  text-align: center;
+  color: #034078;
+}
+
+h2 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+  color: #034078;
+  margin: 16px 0 8px;
+  text-align: left;
+}
+
+/* ========================================================= */
+/* ======================== NAVBAR ======================== */
+/* ========================================================= */
 .navbar-mobile {
   position: fixed;
   inset: auto 0 0 0;
   width: 100%;
   background: #034078;
-  z-index: 99999;
+  z-index: 999;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 10px 0;
-  transform: none;
-  border-top: 1px solid #ddd;
-  box-sizing: border-box;
+  padding: 1px 0;
 }
 
 .navbar-mobile .nav-icon {
-  width: 28px;
-  height: 28px;
+  width: 35px;
+  height: 35px;
   object-fit: contain;
   filter: brightness(0) invert(1);
   transition: transform 0.2s ease, opacity 0.2s ease;
@@ -32,150 +271,503 @@
 
 .navbar-mobile .nav-icon:hover {
   transform: scale(1.1);
-  opacity: 0.85;
+  opacity: 0.1;
 }
 
-.nav-icon {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-  transition: transform 0.2s ease;
+/* ========================================================= */
+/* ======================== HOME PAGE ===================== */
+/* ========================================================= */
+.mobile-layout .home-page {
+  display: flex;
+  flex-direction: column !important;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 32px;
+  width: 100%;
+  height: calc(100vh - 120px);
 }
 
-/*HOME PAGE*/
-.home-page {
+.home-content {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 12px;
+  overflow-y: auto;
+  gap: 16px;
 }
 
 .home-featured {
-  width: 100%;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  width: 100% !important;
   font-family: "Inter", sans-serif;
-  font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
+  font-weight: 500;
   text-align: left;
-}
-
-.home-featured h2 {
-  margin-bottom: 4px; /* tighter spacing below header */
+  color: #034078;
+  gap: 8px !important;
 }
 
 .subtext {
   font-family: "Montserrat", sans-serif;
   font-size: 0.9rem;
   color: #666;
-  margin-top: 0;
-  margin-bottom: 8px;
+  margin: 0 0 12px 0;
 }
 
-/*FEATURED RECS*/
-.home-featured-recs {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  overflow-y: auto;
-  max-height: 50vh;
+/* ========================================================= */
+/* ======================== GRID ========================== */
+/* ========================================================= */
+.grid-wrapper {
+  width: 100%;
 }
 
-.home-featured-recs .song-info-box {
-  border: 1px solid #000;
-  border-radius: 12px;
-  padding: 8px 12px;
-  background-color: #fff;
-  box-shadow: 0 6px 16px rgba(0, 64, 120, 0.75);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.responsive-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  width: 100%;
 }
 
-/*FEATURED STATS*/
-.home-featured-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  overflow-y: auto;
-  max-height: 50vh;
-}
 
-.featured-song {
+
+/* ========================================================= */
+/* ===================== SONG COMPONENT =================== */
+/* ========================================================= */
+.song-info-box {
   display: flex;
   align-items: center;
   gap: 12px;
+  padding: 10px 12px;
+  background-color: #fff;
+  border-radius: 12px;
+  border: 1px solid #000;
+  box-shadow: 0 6px 16px rgba(0, 64, 120, 0.75);
 }
 
-.song-component.avatar-only {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.featured-stat-heading {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 650;
+  font-size: 1rem;
+  margin: 0 0 12px 0;
+  color: black;
 }
 
-.circle {
-  width: 80px;
-  height: 80px;
+.song-info-box .circle {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background-color: #000;
-  object-fit: cover;
 }
 
-.song-info-box {
-  flex: 1;
-  border: 1px solid #000;
-  border-radius: 12px;
-  padding: 8px 12px;
-  background-color: #fff;
+.song-text {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  box-shadow: 0 6px 16px rgba(0, 64, 120, 0.75);
+  overflow: hidden;
 }
 
 .song-title {
   font-weight: 600;
-  margin: 0 0 4px 0;
   font-size: 1rem;
+  margin: 0 0 4px 0;
+  color: #034078;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .song-artist,
 .song-genre {
-  margin: 2px 0;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #555;
+  margin: 0;
 }
 
-/*TOP RIGHT ICON*/
-.top-right-image {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 35px;
-  height: 35px;
-  padding: 8px;
-  border: 1px solid black;
+
+
+/* ========================================================= */
+/* ===================== APPLE SCROLL ===================== */
+/* ========================================================= */
+.scroll-section {
+  flex: 1;
+  max-height: none; /* 50% of viewport minus some spacing */
+  min-height: 300px;  
+  width: 100%;           /* optional: avoid tiny boxes */
+  overflow-y: auto;
+  padding: 15px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 7px 15px rgba(18, 130, 162, 0.8);
+  margin-bottom: 24px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #B5B5B5 #D9D9D9;
+}
+
+
+
+.scroll-section::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll-section::-webkit-scrollbar-thumb {
+  background: #B5B5B5;
+  border-radius: 8px;
+}
+
+.scroll-section::-webkit-scrollbar-track {
+  background: #D9D9D9;
+  border-radius: 8px;
+}
+
+/* ========== FRIENDS MOBILE PAGE ========== */
+.mobile-friends {
+  width: 100%;
+  height: calc(100vh - 120px); /* Adjust for navbar/header */
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+.mobile-friends-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-friend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ================== FRIEND COMPONENT MOBILE ================== */
+.friend-component-mobile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background-color: #fff;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.friend-circle-mobile {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background-color: transparent;
-  object-fit: contain;
-  cursor: pointer;
-  z-index: 10;
+  object-fit: cover;
+  background-color: #eee;
 }
 
-/*RESPONSIVENESS*/
+.friend-info-mobile {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.friend-name-mobile {
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0 0 4px 0;
+  color: #034078;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.friend-username-mobile {
+  font-size: 0.85rem;
+  color: #555;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-friends {
+  width: 100%;
+  flex: 1;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.mobile-friends-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-friend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Friend Component */
+.friend-component {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background-color: #fff;
+  border-radius: 12px;
+  border: 1px solid #000;
+  box-shadow: 0 4px 12px rgba(0, 64, 120, 0.2);
+}
+
+.friends-header {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    color: #034078;
+    margin: 16px 0 8px;
+    text-align: center;
+  }
+
+.friend-component .circle {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #ccc; /* placeholder bg if no avatar */
+  object-fit: cover;
+}
+
+.friend-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.friend-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #034078;
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.friend-user {
+  font-size: 0.85rem;
+  color: #555;
+  margin: 0;
+}
+
+/* ========================================================= */
+/* ====================== PROFILE DROPDOWN ================= */
+/* ========================================================= */
+.profile-menu-wrapper,
+.profile-button-link {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 3000 !important;
+}
+
+.profile-button {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.profile-button img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 50%;
+
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 58px;
+  right: 0;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 10px 0;
+  width: 160px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  z-index: 3000 !important;
+}
+
+.dropdown-item {
+  padding: 10px 14px;
+  text-align: left;
+  font-family: "Inter", sans-serif;
+  font-size: 0.95rem;
+  color: #034078;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: #F1F1F1;
+}
+
+.dropdown-item.signout {
+  color: #B00020;
+}
+
+.dropdown-item.signout:hover {
+  background: #FFECEC;
+}
+
+/* ========================================================= */
+/* ===================== STATISTICS PAGE (MOBILE) ========= */
+/* ========================================================= */
+.mobile-stats {
+  width: 100%;
+  height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px;
+}
+
+.mobile-stats-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.mobile-stats-categories {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.mobile-stats-categories button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #034078;
+  background: #fff;
+  color: #034078;
+  font-size: 0.95rem;
+  font-family: "Inter", sans-serif;
+}
+
+.mobile-stats-categories button.active {
+  background: #034078;
+  color: #fff;
+}
+
+.mobile-stats-data {
+  width: 100%;
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  border-radius: 12px;
+}
+
+.mobile-song-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-stats-timeframe {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.mobile-stats-timeframe button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #034078;
+  background: #fff;
+  color: #034078;
+  font-size: 0.95rem;
+}
+
+.mobile-stats-timeframe button.active {
+  background: #034078;
+  color: #fff;
+}
+
+/* ========================================================= */
+/* ===================== FRIENDS PAGE (MOBILE) ============ */
+/* ========================================================= */
+.mobile-friends {
+  width: 100%;
+  height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+.mobile-friends-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.mobile-friend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-friend-circle {
+  width: 80px; /* Bigger than SongComponent circle */
+  height: 80px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+
+
+
+/* ========================================================= */
+/* ===================== RESPONSIVENESS =================== */
+/* ========================================================= */
 @media (min-width: 769px) {
-  .home-featured-stats {
-    display: none;
+  /* Hide mobile-only content */
+  .mobile-stats,
+  .mobile-stats-content,
+  .mobile-stats-data,
+  .mobile-stats-categories,
+  .mobile-stats-timeframe,
+  .mobile-song-list,
+  .mobile-friends,
+  .mobile-friends-content,
+  .mobile-friend-list {
+    display: none !important;
   }
 }
 
 @media (max-width: 768px) {
-  .home-page {
-    padding: 12px;
-  }
-
   .song-info-box {
-    padding: 6px 10px;
+    padding: 8px 10px;
   }
 
   .song-title {
@@ -184,6 +776,75 @@
 
   .song-artist,
   .song-genre {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+  }
+
+  h1 {
+    font-size: 3rem;
   }
 }
+
+@media (min-width: 360px) {
+  .responsive-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.grid-wrapper.vertical-grid .responsive-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px;
+}
+
+/* ========================================================= */
+/* ======================== FOOTER ======================== */
+/* ========================================================= */
+.app-footer {
+  position: fixed;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background-color: transparent;
+  padding: 20px 0;
+  z-index: 1500;
+  box-sizing: border-box;
+}
+
+.footer-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #999;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.footer-left {
+  position: absolute;
+  right: calc(50% + 50px);
+}
+
+.footer-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.footer-right {
+  position: absolute;
+  left: calc(50% + 50px);
+}
+
+.footer-link {
+  color: #034078;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-link:hover {
+  color: #1282A2;
+}
+
