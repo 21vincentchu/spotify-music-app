@@ -616,13 +616,17 @@ nav {
     padding: 15px;
     background: #f8f9fa;
     border-radius: 8px;
+    text-align: left;
   }
 
   .friend-info {
     display: flex;
+    flex-direction: row;
     align-items: center;
+    justify-content: flex-start;
     gap: 12px;
     margin-bottom: 15px;
+    text-align: left;
   }
 
   .friend-profile-pic {
