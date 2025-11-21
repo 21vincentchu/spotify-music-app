@@ -2,6 +2,63 @@
 from db import get_db
 ##get + create album review, album rating, song review, song rating
 
+def get_song_rating(username, SpotifyTrackID):
+     """
+    gets a song rating and review.
+    
+    Args:
+        userName: The userName (Spotify ID)
+        spotifyTrackId: Spotify track ID
+        songName: Name of the song
+        artistName: Name of the artist
+        rating: Rating value (0-5, supports 0.5 increments)
+        comment: Optional review text
+        
+    Returns:
+        uniqueID: The ID of the created/updated rating record
+    """
+     conn = get_db()
+     cursor = conn.cursor()
+     try: 
+         cursor.execute("""
+            SELECT uniqueID, songName, artistName, rating, comment, createdAt, updatedAt
+            FROM RatedSong
+            WHERE userName = %s AND spotifyTrackId = %s
+        """, (username, SpotifyTrackID))
+         return cursor.fetchone()
+     finally:
+         cursor.close()
+         conn.close()
+
+def get_album_rating(username, SpotifyAlbumID):
+     """
+    gets an album rating and review.
+    
+    Args:
+        userName: The userName (Spotify ID)
+        albumName: the album name
+        spotifyTrackId: Spotify track ID
+        artistName: Name of the artist
+        rating: Rating value (0-5, supports 0.5 increments)
+        comment: Optional review text
+        
+    Returns:
+        uniqueID: The ID of the created/updated rating record
+    """
+     conn = get_db()
+     cursor = conn.cursor()
+     try: 
+         cursor.execute("""
+            SELECT uniqueID, albumName, artistName, rating, comment, createdAt, updatedAt
+            FROM RatedSong
+            WHERE userName = %s AND spotifyTrackId = %s
+        """, (username, SpotifyAlbumID))
+         return cursor.fetchone()
+     finally:
+         cursor.close()
+         conn.close()
+         
+
 def create_song_rating(userName, spotifyTrackId, songName, artistName, rating, comment=None):
     """
     Create or update a song rating and review.

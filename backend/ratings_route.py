@@ -3,7 +3,9 @@ from ratings_reviews import (
     create_song_rating,
     create_album_rating,
     delete_song_rating,
-    delete_album_rating
+    delete_album_rating,
+    get_song_rating,
+    get_album_rating
 )
 
 ratings_bp = Blueprint('ratings_bp', __name__, url_prefix='/api/ratings')
@@ -111,5 +113,29 @@ def delete_album_rating_route(spotify_album_id):
     except Exception as e:
         return jsonify({'error': str(e)}) 
 
+@ratings_bp.route("/api/song-rating", methods=["GET"])
+def get_song_route():
+    userName = request.args.get("userName")
+    spotifyTrackId = request.args.get("spotifyTrackId")
+    if not userName or not spotifyTrackId:
+        return jsonify({"error": "Missing username or track ID"})
+
+    rating = get_song_rating(userName, spotifyTrackId)
+    if rating:
+        return jsonify(rating)
+    return jsonify({"message": "rating not found"}), 404
     
+@ratings_bp.route("/api/album-rating", methods=["GET"])
+def get_song_route():
+    userName = request.args.get("userName")
+    spotifyAlbumId = request.args.get("spotifyAlbumId")
+    if not userName or not spotifyAlbumId:
+        return jsonify({"error": "Missing username or album ID"})
+
+    rating = get_album_rating(userName, spotifyAlbumId)
+    if rating:
+        return jsonify(rating)
+    return jsonify({"message": "rating not found"}), 404
+    
+
 
