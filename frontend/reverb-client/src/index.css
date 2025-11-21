@@ -53,7 +53,7 @@ h1{
     text-align: right;
   }
 
-  .song-info{
+  .song-info a{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -66,6 +66,7 @@ h1{
       margin: 0;
       word-wrap: break-word;
       overflow-wrap: break-word;
+      text-decoration: none;
     }
 
     .artist-name{
@@ -83,3 +84,14 @@ h1{
   }
 }
 
+.song-info a{
+  text-decoration: none;
+  color:#034078;
+  font-size: 1em;
+  margin: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+.song-info a:hover{
+  color:#1282A2;
+}
