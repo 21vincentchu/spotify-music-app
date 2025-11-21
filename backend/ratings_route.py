@@ -113,7 +113,7 @@ def delete_album_rating_route(spotify_album_id):
     except Exception as e:
         return jsonify({'error': str(e)}) 
 
-@ratings_bp.route("/api/song-rating", methods=["GET"])
+@ratings_bp.route("/song-rating", methods=["GET"])
 def get_song_route():
     userName = request.args.get("userName")
     spotifyTrackId = request.args.get("spotifyTrackId")
@@ -125,7 +125,7 @@ def get_song_route():
         return jsonify(rating)
     return jsonify({"message": "rating not found"}), 404
     
-@ratings_bp.route("/api/album-rating", methods=["GET"])
+@ratings_bp.route("/album-rating", methods=["GET"])
 def get_song_route():
     userName = request.args.get("userName")
     spotifyAlbumId = request.args.get("spotifyAlbumId")
