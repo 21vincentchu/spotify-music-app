@@ -18,7 +18,7 @@ def get_song_rating(username, SpotifyTrackID):
         uniqueID: The ID of the created/updated rating record
     """
      conn = get_db()
-     cursor = conn.cursor()
+     cursor = conn.cursor(dictionary=True, buffered=True)
      try: 
          cursor.execute("""
             SELECT uniqueID, songName, artistName, rating, comment, createdAt, updatedAt
