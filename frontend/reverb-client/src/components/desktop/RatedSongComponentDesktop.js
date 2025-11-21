@@ -11,7 +11,7 @@ function RatedSongComponentDesktop({songData,rating=3.5}){
                     <p className="artist-name">{songData?.artistName}</p>
                 </div>
 
-                <Rating name="half-rating" defaultValue={rating} precision={0.5} readOnly/>    
+                {/* <Rating name="half-rating" defaultValue={rating} precision={0.5} readOnly/>     */}
             </div>
 
         </div>
