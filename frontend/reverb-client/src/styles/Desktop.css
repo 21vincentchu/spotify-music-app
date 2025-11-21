@@ -1541,13 +1541,13 @@ nav {
     display: flex;
     flex-direction: column;
     gap: 100px;
-    z-index: -10;
+    z-index: 10;
     position: absolute;
-    left: calc(30vw - 60px);
+    left: calc(30vw - 64px);
     top: calc(10vh + 120px);
   }
 
-  .type-tabs .type-button{
+  .type-tabs button{
     padding: 10px 20px;
     background-color: white;
     border: 1px solid black;
@@ -1557,10 +1557,14 @@ nav {
     transform: rotate(-90deg);
     white-space: nowrap;
     transition: all 0.2s;
-    /* margin: 50px 0px; */
   }
 
-  .type-tabs .type-button:hover{
-    background-color: #f0f0f0;
+  .type-tabs button:hover{
     color: #1282A2;
   }
+
+  .type-tabs button.active{
+    background-color: rgba(18,130,162,.5);
+    color: black;
+  }
+
