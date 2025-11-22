@@ -4,6 +4,7 @@ import config from '../../config';
 
 import SongComponent from "../../components/shared/SongComponent";
 import Footer from "../../components/shared/Footer";
+import StatsDashboard from "../../components/shared/StatsDashboard";
 import { useEffect, useState } from 'react';
 
 function HomeDesktop() {
@@ -142,27 +143,33 @@ function HomeDesktop() {
         {isLoadingRecentData ? (
             <LoadingSpinner message="Loading statistics..." />
             ) : (
+              <>
                 <div className='home-stats-section'>
-                    <div>
-                        <h3>Average Track Length: </h3>
-                        <p>{recentData.listening_stats.avg_track_length_minutes} minutes</p>
+                    <div className='stat-box'>
+                        <h3>Average Track Length</h3>
+                        <p className='stat-value'>{recentData.listening_stats.avg_track_length_minutes} min</p>
                     </div>
-                    <div>
-                        <h3>Total Hours: </h3>
-                        <p>{Math.round(recentData.listening_stats.total_hours)}</p>
+                    <div className='stat-box'>
+                        <h3>Total Minutes</h3>
+                        <p className='stat-value'>{Math.round(recentData.listening_stats.total_minutes)} min</p>
                     </div>
-                    <div>
-                        <h3>Total Minutes: </h3>
-                        <p>{Math.round(recentData.listening_stats.total_minutes)}</p>
-                    </div>
-                    <div>
-                        <h3>Total Plays: </h3>
-                        <p>{recentData.listening_stats.total_plays}</p>
-                    </div>
-              </div>
+                </div>
+                <div className='genre-section'>
+                    <h3>Top Genres</h3>
+                    <ol className='genre-list'>
+                        {recentData.genre_stats?.top_genres?.map((item, index) => (
+                            <li key={index}>
+                                <span className='genre-name'>{item.genre}</span>
+                                <span className='genre-count'>{item.count} song{item.count !== 1 ? 's' : ''}</span>
+                            </li>
+                        )) || <li>No genres found</li>}
+                    </ol>
+                </div>
+                <StatsDashboard recentTracks={recentData.recent_tracks} />
+              </>
             )}
-          
           </div>
+
         <Footer />
     </div>
     )

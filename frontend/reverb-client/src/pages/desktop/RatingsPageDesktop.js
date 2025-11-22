@@ -1,6 +1,5 @@
 import Footer from "../../components/shared/Footer";
 import { useState } from "react";
-import { Rating } from '@mui/material';
 import RatedSongComponentDesktop from "../../components/desktop/RatedSongComponentDesktop";
 
 function RatingsPage() {
@@ -38,7 +37,7 @@ function RatingsPage() {
             </div>
 
             <div>
-              <RatedSongComponentDesktop />
+              {/* <RatedSongComponentDesktop /> */}
             </div>
 
 
