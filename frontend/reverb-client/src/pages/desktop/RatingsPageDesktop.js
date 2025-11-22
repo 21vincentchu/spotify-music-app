@@ -37,7 +37,7 @@ function RatingsPage() {
             </div>
 
             <div>
-              {/* <RatedSongComponentDesktop /> */}
+              <RatedSongComponentDesktop />
             </div>
 
 
