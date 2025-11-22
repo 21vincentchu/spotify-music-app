@@ -37,12 +37,26 @@ function RatingDetailPageDesktop() {
     }
 
     return (
-        <div className='page'>
+        <div className='ratings-detail-page'>
             {isRated ? (
                 <div>
-                    <p>Displaying detailed rating information for the item with Spotify ID: {spotifyId}</p>
-                    <p>Rating: {ratingData?.rating}</p>
-                    <p>Comment: {ratingData?.comment}</p>
+                    {/* <p>Displaying detailed rating information for the item with Spotify ID: {spotifyId}</p> */}
+                    <div className='round-outline blue-box-shadow'>
+                        <form>
+                            <h3>Edit Your Rating</h3>
+                            <label>
+                                Rating (1-5):
+                                <input type="number" min="1" max="5" defaultValue={ratingData?.rating} />
+                            </label>
+                            <br />
+                            <label>
+                                Comment:
+                                <textarea defaultValue={ratingData?.comment}></textarea>
+                            </label>
+                            <br />
+                            <button type="submit">Update Rating</button>
+                        </form>
+                    </div>
                 </div>
             ) : (
                 <div>

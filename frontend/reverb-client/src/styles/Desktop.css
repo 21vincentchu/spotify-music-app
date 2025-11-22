@@ -1910,3 +1910,10 @@ nav {
     color: black;
   }
 
+ /* RATINGS DETAIL -------------------------------------------------------------------------------------  */
+
+ .ratings-detail-page {
+    height: 100vh;
+    width: 40vw;
+    margin: auto;
+  }
