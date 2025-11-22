@@ -31,6 +31,7 @@ def rate_song():
             songName=data['artistName'],
             artistName=data['artistName'],
             rating=rating,
+            imageUrl = data.get("imageUrl")
             comment=data.get('comment')
         )
         return jsonify({
@@ -60,7 +61,8 @@ def rate_album():
             albumName=data['albumName'],
             artistName=data['artistName'],
             rating=rating,
-            comment=data.get('comment')
+            comment=data.get('comment'),
+            imageUrl =data.get("imageUrl")
         )
         return jsonify({
             'success': True,
@@ -147,11 +149,12 @@ def update_song_rating_route():
     spotifyTrackId = request.args.get("spotifyTrackId")
     rating = request.args.get("rating")
     comment = request.args.get("comment")
+    imageUrl = request.args.get("imageUrl")
 
     if not userName or not spotifyTrackId:
         return jsonify({"error": "Missing required fields"}), 400
     
-    updated = update_song_rating(userName=userName, spotifyTrackId=spotifyTrackId, rating=rating, comment=comment)
+    updated = update_song_rating(userName=userName, spotifyTrackId=spotifyTrackId, rating=rating, comment=comment, imageUrl=imageUrl)
 
     if not updated:
         return jsonify({"error": "Rating not found or no changes made"}), 404
@@ -164,11 +167,12 @@ def update_album_rating_route():
     spotifyAlbumId = request.args.get("spotifyAlbumId")
     rating = request.args.get("rating")
     comment = request.args.get("comment")
+    imageUrl = request.args.get("imageUrl")
 
     if not userName or not spotifyAlbumId:
         return jsonify({"error": "Missing required fields"}), 400
     
-    updated = update_album_rating(userName=userName, spotifyAlbumId=spotifyAlbumId, rating=rating, comment=comment)
+    updated = update_album_rating(userName=userName, spotifyAlbumId=spotifyAlbumId, rating=rating, comment=comment, imageUrl=imageUrl)
 
     if not updated:
         return jsonify({"error": "Rating not found or no changes made"}), 404
