@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import config from '../../config';
 import { useEffect, useState } from 'react';
+import { Rating } from '@mui/material';
 
 function RatingDetailPageDesktop() {
     const { spotifyId } = useParams();
@@ -31,6 +32,24 @@ function RatingDetailPageDesktop() {
         }
     };
 
+    const handleSave = async () =>{
+        axios.post(`${config.API_URL}/api/ratings/song`, {
+            spotifyTrackId: spotifyId,
+            songName: ratingData?.songName,
+            artistName: ratingData?.artistName,
+            rating: ratingData?.rating,
+            comment: ratingData?.comment
+        }, {
+            withCredentials: true
+        })
+        .then((response) => {
+            console.log('Rating saved:', response.data);
+        })
+        .catch((error) => {
+            console.error('Error saving rating:', error);
+        });
+    }
+
     // Show loading state while checking
     if (isRated === null) {
         return <div className='page'><p>Loading...</p></div>;
@@ -39,28 +58,48 @@ function RatingDetailPageDesktop() {
     return (
         <div className='ratings-detail-page'>
             {isRated ? (
-                <div>
-                    {/* <p>Displaying detailed rating information for the item with Spotify ID: {spotifyId}</p> */}
-                    <div className='round-outline blue-box-shadow'>
-                        <form>
-                            <h3>Edit Your Rating</h3>
-                            <label>
-                                Rating (1-5):
-                                <input type="number" min="1" max="5" defaultValue={ratingData?.rating} />
-                            </label>
-                            <br />
-                            <label>
-                                Comment:
-                                <textarea defaultValue={ratingData?.comment}></textarea>
-                            </label>
-                            <br />
-                            <button type="submit">Update Rating</button>
-                        </form>
+                    <div className='ratings-detail-container round-outline blue-box-shadow'>
+                        
+                        <div className='ratings-detail-info'>
+                            <img className="stats-circle" src={ratingData?.imageUrl} />
+                            <div>
+                                <div>
+                                    <p className='song-name'>{ratingData?.songName}</p>
+                                    <p className='artist-name'>{ratingData?.artistName}</p>  
+                                </div>  
+                                <div className='star-rating-comp'>       
+                                    <Rating name="half-rating" defaultValue={ratingData?.rating} precision={0.5}/>  
+                                    <p>{ratingData?.rating} </p>  
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className='ratings-detail-actions'>
+                            <textarea className="round-outline" defaultValue={ratingData?.comment}></textarea>
+                            <button type="submit">Save</button>
+                        </div>
                     </div>
-                </div>
             ) : (
-                <div>
-                    <p>You have not rated {spotifyId} yet. Please submit your rating!</p>
+                <div className='ratings-detail-container round-outline blue-box-shadow'>
+                    
+                    <div className='ratings-detail-info'>
+                        <img className="stats-circle" src={ratingData?.imageUrl} />
+                        <div>
+                            <div>
+                                <p className='song-name'>{ratingData?.songName}</p>
+                                <p className='artist-name'>{ratingData?.artistName}</p>  
+                            </div>  
+                            <div className='star-rating-comp'>       
+                                <Rating name="half-rating" defaultValue={ratingData?.rating} precision={0.5}/>  
+                                <p>{ratingData?.rating} </p>  
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className='ratings-detail-actions'>
+                        <textarea className="round-outline" defaultValue={ratingData?.comment}></textarea>
+                        <button type="submit">Save</button>
+                    </div>
                 </div>
             )}
         </div>
