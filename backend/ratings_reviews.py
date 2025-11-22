@@ -21,7 +21,7 @@ def get_song_rating(username, SpotifyTrackID):
      cursor = conn.cursor(dictionary=True, buffered=True)
      try: 
          cursor.execute("""
-            SELECT uniqueID, songName, artistName, rating, comment, createdAt, updatedAt
+            SELECT uniqueID, songName, artistName, rating, comment, imageUrl, createdAt, updatedAt
             FROM RatedSong
             WHERE userName = %s AND spotifyTrackId = %s
         """, (username, SpotifyTrackID))
@@ -49,7 +49,7 @@ def get_album_rating(username, SpotifyAlbumID):
      cursor = conn.cursor()
      try: 
          cursor.execute("""
-            SELECT uniqueID, albumName, artistName, rating, comment, createdAt, updatedAt
+            SELECT uniqueID, albumName, artistName, rating, comment, imageUrl, createdAt, updatedAt
             FROM RatedSong
             WHERE userName = %s AND spotifyTrackId = %s
         """, (username, SpotifyAlbumID))
@@ -59,7 +59,7 @@ def get_album_rating(username, SpotifyAlbumID):
          conn.close()
          
 
-def create_song_rating(userName, spotifyTrackId, songName, artistName, rating, comment=None):
+def create_song_rating(userName, spotifyTrackId, songName, artistName, rating, imageUrl, comment=None):
     """
     Create or update a song rating and review.
     
@@ -80,9 +80,9 @@ def create_song_rating(userName, spotifyTrackId, songName, artistName, rating, c
     try:
         # Insert or update rating
         cursor.execute("""
-            INSERT INTO RatedSong (userName, spotifyTrackId, songName, artistName, rating, comment)
+            INSERT INTO RatedSong (userName, spotifyTrackId, songName, artistName, rating, comment, imageUrl)
             VALUES (%s, %s, %s, %s, %s, %s)
-        """, (userName, spotifyTrackId, songName, artistName, rating, comment))
+        """, (userName, spotifyTrackId, songName, artistName, rating, comment, imageUrl))
         
         conn.commit()
         # Get the ID of the inserted/updated record
@@ -102,7 +102,7 @@ def create_song_rating(userName, spotifyTrackId, songName, artistName, rating, c
         conn.close()
 
 
-def create_album_rating(userName, spotifyAlbumId, albumName, artistName, rating, comment=None):
+def create_album_rating(userName, spotifyAlbumId, albumName, artistName, rating, imageUrl, comment=None):
     """
     Create or update an album rating and review.
     
@@ -123,9 +123,9 @@ def create_album_rating(userName, spotifyAlbumId, albumName, artistName, rating,
     try:
         # Insert or update rating
         cursor.execute("""
-            INSERT INTO RatedAlbum (userName, spotifyAlbumId, albumName, artistName, rating, comment)
+            INSERT INTO RatedAlbum (userName, spotifyAlbumId, albumName, artistName, rating, comment, imageUrl)
             VALUES (%s, %s, %s, %s, %s, %s)
-        """, (userName, spotifyAlbumId, albumName, artistName, rating, comment))
+        """, (userName, spotifyAlbumId, albumName, artistName, rating, comment, imageUrl))
         
         conn.commit()
         
@@ -206,7 +206,7 @@ def delete_album_rating(userName, spotifyAlbumId):
         cursor.close()
         conn.close()
 
-def update_song_rating(UserName, spotifyTrackId, rating=None, comment=None):
+def update_song_rating(UserName, spotifyTrackId, imageUrl, rating=None, comment=None):
     """
     Update a song rating and/or review comment.
 
@@ -229,7 +229,7 @@ def update_song_rating(UserName, spotifyTrackId, rating=None, comment=None):
                 comment = COALESCE(%s, comment),
                 updatedAt = NOW()
             WHERE userName = %s AND spotifyTrackId = %s
-        """, (rating, comment, UserName, spotifyTrackId))
+        """, (rating, comment, UserName, spotifyTrackId, imageUrl))
 
         conn.commit()
         return cursor.rowcount > 0
@@ -243,7 +243,7 @@ def update_song_rating(UserName, spotifyTrackId, rating=None, comment=None):
         conn.close()
 
 
-def update_album_rating(UserName, spotifyAlbumId, rating=None, comment=None):
+def update_album_rating(UserName, spotifyAlbumId, imageUrl, rating=None, comment=None):
     """
     Update a song rating and/or review comment.
 
@@ -266,7 +266,7 @@ def update_album_rating(UserName, spotifyAlbumId, rating=None, comment=None):
                 comment = COALESCE(%s, comment),
                 updatedAt = NOW()
             WHERE userName = %s AND spotifyAlbumId = %s
-        """, (rating, comment, UserName, spotifyAlbumId))
+        """, (rating, comment, UserName, spotifyAlbumId, imageUrl))
 
         conn.commit()
         return cursor.rowcount > 0
