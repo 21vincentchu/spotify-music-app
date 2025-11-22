@@ -31,7 +31,7 @@ def rate_song():
             songName=data['artistName'],
             artistName=data['artistName'],
             rating=rating,
-            imageUrl = data.get("imageUrl")
+            imageUrl = data.get("imageUrl"),
             comment=data.get('comment')
         )
         return jsonify({
