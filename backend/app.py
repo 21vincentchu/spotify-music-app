@@ -239,6 +239,9 @@ def api_recently_played():
     # Calculate listening statistics
     listening_stats = calculate_listening_minutes(recent_tracks)
 
+    # Fetch top genre from recent tracks
+    genre_stats = fetch_top_genres_from_recent(sp, recent_tracks)
+
     # Fetch top songs/artists/albums from recently played tracks
     top_songs_recent = fetch_recently_played_top_songs(sp)
     top_artists_recent = fetch_recently_played_top_artists(sp)
@@ -248,6 +251,7 @@ def api_recently_played():
     return jsonify({
         'recent_tracks': recent_tracks,
         'listening_stats': listening_stats,
+        'genre_stats': genre_stats,
         'top_songs': top_songs_recent,
         'top_artists': top_artists_recent,
         'top_albums': top_albums_recent
