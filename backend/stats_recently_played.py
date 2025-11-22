@@ -25,6 +25,60 @@ def fetch_recently_played_tracks(sp: spotipy.Spotify) -> list:
         print(f"Error fetching recently played: {e}", flush=True)
         return []
 
+def fetch_top_genres_from_recent(sp: spotipy.Spotify, recent_tracks: list) -> dict:
+    """
+    Fetch top genres from recently played tracks by analyzing artists.
+
+    Args:
+        sp: Authenticated Spotify client instance
+        recent_tracks: List of recently played items from Spotify API
+
+    Returns:
+        Dictionary with top genre information:
+        {
+            'top_genre': str (most common genre),
+            'genre_count': int (number of tracks with that genre)
+        }
+    """
+    artist_ids = set()
+
+    # Collect unique artist IDs
+    for item in recent_tracks:
+        track = item.get('track', {})
+        artists = track.get('artists', [])
+        for artist in artists:
+            artist_id = artist.get('id')
+            if artist_id:
+                artist_ids.add(artist_id)
+
+    if not artist_ids:
+        return {'top_genre': 'Unknown', 'genre_count': 0}
+
+    # Fetch artist details in batches (Spotify allows up to 50 at a time)
+    artist_ids_list = list(artist_ids)
+    all_genres = []
+
+    for i in range(0, len(artist_ids_list), 50):
+        batch = artist_ids_list[i:i+50]
+        try:
+            artists_data = sp.artists(batch)
+            for artist in artists_data.get('artists', []):
+                if artist and artist.get('genres'):
+                    all_genres.extend(artist['genres'])
+        except Exception as e:
+            print(f"Error fetching artist data: {e}", flush=True)
+
+    if not all_genres:
+        return {'top_genres': []}
+
+    # Count genres and get top 5
+    genre_counter = Counter(all_genres)
+    top_5 = genre_counter.most_common(5)
+
+    return {
+        'top_genres': [{'genre': genre.title(), 'count': count} for genre, count in top_5]
+    }
+
 def calculate_listening_minutes(recent_tracks: list) -> dict:
     """
     Calculate total listening minutes from recently played tracks.
