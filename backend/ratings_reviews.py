@@ -18,7 +18,7 @@ def get_song_rating(username, SpotifyTrackID):
         uniqueID: The ID of the created/updated rating record
     """
      conn = get_db()
-     cursor = conn.cursor()
+     cursor = conn.cursor(dictionary=True, buffered=True)
      try: 
          cursor.execute("""
             SELECT uniqueID, songName, artistName, rating, comment, createdAt, updatedAt
@@ -202,6 +202,79 @@ def delete_album_rating(userName, spotifyAlbumId):
     except Exception as e:
         conn.rollback()
         raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+def update_song_rating(UserName, spotifyTrackId, rating=None, comment=None):
+    """
+    Update a song rating and/or review comment.
+
+    Args:
+        userName: Spotify user ID
+        spotifyTrackId: Track ID
+        rating: New rating (optional)
+        comment: New comment (optional)
+
+    Returns:
+        Boolean indicating if the update was successful
+    """
+    conn = get_db()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+                       UPDATE RatedSong
+            SET rating = COALESCE(%s, rating),
+                comment = COALESCE(%s, comment),
+                updatedAt = NOW()
+            WHERE userName = %s AND spotifyTrackId = %s
+        """, (rating, comment, UserName, spotifyTrackId))
+
+        conn.commit()
+        return cursor.rowcount > 0
+    
+    except Exception as e:
+        conn.rollback()
+        raise e 
+    
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def update_album_rating(UserName, spotifyAlbumId, rating=None, comment=None):
+    """
+    Update a song rating and/or review comment.
+
+    Args:
+        userName: Spotify user ID
+        spotifyAlbumId: Track ID
+        rating: New rating (optional)
+        comment: New comment (optional)
+
+    Returns:
+        Boolean indicating if the update was successful
+    """
+    conn = get_db()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+                       UPDATE RatedAlbum
+            SET rating = COALESCE(%s, rating),
+                comment = COALESCE(%s, comment),
+                updatedAt = NOW()
+            WHERE userName = %s AND spotifyAlbumId = %s
+        """, (rating, comment, UserName, spotifyAlbumId))
+
+        conn.commit()
+        return cursor.rowcount > 0
+    
+    except Exception as e:
+        conn.rollback()
+        raise e 
+    
     finally:
         cursor.close()
         conn.close()

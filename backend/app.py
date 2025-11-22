@@ -24,6 +24,7 @@ from profile_routes import profile_bp
 from featured_songs_route import featured_songs_bp
 from featured_artists_route import featured_artists_bp
 from featured_albums_route import featured_albums_bp
+from ratings_route import ratings_bp
 
 # Configure Flask to serve React's static files
 app = Flask(__name__, static_folder='frontend_build/static', static_url_path='/static')
@@ -81,6 +82,8 @@ app.register_blueprint(profile_bp)
 app.register_blueprint(featured_songs_bp)
 app.register_blueprint(featured_artists_bp)
 app.register_blueprint(featured_albums_bp)
+app.register_blueprint(ratings_bp)
+
 
 ### ----- INITIALIZE SCHEDULER ----- ###
 # Start background scheduler for weekly stats refresh
