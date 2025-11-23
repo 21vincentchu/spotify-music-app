@@ -48,9 +48,9 @@ services:
         scope: RUN_TIME
         type: SECRET
       - key: SPOTIPY_REDIRECT_URI
-        value: ${backend.PUBLIC_URL}/callback
+        value: https://www.reverb.cool/api/callback
       - key: FRONTEND_URL
-        value: ${frontend.PUBLIC_URL}
+        value: https://www.reverb.cool
       - key: MYSQL_HOST
         value: ${reverb-db.HOSTNAME}
       - key: MYSQL_PORT
