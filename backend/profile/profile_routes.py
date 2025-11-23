@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, session, redirect
-from profile import get_user_profile, update_display_name, get_profile_stats, delete_user_account
+from .profile import *
 
 profile_bp = Blueprint('profile_bp', __name__, url_prefix='/api/profile')
 

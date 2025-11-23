@@ -1,14 +1,5 @@
 from flask import Blueprint, request, jsonify, session
-from ratings_reviews import (
-    create_song_rating,
-    create_album_rating,
-    delete_song_rating,
-    delete_album_rating,
-    get_song_rating,
-    get_album_rating,
-    update_album_rating,
-    update_song_rating
-)
+from .ratings_reviews import *
 
 ratings_bp = Blueprint('ratings_bp', __name__, url_prefix='/api/ratings')
 

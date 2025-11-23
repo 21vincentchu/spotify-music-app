@@ -1,11 +1,6 @@
 """API routes for featured albums feature"""
 from flask import Blueprint, request, jsonify, session
-from featured_albums import (
-    add_featured_album,
-    remove_featured_album,
-    get_user_featured_albums,
-    get_friends_featured_albums
-)
+from .featured_albums import *
 
 featured_albums_bp = Blueprint('featured_albums_bp', __name__, url_prefix='/api/featured-albums')
 

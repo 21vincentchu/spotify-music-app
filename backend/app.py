@@ -10,21 +10,18 @@ from flask import Flask, request, jsonify, session, redirect, send_from_director
 from flask_cors import CORS
 
 # Local app imports
-from config import Config
-from auth import get_authenticated_spotify_client
-from db_functions import upsert_user, get_cached_stats_id
-from stats_json import stat_Conversions
-from stats import stats_bp
-from stats_recently_played import *
-from migrate import run_migrations
-from scheduler import init_scheduler
-from background_tasks import quick_prefetch_on_login, prefetch_all_stats
-from friends_routes import friends_bp
-from profile_routes import profile_bp
-from featured_songs_route import featured_songs_bp
-from featured_artists_route import featured_artists_bp
-from featured_albums_route import featured_albums_bp
-from ratings_route import ratings_bp
+from config import *
+from auth import *
+from db_functions import *
+from stats import *
+from home import *
+from migrate import *
+from scheduler import *
+from background_tasks import *
+from friends import *
+from profile import *
+from recommendations import *
+from ratings import *
 
 # Configure Flask to serve React's static files
 app = Flask(__name__, static_folder='frontend_build/static', static_url_path='/static')

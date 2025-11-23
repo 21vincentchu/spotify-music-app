@@ -1,16 +1,5 @@
 from flask import Blueprint, request, jsonify, session
-from userFriends import (insert_friend,
-    delete_friend,
-    get_friend,
-    get_user_friend_count,
-    get_top_songs,
-    get_friend_top_artists,
-    get_friend_top_albums,
-    get_friend_recently_played,
-    get_friend_recent_songs,
-    search_users,
-    is_friend
-)
+from .userFriends import *
 
 friends_bp = Blueprint('friends_bp', __name__, url_prefix='/api/friends')
 
