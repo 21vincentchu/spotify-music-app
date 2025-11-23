@@ -75,7 +75,7 @@ app.config["SESSION_PERMANENT"] = False
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
 app.register_blueprint(friends_bp)
-app.register_blueprint(profile_bp)
+app.register_blueprint(profile_bp) # type: ignore
 app.register_blueprint(featured_songs_bp)
 app.register_blueprint(featured_artists_bp)
 app.register_blueprint(featured_albums_bp)
