@@ -261,7 +261,7 @@ def api_recently_played():
         'top_albums': top_albums_recent
     })
 
-@app.route('/callback')
+@app.route('/api/callback')
 def callback():
     '''
     Spotify oAuth callback endpoint - saves auth and redirects with session established
