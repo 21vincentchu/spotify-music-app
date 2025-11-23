@@ -4,6 +4,7 @@ import config from '../../config';
 
 import FriendComponentDesktop from "../../components/desktop/FriendComponentDesktop";
 import AddFriendComponentDesktop from '../../components/desktop/AddFriendComponentDesktop';
+import SongComponent from '../../components/shared/SongComponent';
 import Footer from '../../components/shared/Footer';
 
 function FriendsPage() {
@@ -237,21 +238,14 @@ function FriendsPage() {
                 <div className="recent-songs-list">
                   {friendStats.recentSongs && friendStats.recentSongs.length > 0 ? (
                     friendStats.recentSongs.map((song, index) => (
-                      <div key={index} className="recent-song-item">
-                        <span className="song-rank">#{index + 1}</span>
-                        {song.imageUrl && (
-                          <img
-                            src={song.imageUrl}
-                            alt={song.albumName}
-                            className="song-album-cover"
-                          />
-                        )}
-                        <div className="song-info">
-                          <p className="song-name">{song.songName}</p>
-                          <p className="song-artist">{song.artistName}</p>
-                          <p className="song-time">{getRelativeTime(song.playedAt)}</p>
-                        </div>
-                      </div>
+                      <SongComponent
+                        key={index}
+                        songData={{ ...song, rank: index + 1 }}
+                        showStar={false}
+                        showRank={true}
+                        showPlay={true}
+                        timestamp={getRelativeTime(song.playedAt)}
+                      />
                     ))
                   ) : (
                     <p>No recent songs found</p>
