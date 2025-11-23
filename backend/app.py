@@ -35,8 +35,10 @@ app.secret_key = Config.SECRET_KEY
 
 ### ------ APP CONFIGURATIONS ---- ####
 """
-Session configuration for cross-origin (different ports)
-Using 'Lax' instead of None for Safari compatibility in development
+Session configuration for same-site requests
+Frontend and backend are both served from reverb.cool with different routes:
+- reverb.cool/ -> frontend (static site)
+- reverb.cool/api -> backend (service)
 """
 # Set session cookie configuration based on environment
 is_production = Config.FLASK_ENV == 'production'
@@ -59,6 +61,8 @@ allowed_origins = [
     "http://127.0.0.1:3000",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "https://www.reverb.cool",
+    "https://reverb.cool",
 ]
 
 # Add production frontend URL if configured

@@ -20,7 +20,7 @@ static_sites:
       - path: /
     envs:
       - key: REACT_APP_API_URL
-        value: ${backend.PUBLIC_URL}
+        value: ""  # Empty for same-domain: frontend uses relative URLs like /api/...
 
 # Backend API
 services:
