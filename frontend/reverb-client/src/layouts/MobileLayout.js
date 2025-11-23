@@ -10,6 +10,7 @@ import StatisticsPage from "../pages/mobile/StatisticsPage";
 import RecommendationsPage from "../pages/mobile/RecommendationsPage";
 import FriendsPage from "../pages/mobile/FriendsPage";
 import UserPage from "../pages/shared/UserPage";
+import AboutPage from "../pages/mobile/AboutPage";
 
 
 
@@ -65,6 +66,13 @@ function MobileLayout() {
                 >
                   View Profile
                 </Link>
+                <Link
+                    to="/about"
+                    className="dropdown-item"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    About
+                  </Link>
 
                 <button className="dropdown-item signout" onClick={handleSignOut}>
                   Sign Out
@@ -85,6 +93,8 @@ function MobileLayout() {
           <Route path="/recommendations" element={<RecommendationsPage />} />
           <Route path="/friends" element={<FriendsPage />} />
           <Route path="/profile" element={<UserPage />} />
+          <Route path="/about" element={<AboutPage />} />
+
         </Routes>
       </div>
 

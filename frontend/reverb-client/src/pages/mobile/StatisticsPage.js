@@ -51,6 +51,12 @@ function StatisticsPage() {
           >
             Artists
           </button>
+          <button
+            className={category === 'albums' ? 'active' : ''}
+            onClick={() => setCategory('albums')}
+          >
+            Albums
+          </button> 
         </div>
 
         {/* Song List */}

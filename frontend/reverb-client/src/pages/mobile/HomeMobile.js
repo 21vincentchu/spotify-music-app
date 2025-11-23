@@ -7,145 +7,96 @@ import SongComponent from "../../components/shared/SongComponent";
 import config from "../../config";
 
 const HomeMobile = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [recentData, setRecentData] = useState(null);
-  const [featuredSongs, setFeaturedSongs] = useState([]);
-  const [featuredArtists, setFeaturedArtists] = useState([]);
-  const [featuredAlbums, setFeaturedAlbums] = useState([]);
+  const [isLoadingRecentData, setIsLoadingRecentData] = useState(true);
+  const [recentData, setRecentData] = useState([]);
 
-  // ===============================
-  // Fetch All Mobile Homepage Data
-  // ===============================
+  // Load data when screen loads
   useEffect(() => {
-    loadAllData();
+    getRecentData();
   }, []);
 
-  const loadAllData = async () => {
+  // ===============================
+  // Fetch Recently Played Songs & Stats
+  // ===============================
+  const getRecentData = async () => {
+    setIsLoadingRecentData(true);
+
     try {
-      const [recentRes, songsRes, artistsRes, albumsRes] = await Promise.all([
-        axios.get(`${config.API_URL}/api/recently-played`, { withCredentials: true }),
-        axios.get(`${config.API_URL}/api/featured-songs/`, { withCredentials: true }),
-        axios.get(`${config.API_URL}/api/featured-artists/`, { withCredentials: true }),
-        axios.get(`${config.API_URL}/api/featured-albums/`, { withCredentials: true }),
-      ]);
+      const response = await axios.get(`${config.API_URL}/api/recently-played`, {
+        withCredentials: true,
+      });
 
-      setRecentData(recentRes.data);
-      setFeaturedSongs(songsRes.data);
-      setFeaturedArtists(artistsRes.data);
-      setFeaturedAlbums(albumsRes.data);
-    } catch (err) {
-      console.error("Mobile Home Fetch Error:", err);
+      setRecentData(response.data);
+    } catch (error) {
+      console.error("Error fetching recent data:", error);
     } finally {
-      setIsLoading(false);
+      setIsLoadingRecentData(false);
     }
-  };
-
-  // ===============================
-  // Featured Status Helpers
-  // ===============================
-  const isSongFeatured = (spotifyTrackId) =>
-    featuredSongs.some((song) => song.spotifyTrackId === spotifyTrackId);
-
-  const isArtistFeatured = (spotifyArtistId) =>
-    featuredArtists.some((artist) => artist.spotifyArtistId === spotifyArtistId);
-
-  const isAlbumFeatured = (spotifyAlbumId) =>
-    featuredAlbums.some((album) => album.spotifyAlbumId === spotifyAlbumId);
-
-  const getIsFeatured = (item) => {
-    if (item.spotifyTrackId) return isSongFeatured(item.spotifyTrackId);
-    if (item.spotifyArtistId) return isArtistFeatured(item.spotifyArtistId);
-    if (item.spotifyAlbumId) return isAlbumFeatured(item.spotifyAlbumId);
-    return false;
   };
 
   return (
     <div className="mobile-layout">
       <div className="mobile-content">
-      
+        <div className="home-page">
 
-        {isLoading ? (
-          <LoadingSpinner message="Loading your music..." />
-        ) : (
-          <div className="home-page">
+          {/* ================================
+              RECENTLY PLAYED SONGS
+          ================================= */}
+          <div className="home-featured">
+            <h2>Recently Played Songs</h2>
 
-            {/* ================================
-                SECTION 1 — Top Songs (Recently Played)
-            ================================= */}
-            <div className="scroll-section">
-              <section className="home-featured">
-                <h2>Top Songs</h2>
-                <p className="subtext">Songs You've Been Loving</p>
-
-                <div className="grid-wrapper">
-                  <div className="responsive-grid">
-                    {recentData?.top_songs?.slice(0, 12).map((song, i) => (
-                      <SongComponent
-                        key={i}
-                        songData={song}
-                        isFeatured={getIsFeatured(song)}
-                        showStar={true}
-                      />
-                    ))}
-                  </div>
+            {isLoadingRecentData ? (
+              <LoadingSpinner message="Loading your music..." />
+            ) : (
+              <div className="grid-wrapper">
+                <div className="responsive-grid">
+                  {recentData.top_songs.slice(0, 50).map((song, index) => (
+                    <SongComponent
+                      key={song.id || index}
+                      songData={song}
+                      showStar={true}
+                      isFeatured={false} // Mobile identical to desktop
+                    />
+                  ))}
                 </div>
-              </section>
-            </div>
-
-            {/* ================================
-                SECTION 2 — Featured Recommendations
-            ================================= */}
-            <div className="scroll-section">
-              <section className="home-featured">
-                <h2>Featured Recommendations</h2>
-                <p className="subtext">Your friends want you to listen to...</p>
-
-                <div className="grid-wrapper">
-                  <div className="responsive-grid">
-                    {featuredSongs.slice(0, 12).map((song, i) => (
-                      <SongComponent
-                        key={i}
-                        songData={song}
-                        isFeatured={true}
-                        showStar={true}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </section>
-            </div>
-
-            {/* ================================
-                SECTION 3 — Stats
-            ================================= */}
-            <div className="scroll-section">
-              <section className="home-featured">
-                <h2>Recent Statistics</h2>
-
-                <p className="featured-stat-heading">
-                  Average Track Length:{" "}
-                  <strong>{recentData?.listening_stats?.avg_track_length_minutes} min</strong>
-                </p>
-
-                <p className="featured-stat-heading">
-                  Total Hours:{" "}
-                  <strong>{Math.round(recentData?.listening_stats?.total_hours)}</strong>
-                </p>
-
-                <p className="featured-stat-heading">
-                  Total Minutes:{" "}
-                  <strong>{Math.round(recentData?.listening_stats?.total_minutes)}</strong>
-                </p>
-
-                <p className="featured-stat-heading">
-                  Total Plays:{" "}
-                  <strong>{recentData?.listening_stats?.total_plays}</strong>
-                </p>
-              </section>
-            </div>
-
+              </div>
+            )}
           </div>
-        )}
+
+          {/* ================================
+              RECENT STATISTICS
+          ================================= */}
+          <div className="home-featured stats-box">
+            <h2>Recent Statistics</h2>
+
+            {isLoadingRecentData ? (
+              <LoadingSpinner message="Loading statistics..." />
+            ) : (
+              <div className="stats-grid">
+                <p>
+                  <strong>Avg Track Length:</strong>{" "}
+                  {recentData.listening_stats.avg_track_length_minutes} minutes
+                </p>
+
+                <p>
+                  <strong>Total Hours:</strong>{" "}
+                  {Math.round(recentData.listening_stats.total_hours)}
+                </p>
+
+                <p>
+                  <strong>Total Minutes:</strong>{" "}
+                  {Math.round(recentData.listening_stats.total_minutes)}
+                </p>
+
+                <p>
+                  <strong>Total Plays:</strong>{" "}
+                  {recentData.listening_stats.total_plays}
+                </p>
+              </div>
+            )}
+          </div>
+
+        </div>
       </div>
     </div>
   );
