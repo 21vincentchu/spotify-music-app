@@ -207,7 +207,7 @@ def delete_album_rating(userName, spotifyAlbumId):
         cursor.close()
         conn.close()
 
-def update_song_rating(UserName, spotifyTrackId, imageUrl, rating=None, comment=None):
+def update_song_rating(userName, spotifyTrackId, rating=None, comment=None):
     """
     Update a song rating and/or review comment.
 
@@ -224,13 +224,27 @@ def update_song_rating(UserName, spotifyTrackId, imageUrl, rating=None, comment=
     cursor = conn.cursor()
 
     try:
+
+        # Convert rating to float or None
+        if rating is not None and rating != '':
+            try:
+                rating = float(rating)
+            except (ValueError, TypeError):
+                rating = None
+        else:
+            rating = None
+        
+        # Convert empty string to None
+        if comment == '':
+            comment = None
+
         cursor.execute("""
                        UPDATE RatedSong
             SET rating = COALESCE(%s, rating),
                 comment = COALESCE(%s, comment),
                 updatedAt = NOW()
             WHERE userName = %s AND spotifyTrackId = %s
-        """, (rating, comment, UserName, spotifyTrackId, imageUrl))
+        """, (rating, comment, userName, spotifyTrackId))
 
         conn.commit()
         return cursor.rowcount > 0

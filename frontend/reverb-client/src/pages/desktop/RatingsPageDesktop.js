@@ -7,6 +7,12 @@ function RatingsPage() {
   const [myFeaturedTab, setMyFeaturedTab] = useState('songs');
   const [typeTab, setTypeTab] = useState('ratings');
 
+  const getSongRatings = () => {
+
+     //get all song ratings for user
+  };
+
+
   return (
     <div className="recommendations-page">
           <div className="type-tabs">

@@ -1893,7 +1893,7 @@ nav {
     gap: 100px;
     z-index: 10;
     position: absolute;
-    left: calc(30vw - 64px);
+    left: calc(30vw - 79px);
     top: calc(10vh + 120px);
   }
 
