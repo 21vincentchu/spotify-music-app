@@ -25,6 +25,7 @@ function RatingDetailPageDesktop() {
             setRating(response.data.rating || 0);
             setComment(response.data.comment || '');
             setIsRated(true);
+
         } catch (error) {
             console.error('Error fetching ratings:', error);
             if (error.response?.status === 404) {
@@ -37,6 +38,8 @@ function RatingDetailPageDesktop() {
     };
 
     const handleSave = async () => {
+
+        console.log('Saving rating:', { spotifyId, rating, comment });
         try {
             const response = await axios.patch(`${config.API_URL}/api/ratings/song`, {
                 spotifyTrackId: spotifyId,
@@ -46,12 +49,8 @@ function RatingDetailPageDesktop() {
                 withCredentials: true
             });
             console.log('Rating saved:', response.data);
-            // Optional: Show success message or update UI
-            alert('Rating saved successfully!');
         } catch (error) {
             console.error('Error saving rating:', error);
-            // Optional: Show error message
-            alert('Failed to save rating. Please try again.');
         }
     };
 
@@ -73,14 +72,23 @@ function RatingDetailPageDesktop() {
                                     <p className='artist-name'>{ratingData?.artistName}</p>  
                                 </div>  
                                 <div className='star-rating-comp'>       
-                                    <Rating name="half-rating" defaultValue={ratingData?.rating} precision={0.5}/>  
-                                    <p>{ratingData?.rating} </p>  
+                                    <Rating 
+                                        name="half-rating" 
+                                        value={rating} 
+                                        precision={0.5}
+                                        onChange={(event, newValue) => setRating(newValue)}
+                                    />  
+                                    <p>{rating} </p>  
                                 </div>
                             </div>
                         </div>
                         
                         <div className='ratings-detail-actions'>
-                            <textarea className="round-outline" defaultValue={ratingData?.comment}></textarea>
+                            <textarea 
+                                className="round-outline" 
+                                value={comment}
+                                onChange={(e) => setComment(e.target.value)}
+                            />
                             <button type="submit" onClick={handleSave}>Save</button>
 
                         </div>
