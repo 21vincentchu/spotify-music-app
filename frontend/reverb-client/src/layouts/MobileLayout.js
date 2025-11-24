@@ -9,7 +9,7 @@ import RatingsPage from "../pages/mobile/RatingsPage";
 import StatisticsPage from "../pages/mobile/StatisticsPage";
 import RecommendationsPage from "../pages/mobile/RecommendationsPage";
 import FriendsPage from "../pages/mobile/FriendsPage";
-import UserPage from "../pages/shared/UserPage";
+import ProfilePage from "../pages/mobile/ProfilePage";
 import AboutPage from "../pages/mobile/AboutPage";
 
 
@@ -92,7 +92,7 @@ function MobileLayout() {
           <Route path="/statistics" element={<StatisticsPage />} />
           <Route path="/recommendations" element={<RecommendationsPage />} />
           <Route path="/friends" element={<FriendsPage />} />
-          <Route path="/profile" element={<UserPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/about" element={<AboutPage />} />
 
         </Routes>

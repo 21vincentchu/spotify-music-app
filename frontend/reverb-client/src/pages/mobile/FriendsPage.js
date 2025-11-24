@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import config from "../../config";
 
 import FriendComponentMobile from "../../components/mobile/FriendComponentMobile";
-import AddFriendComponentDesktop from "../../components/desktop/AddFriendComponentDesktop"; 
-// ❗ temporarily reusing desktop AddFriend until you make a mobile version
+import AddFriendComponentDesktop from "../../components/desktop/AddFriendComponentDesktop";
+import ProfileButtonMobile from "../../components/mobile/ProfileButtonMobile";
 
 function FriendsMobilePage() {
   const [isLoadingFriends, setIsLoadingFriends] = useState(true);
@@ -70,8 +70,10 @@ function FriendsMobilePage() {
   };
 
   return (
-    <div className="mobile-friends">
-      <div className="mobile-friends-content">
+    <div className="mobile-layout">
+      <ProfileButtonMobile />
+      <div className="mobile-friends">
+        <div className="mobile-friends-content">
 
         {/* ----------------------- */}
         {/* HEADER */}
@@ -137,6 +139,7 @@ function FriendsMobilePage() {
             )}
           </div>
         )}
+        </div>
       </div>
     </div>
   );

@@ -228,15 +228,16 @@ nav {
 .desktop-layout .about-page {
   padding: 0;
   margin: 0;
-  overflow: hidden;
+  min-height: 100vh;
+  padding-bottom: 40px;
+  height: auto !important;
+  overflow: visible !important;
 }
 
 .about-content {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  overflow-y: auto;
-  height: calc(100vh - 60px);
 }
 
 .about-section {
@@ -289,6 +290,79 @@ nav {
   background-color: #1282A2;
 }
 
+.tech-stack-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.stack-layer {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px 30px;
+  background-color: #f8f9fa;
+  border-radius: 0.75rem;
+  border: 2px solid #1282A2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.stack-layer:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(18, 130, 162, 0.2);
+}
+
+.stack-layer.frontend {
+  background-color: #E3F2FD;
+  border-color: #1282A2;
+}
+
+.stack-layer.backend {
+  background-color: #BBDEFB;
+  border-color: #0FA5D0;
+}
+
+.stack-layer.api {
+  background-color: #90CAF9;
+  border-color: #1282A2;
+}
+
+.stack-layer.auth {
+  background-color: #64B5F6;
+  border-color: #034078;
+}
+
+.stack-layer.cloud {
+  background-color: #42A5F5;
+  border-color: #023059;
+}
+
+.stack-layer.database {
+  background-color: #2196F3;
+  border-color: #012340;
+}
+
+.layer-label {
+  font-weight: bold;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #034078;
+}
+
+.layer-tech {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+}
+
 
 /* HOME PAGE ------------------------------------------------------------------------------------- */
 .desktop-layout .home-page{
@@ -306,7 +380,7 @@ nav {
 
 .home-recommended {
     width: 40vw;
-    height: 80vh;
+    max-height: 80vh;
     margin: 5%;
     padding: 10px;
     overflow: hidden;
@@ -352,7 +426,8 @@ nav {
 }
 
 .home-stats::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f1f1f1;
+  border-radius: 12px;
   margin-top: 105px;
   margin-bottom: 10px;
 }
@@ -485,12 +560,14 @@ nav {
 /* STATISTICS PAGE -------------------------------------------------------------------------------------  */
 
 .stats-page {
-    height: calc(100vh - 100px);
+    height: 100vh;
     display: flex;
     flex-direction: row;
     padding: 20px;
     padding-top: 140px;
+    padding-bottom: 80px;
     overflow: hidden;
+    box-sizing: border-box;
   }
   
   .stats-page h1 {
@@ -535,7 +612,9 @@ nav {
   .stats-data {
     flex: 1; /* Takes up remaining space */
     overflow: hidden;
-    padding: 20px;
+    padding: 30px;
+    margin-right: 20px;
+    margin-bottom: 20px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -568,17 +647,18 @@ nav {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    padding-top: 40px;
+    padding-top: 120px;
     height: 100vh;
     overflow: hidden;
   }
 
   .profile-page-container {
     width: 80vw;
-    height: 80vh;
+    height: auto;
+    max-height: 66vh;
     margin: 5%;
-    padding: 20px;
-    overflow: hidden;
+    padding: 20px 20px 10px 20px;
+    overflow: visible;
     display: flex;
     flex-direction: column;
   }
@@ -589,11 +669,10 @@ nav {
   }
 
   .profile-content {
-    flex: 1;
-    overflow-y: auto;
+    overflow-y: visible;
     padding-right: 8px;
     width: 100%;
-    padding-bottom: 10px;
+    padding-bottom: 0px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -603,8 +682,8 @@ nav {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
-    padding: 20px;
+    gap: 15px;
+    padding: 15px;
   }
 
   .profile-picture-container {
@@ -749,7 +828,15 @@ nav {
     margin: 0;
   }
 
-  .spotify-status,
+  .spotify-status {
+    font-size: 16px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    color: #1ed760;
+    font-weight: 600;
+  }
+
   .member-since {
     font-size: 16px;
     padding: 10px;
@@ -760,7 +847,7 @@ nav {
   /* Profile Stats */
   .profile-stats {
     width: 100%;
-    max-width: 500px;
+    max-width: 450px;
     margin-top: 20px;
     padding: 20px;
     background-color: #f8f9fa;
@@ -816,7 +903,8 @@ nav {
     max-width: 500px;
     display: flex;
     gap: 15px;
-    margin-top: 30px;
+    margin-top: 15px;
+    margin-bottom: 0px;
   }
 
   .logout-btn,
@@ -845,14 +933,15 @@ nav {
   }
 
   .delete-btn {
-    background-color: white;
-    color: #dc3545;
+    background-color: #dc3545;
+    color: white;
     border-color: #dc3545;
   }
 
   .delete-btn:hover {
-    background-color: #dc3545;
+    background-color: #c82333;
     color: white;
+    border-color: #c82333;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
   }
@@ -954,8 +1043,9 @@ nav {
 
   .friends-list-container {
     width: 40vw;
-    height: 80vh;
+    height: 75vh;
     margin: 5%;
+    margin-bottom: 60px;
     padding: 20px;
     overflow: hidden;
     display: flex;
@@ -994,8 +1084,9 @@ nav {
 
   .friends-search-container {
     width: 40vw;
-    height: 80vh;
+    height: 75vh;
     margin: 5%;
+    margin-bottom: 60px;
     padding: 20px;
     overflow: hidden;
     display: flex;
@@ -1154,8 +1245,9 @@ nav {
 
   .friends-stats-container {
     width: 40vw;
-    height: 80vh;
+    height: 75vh;
     margin: 5%;
+    margin-bottom: 60px;
     padding: 20px;
     overflow: hidden;
     display: flex;
@@ -1276,21 +1368,21 @@ nav {
     margin: 0 0 10px 0;
   }
 
-  *::-webkit-scrollbar {
+  .desktop-layout *::-webkit-scrollbar {
     width: 8px;
   }
 
-  *::-webkit-scrollbar-track {
+  .desktop-layout *::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 12px;
   }
 
-  *::-webkit-scrollbar-thumb {
+  .desktop-layout *::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 12px;
   }
 
-  *::-webkit-scrollbar-thumb:hover {
+  .desktop-layout *::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
   .desktop-layout .page {

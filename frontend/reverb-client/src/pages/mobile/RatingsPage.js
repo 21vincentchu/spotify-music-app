@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../../styles/Mobile.css";
 import StarIcon from "../../components/mobile/StarIcon";
+import ProfileButtonMobile from "../../components/mobile/ProfileButtonMobile";
 
 function RatingsPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,7 +30,9 @@ function RatingsPage() {
   );
 
   return (
-    <div className="ratings-page-wrapper">
+    <div className="mobile-layout ratings-fullscreen">
+      <ProfileButtonMobile />
+      <div className="ratings-page-wrapper">
 
       {/* ⭐ Fixed Search Bar */}
       <div className="search-bar-wrapper">
@@ -84,6 +87,7 @@ function RatingsPage() {
           </div>
         </div>
 
+        </div>
       </div>
     </div>
   );
