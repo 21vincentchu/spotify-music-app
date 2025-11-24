@@ -290,6 +290,79 @@ nav {
   background-color: #1282A2;
 }
 
+.tech-stack-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.stack-layer {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px 30px;
+  background-color: #f8f9fa;
+  border-radius: 0.75rem;
+  border: 2px solid #1282A2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.stack-layer:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(18, 130, 162, 0.2);
+}
+
+.stack-layer.frontend {
+  background-color: #E3F2FD;
+  border-color: #1282A2;
+}
+
+.stack-layer.backend {
+  background-color: #BBDEFB;
+  border-color: #0FA5D0;
+}
+
+.stack-layer.api {
+  background-color: #90CAF9;
+  border-color: #1282A2;
+}
+
+.stack-layer.auth {
+  background-color: #64B5F6;
+  border-color: #034078;
+}
+
+.stack-layer.cloud {
+  background-color: #42A5F5;
+  border-color: #023059;
+}
+
+.stack-layer.database {
+  background-color: #2196F3;
+  border-color: #012340;
+}
+
+.layer-label {
+  font-weight: bold;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #034078;
+}
+
+.layer-tech {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+}
+
 
 /* HOME PAGE ------------------------------------------------------------------------------------- */
 .desktop-layout .home-page{

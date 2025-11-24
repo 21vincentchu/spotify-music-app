@@ -12,8 +12,17 @@ function AboutPage() {
             </button>
 
             <div className="about-section">
-                <h1>Reverb - Social Music Analytics Platform</h1>
-                <p>A social music analytics platform that transforms your Spotify listening data into shareable insights and community-driven experiences through music ratings and reviews.</p>
+                <h1>Reverb - A Social Music Analytics Platform</h1>
+                <p>A social music analytics platform that transforms your Spotify listening data into shareable insights! Share your favorite songs, artists, albums. Review songs and albums as well! Check out our{' '}
+                    <a
+                        href="https://github.com/21vincentchu/spotify-music-app"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="spotify-link"
+                    >
+                        GitHub repository
+                    </a>!
+                </p>
             </div>
 
             <div className="about-section">
@@ -24,6 +33,36 @@ function AboutPage() {
                     <li><strong>Featured Content:</strong> Showcase your favorite music by staring songs and discover what your friends are listenings to on the friends page</li>
                     <li><strong>Social Features:</strong> Connect with friends, share your music taste with rating and reviewing songs</li>
                 </ul>
+            </div>
+
+            <div className="about-section">
+                <h2>Technology Stack</h2>
+                <div className="tech-stack-visual">
+                    <div className="stack-layer frontend">
+                        <span className="layer-label">Frontend</span>
+                        <span className="layer-tech">React • React Router • Material UI • Chart.js • CSS • Axios</span>
+                    </div>
+                    <div className="stack-layer backend">
+                        <span className="layer-label">Backend</span>
+                        <span className="layer-tech">Flask (Python) • Flask-CORS • Flask-Session • APScheduler</span>
+                    </div>
+                    <div className="stack-layer api">
+                        <span className="layer-label">APIs & Integration</span>
+                        <span className="layer-tech">Spotify Web API • Spotipy</span>
+                    </div>
+                    <div className="stack-layer auth">
+                        <span className="layer-label">Authentication</span>
+                        <span className="layer-tech">OAuth 2.0</span>
+                    </div>
+                    <div className="stack-layer cloud">
+                        <span className="layer-label">Cloud & Hosting</span>
+                        <span className="layer-tech">Digital Ocean</span>
+                    </div>
+                    <div className="stack-layer database">
+                        <span className="layer-label">Database</span>
+                        <span className="layer-tech">MySQL • mysql-connector-python</span>
+                    </div>
+                </div>
             </div>
 
             <div className="about-section">
@@ -59,19 +98,6 @@ function AboutPage() {
                 <p><strong>Kevin Lee</strong> - Backend Developer</p>
             </div>
 
-            <div className="about-section">
-                <h2>Project Github link!</h2>
-                <p>
-                    <a
-                        href="https://github.com/21vincentchu/spotify-music-app"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="spotify-link"
-                    >
-                        GitHub
-                    </a>
-                </p>
-            </div>
         </div>
         <Footer />
     </div>
