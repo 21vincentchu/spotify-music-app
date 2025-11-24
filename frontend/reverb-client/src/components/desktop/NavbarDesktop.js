@@ -81,6 +81,9 @@ function NavbarDesktop() {
         <NavLink to="/friends" className={({ isActive }) => (isActive ? "active" : "")}>
           Friends
         </NavLink>
+        <NavLink to="/about" className={({ isActive }) => (isActive ? "active" : "")}>
+          About
+        </NavLink>
       </div>
       
       <div className="profile-container" ref={menuRef}>
@@ -94,6 +97,9 @@ function NavbarDesktop() {
           <div className="profile-menu">
             <Link to="/profile" onClick={() => setShowMenu(false)}>
               Profile
+            </Link>
+            <Link to="/about" onClick={() => setShowMenu(false)}>
+              About
             </Link>
             <Link onClick={handleSignOut}>
               Sign Out

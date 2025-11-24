@@ -21,7 +21,7 @@ function AboutPage() {
                 <ul>
                     <li><strong>Secure Spotify OAuth Login:</strong> Connect safely with your Spotify account using OAuth 2.0 authentication, the industry standard</li>
                     <li><strong>Music Analytics:</strong> View detailed statistics about your listening habits, top songs, artists, albums, and recent listens</li>
-                    <li><strong>Featured Content:</strong> Showcase your favorite music and discover what your friends are listenings</li>
+                    <li><strong>Featured Content:</strong> Showcase your favorite music by staring songs and discover what your friends are listenings to on the friends page</li>
                     <li><strong>Social Features:</strong> Connect with friends, share your music taste with rating and reviewing songs</li>
                 </ul>
             </div>
@@ -57,6 +57,20 @@ function AboutPage() {
                 <p><strong>Vincent Chu</strong> - Backend Developer</p>
                 <p><strong>Esther Brandwein</strong> - Backend Developer</p>
                 <p><strong>Kevin Lee</strong> - Backend Developer</p>
+            </div>
+
+            <div className="about-section">
+                <h2>Project Github link!</h2>
+                <p>
+                    <a
+                        href="https://github.com/21vincentchu/spotify-music-app"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="spotify-link"
+                    >
+                        GitHub
+                    </a>
+                </p>
             </div>
         </div>
         <Footer />

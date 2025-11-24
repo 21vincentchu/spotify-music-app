@@ -79,4 +79,46 @@ def run_additional_migrations(cursor, conn):
     except Exception as e:
         print(f"Migration warning (featuredAt): {e}")
 
-    ##migration 3: add 
+    # Migration 3: Add imageUrl to RatedSong table
+    try:
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = %s
+            AND TABLE_NAME = 'RatedSong'
+            AND COLUMN_NAME = 'imageUrl'
+        """, (Config.MYSQL_DATABASE,))
+
+        exists = cursor.fetchone()[0] > 0
+
+        if not exists:
+            print("Adding imageUrl column to RatedSong table...")
+            cursor.execute("ALTER TABLE RatedSong ADD COLUMN imageUrl VARCHAR(512)")
+            conn.commit()
+            print("imageUrl column added to RatedSong")
+        else:
+            print("imageUrl column already exists in RatedSong")
+    except Exception as e:
+        print(f"Migration warning (RatedSong imageUrl): {e}")
+
+    # Migration 4: Add imageUrl to RatedAlbum table
+    try:
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = %s
+            AND TABLE_NAME = 'RatedAlbum'
+            AND COLUMN_NAME = 'imageUrl'
+        """, (Config.MYSQL_DATABASE,))
+
+        exists = cursor.fetchone()[0] > 0
+
+        if not exists:
+            print("Adding imageUrl column to RatedAlbum table...")
+            cursor.execute("ALTER TABLE RatedAlbum ADD COLUMN imageUrl VARCHAR(512)")
+            conn.commit()
+            print("imageUrl column added to RatedAlbum")
+        else:
+            print("imageUrl column already exists in RatedAlbum")
+    except Exception as e:
+        print(f"Migration warning (RatedAlbum imageUrl): {e}")

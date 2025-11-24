@@ -1,16 +1,5 @@
 from flask import Blueprint, request, jsonify, session
-from ratings_reviews import (
-    create_song_rating,
-    create_album_rating,
-    delete_song_rating,
-    delete_album_rating,
-    get_song_rating,
-    get_album_rating,
-    update_album_rating,
-    update_song_rating,
-    get_album_by_spotify_id,
-    get_song_by_spotify_id
-)
+from .ratings_reviews import *
 
 ratings_bp = Blueprint('ratings_bp', __name__, url_prefix='/api/ratings')
 
@@ -163,23 +152,29 @@ def update_song_rating_route():
     
     return jsonify({"message": "Song rating updated successfully"}), 200
 
-@ratings_bp.route("/rating/album", methods=["PATCH"])
+@ratings_bp.route("/album", methods=["PATCH"])
 def update_album_rating_route():
-    userName = request.args.get("userName")
-    spotifyAlbumId = request.args.get("spotifyAlbumId")
-    rating = request.args.get("rating")
-    comment = request.args.get("comment")
-    imageUrl = request.args.get("imageUrl")
+    userName = session.get('userName')
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
 
-    if not userName or not spotifyAlbumId:
+    data = request.get_json()  # Get data from request body
+
+    spotifyAlbumId = data.get("spotifyAlbumId")
+    rating = data.get("rating")
+    comment = data.get("comment")
+    imageUrl = data.get("imageUrl")
+
+    if not spotifyAlbumId:
         return jsonify({"error": "Missing required fields"}), 400
-    
+
     updated = update_album_rating(userName=userName, spotifyAlbumId=spotifyAlbumId, rating=rating, comment=comment, imageUrl=imageUrl)
 
     if not updated:
         return jsonify({"error": "Rating not found or no changes made"}), 404
     
     return jsonify({"message": "Song rating updated successfully"}), 200
+
 
 @ratings_bp.route("/song/<spotify_track_id>", methods=['GET'])
 def get_single_song(spotifyTrackId):
@@ -232,5 +227,4 @@ if album:
     print(album)
 else:
     print("Album not found")
-
 

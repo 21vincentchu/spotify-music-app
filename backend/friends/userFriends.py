@@ -5,6 +5,7 @@ from flask import session
 import os
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+from config import Config
 
 def insert_friend(userName: str, friendUserName: str):
     '''
@@ -335,7 +336,7 @@ def get_friend_recent_songs(friendUserName: str, limit: int = 50) -> List[Dict]:
         sp_oauth = SpotifyOAuth(
             client_id=os.getenv("SPOTIFY_CLIENT_ID"),
             client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
-            redirect_uri="http://localhost:8000/callback",
+            redirect_uri=Config.SPOTIPY_REDIRECT_URI,
             scope='user-read-recently-played'
         )
 

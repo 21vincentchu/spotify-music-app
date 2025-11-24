@@ -20,7 +20,7 @@ static_sites:
       - path: /
     envs:
       - key: REACT_APP_API_URL
-        value: ${backend.PUBLIC_URL}
+        value: ""  # Empty for same-domain: frontend uses relative URLs like /api/...
 
 # Backend API
 services:
@@ -48,9 +48,9 @@ services:
         scope: RUN_TIME
         type: SECRET
       - key: SPOTIPY_REDIRECT_URI
-        value: ${backend.PUBLIC_URL}/callback
+        value: https://www.reverb.cool/api/callback
       - key: FRONTEND_URL
-        value: ${frontend.PUBLIC_URL}
+        value: https://www.reverb.cool
       - key: MYSQL_HOST
         value: ${reverb-db.HOSTNAME}
       - key: MYSQL_PORT
