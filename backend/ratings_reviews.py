@@ -1,5 +1,6 @@
 ## database calls go here 
 from db import get_db
+from typing import Dict
 ##get + create album review, album rating, song review, song rating
 
 def get_song_rating(username, SpotifyTrackID):
@@ -278,3 +279,77 @@ def update_album_rating(UserName, spotifyAlbumId, imageUrl, rating=None, comment
     finally:
         cursor.close()
         conn.close()
+
+def get_song_by_spotify_id(spotifyTrackId):
+    """
+    Fetches song information based on spotifyTrackId from multiple tables.
+    Returns a dictionary with song details.
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT songName, artistName, albumName, spotifyTrackId, imageUrl, 'TopSong' AS source
+            FROM TopSong
+            WHERE spotifyTrackId = %s
+            UNION
+            SELECT songName, artistName, albumName, spotifyTrackId, imageUrl, 'RecentlyPlayed' AS source
+            FROM RecentlyPlayed
+            WHERE spotifyTrackId = %s
+            UNION
+            SELECT songName, artistName, albumName, spotifyTrackId, imageUrl, 'FeaturedSong' AS source
+            FROM FeaturedSong
+            WHERE spotifyTrackId = %s
+            UNION
+            SELECT songName, artistName, albumName, spotifyTrackId, imageUrl, 'RatedSong' AS source
+            FROM RatedSong
+            WHERE spotifyTrackId = %s
+            LIMIT 1;
+            """), (spotifyTrackId, spotifyTrackId, spotifyTrackId, spotifyTrackId)
+
+        song = cursor.fetchone()
+        return song
+        
+    except Exception as e:
+        conn.rollback()
+        raise e 
+    
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_album_by_spotify_id(spotifyAlbumId):
+    """
+    Fetches album information based on spotifyAlbumId from multiple tables.
+    Returns a dictionary with album details or None if not found.
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT albumName, artistName, spotifyAlbumId, imageUrl, 'TopAlbum' AS source
+            FROM TopAlbum
+            WHERE spotifyAlbumId = %s
+            UNION
+            SELECT albumName, artistName, spotifyAlbumId, imageUrl, 'FeaturedAlbum' AS source
+            FROM FeaturedAlbum
+            WHERE spotifyAlbumId = %s
+            UNION
+            SELECT albumName, artistName, spotifyAlbumId, imageUrl, 'RatedAlbum' AS source
+            FROM RatedAlbum
+            WHERE spotifyAlbumId = %s
+            LIMIT 1;
+        """, (spotifyAlbumId, spotifyAlbumId, spotifyAlbumId))
+
+        album = cursor.fetchone()
+        return album
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+
+

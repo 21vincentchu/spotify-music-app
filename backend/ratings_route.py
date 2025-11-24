@@ -7,7 +7,9 @@ from ratings_reviews import (
     get_song_rating,
     get_album_rating,
     update_album_rating,
-    update_song_rating
+    update_song_rating,
+    get_album_by_spotify_id,
+    get_song_by_spotify_id
 )
 
 ratings_bp = Blueprint('ratings_bp', __name__, url_prefix='/api/ratings')
@@ -31,7 +33,7 @@ def rate_song():
             songName=data['artistName'],
             artistName=data['artistName'],
             rating=rating,
-            imageUrl = data.get("imageUrl")
+            imageUrl = data.get("imageUrl"),
             comment=data.get('comment')
         )
         return jsonify({
@@ -178,3 +180,57 @@ def update_album_rating_route():
         return jsonify({"error": "Rating not found or no changes made"}), 404
     
     return jsonify({"message": "Song rating updated successfully"}), 200
+
+@ratings_bp.route("/song/<spotify_track_id>", methods=['GET'])
+def get_single_song(spotifyTrackId):
+    userName = session.get("userName")
+    if not userName:
+        return jsonify({"error": "Not logged in"}), 401
+
+    song = get_song_rating(userName, spotifyTrackId)
+
+    if song is None:
+        return jsonify({"message": "No rating found for this song"}), 404
+
+    return jsonify(song), 200
+
+@ratings_bp.route("/song/<spotify_album_id>", methods=['GET'])
+def get_single_album(spotifyAlbumId):
+    userName = session.get("userName")
+    if not userName:
+        return jsonify({"error": "Not logged in"}), 401
+
+    album = get_album_rating(userName, spotifyAlbumId)
+
+    if album is None:
+        return jsonify({"message": "No rating found for this song"}), 404
+
+    return jsonify(album), 200
+
+@ratings_bp.route('/api/song/<spotifyTrackId>', methods=['GET'])
+def fetch_song(spotifyTrackId):
+    song = get_song_by_spotify_id(spotifyTrackId)
+    if song:
+        return jsonify({"song": song})
+    else:
+        return jsonify({"error": "Song not found"}), 404
+    
+@ratings_bp.route('/api/album/<spotifyAlbumId>', methods=['GET'])
+def fetch_album(spotifyAlbumId):
+    album = get_album_by_spotify_id(spotifyAlbumId)
+    if album:
+        return jsonify({"album": album})
+    else:
+        return jsonify({"error": "Album not found"}), 404
+
+##test
+album_id = "1ATL5GLyefJaxhQzSPVrLX"  # example Spotify album ID
+album = get_album_by_spotify_id(album_id)
+
+if album:
+    print("Album found:")
+    print(album)
+else:
+    print("Album not found")
+
+

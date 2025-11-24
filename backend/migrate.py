@@ -78,3 +78,5 @@ def run_additional_migrations(cursor, conn):
             print("featuredAt column already exists")
     except Exception as e:
         print(f"Migration warning (featuredAt): {e}")
+
+    ##migration 3: add 
