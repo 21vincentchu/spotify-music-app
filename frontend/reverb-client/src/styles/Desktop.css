@@ -1,5 +1,5 @@
 .desktop-layout{
-  min-height: 100%;
+  height: 100%;
 }
 
 /* NAVIGATION BAR ------------------------------------------------------------------------------*/
@@ -238,7 +238,6 @@ nav {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  padding-bottom: 100px;
 }
 
 .about-section {
@@ -487,12 +486,14 @@ nav {
 /* STATISTICS PAGE -------------------------------------------------------------------------------------  */
 
 .stats-page {
-    height: calc(100vh - 100px);
+    height: 100vh;
     display: flex;
     flex-direction: row;
     padding: 20px;
     padding-top: 140px;
+    padding-bottom: 80px;
     overflow: hidden;
+    box-sizing: border-box;
   }
   
   .stats-page h1 {
@@ -537,7 +538,9 @@ nav {
   .stats-data {
     flex: 1; /* Takes up remaining space */
     overflow: hidden;
-    padding: 20px;
+    padding: 30px;
+    margin-right: 20px;
+    margin-bottom: 20px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -956,8 +959,9 @@ nav {
 
   .friends-list-container {
     width: 40vw;
-    height: 80vh;
+    height: 75vh;
     margin: 5%;
+    margin-bottom: 60px;
     padding: 20px;
     overflow: hidden;
     display: flex;
@@ -996,8 +1000,9 @@ nav {
 
   .friends-search-container {
     width: 40vw;
-    height: 80vh;
+    height: 75vh;
     margin: 5%;
+    margin-bottom: 60px;
     padding: 20px;
     overflow: hidden;
     display: flex;
@@ -1156,8 +1161,9 @@ nav {
 
   .friends-stats-container {
     width: 40vw;
-    height: 80vh;
+    height: 75vh;
     margin: 5%;
+    margin-bottom: 60px;
     padding: 20px;
     overflow: hidden;
     display: flex;
