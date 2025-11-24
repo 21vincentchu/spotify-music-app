@@ -134,18 +134,19 @@ def get_album_route():
         return jsonify(rating)
     return jsonify({"message": "rating not found"}), 404
 
-@ratings_bp.route("/rating/song", methods=["PATCH"])
+@ratings_bp.route("/song", methods=["PATCH"])
 def update_song_rating_route():
-    userName = request.args.get("userName")
-    spotifyTrackId = request.args.get("spotifyTrackId")
-    rating = request.args.get("rating")
-    comment = request.args.get("comment")
-    imageUrl = request.args.get("imageUrl")
+    userName = session.get('userName')
+    data = request.get_json()  # Get data from request body
+    
+    spotifyTrackId = data.get("spotifyTrackId")
+    rating = data.get("rating")
+    comment = data.get("comment")
 
     if not userName or not spotifyTrackId:
         return jsonify({"error": "Missing required fields"}), 400
     
-    updated = update_song_rating(userName=userName, spotifyTrackId=spotifyTrackId, rating=rating, comment=comment, imageUrl=imageUrl)
+    updated = update_song_rating(userName=userName, spotifyTrackId=spotifyTrackId, rating=rating, comment=comment)
 
     if not updated:
         return jsonify({"error": "Rating not found or no changes made"}), 404

@@ -8,6 +8,8 @@ function RatingDetailPageDesktop() {
     const { spotifyId } = useParams();
     const [isRated, setIsRated] = useState(null); // null = loading, true/false = result
     const [ratingData, setRatingData] = useState(null);
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState('');
 
     useEffect(() => {
         checkIfRated();  
@@ -20,6 +22,8 @@ function RatingDetailPageDesktop() {
             });
             console.log('Rating found:', response.data);
             setRatingData(response.data);
+            setRating(response.data.rating || 0);
+            setComment(response.data.comment || '');
             setIsRated(true);
         } catch (error) {
             console.error('Error fetching ratings:', error);
@@ -32,23 +36,24 @@ function RatingDetailPageDesktop() {
         }
     };
 
-    const handleSave = async () =>{
-        axios.post(`${config.API_URL}/api/ratings/song`, {
-            spotifyTrackId: spotifyId,
-            songName: ratingData?.songName,
-            artistName: ratingData?.artistName,
-            rating: ratingData?.rating,
-            comment: ratingData?.comment
-        }, {
-            withCredentials: true
-        })
-        .then((response) => {
+    const handleSave = async () => {
+        try {
+            const response = await axios.patch(`${config.API_URL}/api/ratings/song`, {
+                spotifyTrackId: spotifyId,
+                rating: rating,
+                comment: comment
+            }, {
+                withCredentials: true
+            });
             console.log('Rating saved:', response.data);
-        })
-        .catch((error) => {
+            // Optional: Show success message or update UI
+            alert('Rating saved successfully!');
+        } catch (error) {
             console.error('Error saving rating:', error);
-        });
-    }
+            // Optional: Show error message
+            alert('Failed to save rating. Please try again.');
+        }
+    };
 
     // Show loading state while checking
     if (isRated === null) {
@@ -76,31 +81,36 @@ function RatingDetailPageDesktop() {
                         
                         <div className='ratings-detail-actions'>
                             <textarea className="round-outline" defaultValue={ratingData?.comment}></textarea>
-                            <button type="submit">Save</button>
+                            <button type="submit" onClick={handleSave}>Save</button>
+
                         </div>
                     </div>
             ) : (
-                <div className='ratings-detail-container round-outline blue-box-shadow'>
-                    
-                    <div className='ratings-detail-info'>
-                        <img className="stats-circle" src={ratingData?.imageUrl} />
-                        <div>
+                    <div className='ratings-detail-container round-outline blue-box-shadow'>
+                        
+                        <div className='ratings-detail-info'>
+                            <img className="stats-circle" src={ratingData?.imageUrl} />
                             <div>
-                                <p className='song-name'>{ratingData?.songName}</p>
-                                <p className='artist-name'>{ratingData?.artistName}</p>  
-                            </div>  
-                            <div className='star-rating-comp'>       
-                                <Rating name="half-rating" defaultValue={ratingData?.rating} precision={0.5}/>  
-                                <p>{ratingData?.rating} </p>  
+                                <div>
+                                    <p className='song-name'>{ratingData?.songName}</p>
+                                    <p className='artist-name'>{ratingData?.artistName}</p>  
+                                </div>  
+                                <div className='star-rating-comp'>       
+                                    <Rating name="half-rating" defaultValue={ratingData?.rating} precision={0.5}/>  
+                                    <p>{ratingData?.rating} </p>  
+                                </div>
                             </div>
                         </div>
+                        
+                        <div className='ratings-detail-actions'>
+                            <textarea 
+                                className="round-outline" 
+                                value={comment}
+                                onChange={(e) => setComment(e.target.value)}
+                            />
+                            <button type="submit">Save</button>
+                        </div>
                     </div>
-                    
-                    <div className='ratings-detail-actions'>
-                        <textarea className="round-outline" defaultValue={ratingData?.comment}></textarea>
-                        <button type="submit">Save</button>
-                    </div>
-                </div>
             )}
         </div>
     );  
