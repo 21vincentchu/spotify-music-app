@@ -14,6 +14,8 @@ import '../styles/Desktop.css';
 import ProfilePageDesktop from "../pages/desktop/ProfilePageDesktop";
 import AboutPageDesktop from "../pages/desktop/AboutPageDesktop";
 import RatingDetailPageDesktop from "../pages/desktop/RatingDetailPageDesktop";
+import EstherTest from "../pages/desktop/EstherTest";
+
 
 function DesktopLayout() {
     const { isAuthenticated, userName } = useAuth();
@@ -62,6 +64,11 @@ function DesktopLayout() {
                     <Route path="/friends" element={
                         <ProtectedRoute>
                             <FriendsPageDesktop />
+                        </ProtectedRoute>
+                    } />
+                     <Route path="/test" element={
+                        <ProtectedRoute>
+                            <EstherTest />
                         </ProtectedRoute>
                     } />
                     

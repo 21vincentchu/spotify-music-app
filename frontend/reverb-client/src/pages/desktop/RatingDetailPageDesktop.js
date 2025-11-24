@@ -1,119 +1,89 @@
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import config from '../../config';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Rating } from '@mui/material';
+import axios from 'axios';
 
-function RatingDetailPageDesktop() {
-    const { spotifyId } = useParams();
-    const [isRated, setIsRated] = useState(null); // null = loading, true/false = result
-    const [ratingData, setRatingData] = useState(null);
-    const [rating, setRating] = useState(0);
-    const [comment, setComment] = useState('');
+export default function EstherTest() {
+  const [trackId, setTrackId] = useState('');
+  const [albumId, setAlbumId] = useState('');
+  const [songData, setSongData] = useState(null);
+  const [albumData, setAlbumData] = useState(null);
+  const [error, setError] = useState('');
 
-    useEffect(() => {
-        checkIfRated();  
-    }, [spotifyId]);
+  const fetchSong = async () => {
+  setError('');
+  try {
+    const res = await axios.get(`/song/${trackId}`, { withCredentials: true });
+    setSongData(res.data.song);
+  } catch (err) {
+    setError(err.response?.data?.error || 'Song not found');
+    setSongData(null);
+  }
+};
 
-    const checkIfRated = async () => {
-        try {
-            const response = await axios.get(`${config.API_URL}/api/ratings/song-rating?spotifyTrackId=${spotifyId}`, {
-                withCredentials: true
-            });
-            console.log('Rating found:', response.data);
-            setRatingData(response.data);
-            setRating(response.data.rating || 0);
-            setComment(response.data.comment || '');
-            setIsRated(true);
-        } catch (error) {
-            console.error('Error fetching ratings:', error);
-            if (error.response?.status === 404) {
-                console.log('No rating found');
-                setIsRated(false);
-            } else {
-                setIsRated(false);
-            }
-        }
-    };
+const fetchAlbum = async () => {
+  setError('');
+  try {
+    const res = await axios.get(`/album/${albumId}`, { withCredentials: true });
+    setAlbumData(res.data.album);
+  } catch (err) {
+    setError(err.response?.data?.error || 'Album not found');
+    setAlbumData(null);
+  }
+};
 
-    const handleSave = async () => {
-        try {
-            const response = await axios.patch(`${config.API_URL}/api/ratings/song`, {
-                spotifyTrackId: spotifyId,
-                rating: rating,
-                comment: comment
-            }, {
-                withCredentials: true
-            });
-            console.log('Rating saved:', response.data);
-            // Optional: Show success message or update UI
-            alert('Rating saved successfully!');
-        } catch (error) {
-            console.error('Error saving rating:', error);
-            // Optional: Show error message
-            alert('Failed to save rating. Please try again.');
-        }
-    };
 
-    // Show loading state while checking
-    if (isRated === null) {
-        return <div className='page'><p>Loading...</p></div>;
-    }
+  return (
+    <div className="ratings-detail-page" style={{ padding: '20px' }}>
+      <h2>Test Song & Album API</h2>
 
-    return (
-        <div className='ratings-detail-page'>
-            {isRated ? (
-                    <div className='ratings-detail-container round-outline blue-box-shadow'>
-                        
-                        <div className='ratings-detail-info'>
-                            <img className="stats-circle" src={ratingData?.imageUrl} />
-                            <div>
-                                <div>
-                                    <p className='song-name'>{ratingData?.songName}</p>
-                                    <p className='artist-name'>{ratingData?.artistName}</p>  
-                                </div>  
-                                <div className='star-rating-comp'>       
-                                    <Rating name="half-rating" defaultValue={ratingData?.rating} precision={0.5}/>  
-                                    <p>{ratingData?.rating} </p>  
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div className='ratings-detail-actions'>
-                            <textarea className="round-outline" defaultValue={ratingData?.comment}></textarea>
-                            <button type="submit" onClick={handleSave}>Save</button>
+      {/* Song Section */}
+      <div className="ratings-detail-container round-outline blue-box-shadow" style={{ marginBottom: '20px', padding: '10px' }}>
+        <h3>Fetch Song</h3>
+        <input
+          type="text"
+          value={trackId}
+          onChange={(e) => setTrackId(e.target.value)}
+          placeholder="Spotify Track ID"
+          style={{ width: '300px' }}
+        />
+        <button onClick={fetchSong} style={{ marginLeft: '10px' }}>Fetch Song</button>
 
-                        </div>
-                    </div>
-            ) : (
-                    <div className='ratings-detail-container round-outline blue-box-shadow'>
-                        
-                        <div className='ratings-detail-info'>
-                            <img className="stats-circle" src={ratingData?.imageUrl} />
-                            <div>
-                                <div>
-                                    <p className='song-name'>{ratingData?.songName}</p>
-                                    <p className='artist-name'>{ratingData?.artistName}</p>  
-                                </div>  
-                                <div className='star-rating-comp'>       
-                                    <Rating name="half-rating" defaultValue={ratingData?.rating} precision={0.5}/>  
-                                    <p>{ratingData?.rating} </p>  
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div className='ratings-detail-actions'>
-                            <textarea 
-                                className="round-outline" 
-                                value={comment}
-                                onChange={(e) => setComment(e.target.value)}
-                            />
-                            <button type="submit">Save</button>
-                        </div>
-                    </div>
-            )}
-        </div>
-    );  
+        {songData && (
+          <div className="ratings-detail-info" style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+            <img src={songData.imageUrl} alt="song cover" style={{ width: '80px', height: '80px', borderRadius: '8px' }} />
+            <div style={{ marginLeft: '15px' }}>
+              <p><strong>{songData.songName}</strong></p>
+              <p>{songData.artistName}</p>
+              <Rating value={songData.rating || 0} precision={0.5} readOnly />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Album Section */}
+      <div className="ratings-detail-container round-outline blue-box-shadow" style={{ marginBottom: '20px', padding: '10px' }}>
+        <h3>Fetch Album</h3>
+        <input
+          type="text"
+          value={albumId}
+          onChange={(e) => setAlbumId(e.target.value)}
+          placeholder="Spotify Album ID"
+          style={{ width: '300px' }}
+        />
+        <button onClick={fetchAlbum} style={{ marginLeft: '10px' }}>Fetch Album</button>
+
+        {albumData && (
+          <div className="ratings-detail-info" style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+            <img src={albumData.imageUrl} alt="album cover" style={{ width: '80px', height: '80px', borderRadius: '8px' }} />
+            <div style={{ marginLeft: '15px' }}>
+              <p><strong>{albumData.albumName}</strong></p>
+              <p>{albumData.artistName}</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {error && <div style={{ color: 'red', marginTop: '20px' }}>{error}</div>}
+    </div>
+  );
 }
-
-export default RatingDetailPageDesktop;
