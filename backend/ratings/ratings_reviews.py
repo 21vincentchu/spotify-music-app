@@ -220,7 +220,7 @@ def update_song_rating(userName, spotifyTrackId, rating=None, comment=None):
         Boolean indicating if the update was successful
     """
     conn = get_db()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True, buffered=True)
 
     try:
 
