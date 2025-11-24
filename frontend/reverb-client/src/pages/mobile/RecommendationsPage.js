@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../../styles/Mobile.css";
+import ProfileButtonMobile from "../../components/mobile/ProfileButtonMobile";
 
 function MobileRecommendationsPage() {
   const [myTab, setMyTab] = useState("songs");
@@ -7,6 +8,7 @@ function MobileRecommendationsPage() {
 
   return (
     <div className="mobile-layout">
+      <ProfileButtonMobile />
       <div className="mobile-content">
 
         {/* ===== My Featured Section ===== */}

@@ -426,7 +426,8 @@ nav {
 }
 
 .home-stats::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f1f1f1;
+  border-radius: 12px;
   margin-top: 105px;
   margin-bottom: 10px;
 }
@@ -646,17 +647,18 @@ nav {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    padding-top: 40px;
+    padding-top: 120px;
     height: 100vh;
     overflow: hidden;
   }
 
   .profile-page-container {
     width: 80vw;
-    height: 80vh;
+    height: auto;
+    max-height: 66vh;
     margin: 5%;
-    padding: 20px;
-    overflow: hidden;
+    padding: 20px 20px 10px 20px;
+    overflow: visible;
     display: flex;
     flex-direction: column;
   }
@@ -667,11 +669,10 @@ nav {
   }
 
   .profile-content {
-    flex: 1;
-    overflow-y: auto;
+    overflow-y: visible;
     padding-right: 8px;
     width: 100%;
-    padding-bottom: 10px;
+    padding-bottom: 0px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -681,8 +682,8 @@ nav {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
-    padding: 20px;
+    gap: 15px;
+    padding: 15px;
   }
 
   .profile-picture-container {
@@ -827,7 +828,15 @@ nav {
     margin: 0;
   }
 
-  .spotify-status,
+  .spotify-status {
+    font-size: 16px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    color: #1ed760;
+    font-weight: 600;
+  }
+
   .member-since {
     font-size: 16px;
     padding: 10px;
@@ -838,7 +847,7 @@ nav {
   /* Profile Stats */
   .profile-stats {
     width: 100%;
-    max-width: 500px;
+    max-width: 450px;
     margin-top: 20px;
     padding: 20px;
     background-color: #f8f9fa;
@@ -894,7 +903,8 @@ nav {
     max-width: 500px;
     display: flex;
     gap: 15px;
-    margin-top: 30px;
+    margin-top: 15px;
+    margin-bottom: 0px;
   }
 
   .logout-btn,
@@ -923,14 +933,15 @@ nav {
   }
 
   .delete-btn {
-    background-color: white;
-    color: #dc3545;
+    background-color: #dc3545;
+    color: white;
     border-color: #dc3545;
   }
 
   .delete-btn:hover {
-    background-color: #dc3545;
+    background-color: #c82333;
     color: white;
+    border-color: #c82333;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
   }
@@ -1357,21 +1368,21 @@ nav {
     margin: 0 0 10px 0;
   }
 
-  *::-webkit-scrollbar {
+  .desktop-layout *::-webkit-scrollbar {
     width: 8px;
   }
 
-  *::-webkit-scrollbar-track {
+  .desktop-layout *::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 12px;
   }
 
-  *::-webkit-scrollbar-thumb {
+  .desktop-layout *::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 12px;
   }
 
-  *::-webkit-scrollbar-thumb:hover {
+  .desktop-layout *::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
   .desktop-layout .page {

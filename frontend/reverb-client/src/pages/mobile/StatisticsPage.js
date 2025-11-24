@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import SongComponent from '../../components/shared/SongComponent';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
+import ProfileButtonMobile from '../../components/mobile/ProfileButtonMobile';
 import config from '../../config';
 
 function StatisticsPage() {
@@ -34,8 +35,10 @@ function StatisticsPage() {
   };
 
   return (
-    <div className="mobile-stats">
-      <div className="mobile-stats-content">
+    <div className="mobile-layout">
+      <ProfileButtonMobile />
+      <div className="mobile-stats">
+        <div className="mobile-stats-content">
 
         {/* Category Tabs */}
         <div className="mobile-stats-categories">
@@ -66,7 +69,7 @@ function StatisticsPage() {
             {loading ? (
               <LoadingSpinner message="Loading statistics..." />
             ) : (
-              songs.slice(0, 10).map((song, index) => (
+              songs.slice(0, 150).map((song, index) => (
                 <SongComponent
                   key={song.id || index}
                   songData={song}
@@ -103,6 +106,7 @@ function StatisticsPage() {
           </button>
         </div>
 
+        </div>
       </div>
     </div>
   );
