@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import Footer from '../../components/shared/Footer';
 
 function CallbackPage() {
     const navigate = useNavigate();
@@ -35,6 +36,7 @@ function CallbackPage() {
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
             <h2>Completing authentication...</h2>
             <p>Please wait while we redirect you.</p>
+            <Footer />
         </div>
     );
 }

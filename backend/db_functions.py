@@ -27,11 +27,11 @@ def upsert_user(spotify_user_data, refresh_token=None):
         profilePicture = spotify_user_data['images'][0]['url'] if spotify_user_data.get('images') else None
 
         # Insert or update user (ON DUPLICATE KEY UPDATE handles existing users)
+        # Note: displayName is NOT updated on login to preserve user's custom display name
         cursor.execute("""
             INSERT INTO User (userName, spotifyId, displayName, profilePicture, refreshToken)
             VALUES (%s, %s, %s, %s, %s)
             ON DUPLICATE KEY UPDATE
-                displayName = VALUES(displayName),
                 profilePicture = VALUES(profilePicture),
                 refreshToken = VALUES(refreshToken)
         """, (userName, userName, displayName, profilePicture, refresh_token))

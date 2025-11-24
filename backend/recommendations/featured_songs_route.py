@@ -1,11 +1,6 @@
 """API routes for featured songs feature"""
 from flask import Blueprint, request, jsonify, session
-from featured_songs import (
-    add_featured_song,
-    remove_featured_song,
-    get_user_featured_songs,
-    get_friends_featured_songs
-)
+from .featured_songs import *
 
 featured_songs_bp = Blueprint('featured_songs_bp', __name__, url_prefix='/api/featured-songs')
 

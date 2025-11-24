@@ -10,20 +10,18 @@ from flask import Flask, request, jsonify, session, redirect, send_from_director
 from flask_cors import CORS
 
 # Local app imports
-from config import Config
-from auth import get_authenticated_spotify_client
-from db_functions import upsert_user, get_cached_stats_id
-from stats_json import stat_Conversions
-from stats import stats_bp
-from stats_recently_played import *
-from migrate import run_migrations
-from scheduler import init_scheduler
-from background_tasks import quick_prefetch_on_login, prefetch_all_stats
-from friends_routes import friends_bp
-from profile_routes import profile_bp
-from featured_songs_route import featured_songs_bp
-from featured_artists_route import featured_artists_bp
-from featured_albums_route import featured_albums_bp
+from config import *
+from auth import *
+from db_functions import *
+from stats import *
+from home import *
+from migrate import *
+from scheduler import *
+from background_tasks import *
+from friends import *
+from profile import *
+from recommendations import *
+from ratings import *
 
 # Configure Flask to serve React's static files
 app = Flask(__name__, static_folder='frontend_build/static', static_url_path='/static')
@@ -37,8 +35,10 @@ app.secret_key = Config.SECRET_KEY
 
 ### ------ APP CONFIGURATIONS ---- ####
 """
-Session configuration for cross-origin (different ports)
-Using 'Lax' instead of None for Safari compatibility in development
+Session configuration for same-site requests
+Frontend and backend are both served from reverb.cool with different routes:
+- reverb.cool/ -> frontend (static site)
+- reverb.cool/api -> backend (service)
 """
 # Set session cookie configuration based on environment
 is_production = Config.FLASK_ENV == 'production'
@@ -61,6 +61,8 @@ allowed_origins = [
     "http://127.0.0.1:3000",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "https://www.reverb.cool",
+    "https://reverb.cool",
 ]
 
 # Add production frontend URL if configured
@@ -77,10 +79,12 @@ app.config["SESSION_PERMANENT"] = False
 app.register_blueprint(stats_bp)
 app.register_blueprint(stats_recently_played_bp)
 app.register_blueprint(friends_bp)
-app.register_blueprint(profile_bp)
+app.register_blueprint(profile_bp) # type: ignore
 app.register_blueprint(featured_songs_bp)
 app.register_blueprint(featured_artists_bp)
 app.register_blueprint(featured_albums_bp)
+app.register_blueprint(ratings_bp)
+
 
 ### ----- INITIALIZE SCHEDULER ----- ###
 # Start background scheduler for weekly stats refresh
@@ -239,6 +243,9 @@ def api_recently_played():
     # Calculate listening statistics
     listening_stats = calculate_listening_minutes(recent_tracks)
 
+    # Fetch top genre from recent tracks
+    genre_stats = fetch_top_genres_from_recent(sp, recent_tracks)
+
     # Fetch top songs/artists/albums from recently played tracks
     top_songs_recent = fetch_recently_played_top_songs(sp)
     top_artists_recent = fetch_recently_played_top_artists(sp)
@@ -248,12 +255,14 @@ def api_recently_played():
     return jsonify({
         'recent_tracks': recent_tracks,
         'listening_stats': listening_stats,
+        'genre_stats': genre_stats,
         'top_songs': top_songs_recent,
         'top_artists': top_artists_recent,
         'top_albums': top_albums_recent
     })
 
-@app.route('/callback')
+@app.route('/callback')  # For local development
+@app.route('/api/callback')  # For production (custom domain routing)
 def callback():
     '''
     Spotify oAuth callback endpoint - saves auth and redirects with session established

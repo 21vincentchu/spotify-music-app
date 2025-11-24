@@ -36,10 +36,11 @@ def get_authenticated_spotify_client():
     if not token_info:
         return None, None
 
+    from config import Config
     sp_oauth = SpotifyOAuth(
         client_id=os.getenv("SPOTIFY_CLIENT_ID"),
         client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
-        redirect_uri="http://localhost:8000/callback",
+        redirect_uri=Config.SPOTIPY_REDIRECT_URI,
         scope='user-read-private user-read-email user-top-read user-read-recently-played user-read-playback-state user-read-currently-playing user-read-playback-position user-library-read user-library-modify playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-follow-read user-follow-modify user-modify-playback-state streaming app-remote-control ugc-image-upload'
     )
 

@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, session, redirect
-from profile import get_user_profile, update_display_name
+from .profile import *
 
 profile_bp = Blueprint('profile_bp', __name__, url_prefix='/api/profile')
 
@@ -42,8 +42,36 @@ def update_display_name_route():
         return jsonify({'success': True, 'message': 'Display name updated successfully'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
-    
+
+@profile_bp.route('/stats', methods=['GET'])
+def get_stats():
+    """Get user profile statistics"""
+    userName = session.get('userName')
+    if not userName:
+        return jsonify({'error': 'Not authenticated'}), 401
+
+    try:
+        stats = get_profile_stats(userName)
+        return jsonify(stats)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@profile_bp.route('/delete-account', methods=['DELETE'])
+def delete_account():
+    """Delete user account"""
+    userName = session.get('userName')
+    if not userName:
+        return jsonify({'error': 'Not authenticated'}), 401
+
+    try:
+        delete_user_account(userName)
+        # Clear session after deleting account
+        session.clear()
+        return jsonify({'success': True, 'message': 'Account deleted successfully'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 # backend testing purposes
 @profile_bp.route('/test')
 def test_profile():

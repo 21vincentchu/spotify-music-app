@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import SongComponent from '../../components/shared/SongComponent';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
+import config from '../../config';
 
 function StatisticsPage() {
   const [category, setCategory] = useState('songs');
@@ -18,7 +19,7 @@ function StatisticsPage() {
     setLoading(true);
 
     axios
-      .get(`http://localhost:8000/api/top-${category}/${timeframe}`, {
+      .get(`${config.API_URL}/api/top-${category}/${timeframe}`, {
         withCredentials: true,
       })
       .then((response) => {

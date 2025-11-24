@@ -13,6 +13,7 @@ import { useLocation } from "react-router-dom";
 import '../styles/Desktop.css';
 import ProfilePageDesktop from "../pages/desktop/ProfilePageDesktop";
 import AboutPageDesktop from "../pages/desktop/AboutPageDesktop";
+import RatingDetailPageDesktop from "../pages/desktop/RatingDetailPageDesktop";
 
 function DesktopLayout() {
     const { isAuthenticated, userName } = useAuth();
@@ -43,6 +44,11 @@ function DesktopLayout() {
                             <RatingsPageDesktop />
                         </ProtectedRoute>
                     } />
+                    <Route path="/ratings/:spotifyId" element={
+                        <ProtectedRoute>
+                            <RatingDetailPageDesktop />
+                        </ProtectedRoute>
+                    } />
                     <Route path="/statistics" element={
                         <ProtectedRoute>
                             <StatisticsPageDesktop />
@@ -58,6 +64,7 @@ function DesktopLayout() {
                             <FriendsPageDesktop />
                         </ProtectedRoute>
                     } />
+                    
                 </Routes>
             {/* </div> */}
         </div>
