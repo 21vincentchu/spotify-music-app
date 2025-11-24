@@ -33,25 +33,25 @@ def get_song_rating(username, SpotifyTrackID):
 def get_album_rating(username, SpotifyAlbumID):
      """
     gets an album rating and review.
-    
+
     Args:
         userName: The userName (Spotify ID)
         albumName: the album name
-        spotifyTrackId: Spotify track ID
+        spotifyAlbumId: Spotify album ID
         artistName: Name of the artist
         rating: Rating value (0-5, supports 0.5 increments)
         comment: Optional review text
-        
+
     Returns:
         uniqueID: The ID of the created/updated rating record
     """
      conn = get_db()
-     cursor = conn.cursor()
-     try: 
+     cursor = conn.cursor(dictionary=True, buffered=True)
+     try:
          cursor.execute("""
             SELECT uniqueID, albumName, artistName, rating, comment, imageUrl, createdAt, updatedAt
-            FROM RatedSong
-            WHERE userName = %s AND spotifyTrackId = %s
+            FROM RatedAlbum
+            WHERE userName = %s AND spotifyAlbumId = %s
         """, (username, SpotifyAlbumID))
          return cursor.fetchone()
      finally:
@@ -81,7 +81,7 @@ def create_song_rating(userName, spotifyTrackId, songName, artistName, rating, i
         # Insert or update rating
         cursor.execute("""
             INSERT INTO RatedSong (userName, spotifyTrackId, songName, artistName, rating, comment, imageUrl)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
         """, (userName, spotifyTrackId, songName, artistName, rating, comment, imageUrl))
         
         conn.commit()
@@ -124,7 +124,7 @@ def create_album_rating(userName, spotifyAlbumId, albumName, artistName, rating,
         # Insert or update rating
         cursor.execute("""
             INSERT INTO RatedAlbum (userName, spotifyAlbumId, albumName, artistName, rating, comment, imageUrl)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
         """, (userName, spotifyAlbumId, albumName, artistName, rating, comment, imageUrl))
         
         conn.commit()
@@ -257,15 +257,16 @@ def update_song_rating(userName, spotifyTrackId, rating=None, comment=None):
         conn.close()
 
 
-def update_album_rating(UserName, spotifyAlbumId, imageUrl, rating=None, comment=None):
+def update_album_rating(userName, spotifyAlbumId, rating=None, comment=None, imageUrl=None):
     """
-    Update a song rating and/or review comment.
+    Update an album rating and/or review comment.
 
     Args:
         userName: Spotify user ID
-        spotifyAlbumId: Track ID
+        spotifyAlbumId: Album ID
         rating: New rating (optional)
         comment: New comment (optional)
+        imageUrl: New image URL (optional)
 
     Returns:
         Boolean indicating if the update was successful
@@ -274,21 +275,38 @@ def update_album_rating(UserName, spotifyAlbumId, imageUrl, rating=None, comment
     cursor = conn.cursor()
 
     try:
+        # Convert rating to float or None
+        if rating is not None and rating != '':
+            try:
+                rating = float(rating)
+            except (ValueError, TypeError):
+                rating = None
+        else:
+            rating = None
+
+        # Convert empty string to None
+        if comment == '':
+            comment = None
+
+        if imageUrl == '':
+            imageUrl = None
+
         cursor.execute("""
-                       UPDATE RatedAlbum
+            UPDATE RatedAlbum
             SET rating = COALESCE(%s, rating),
                 comment = COALESCE(%s, comment),
+                imageUrl = COALESCE(%s, imageUrl),
                 updatedAt = NOW()
             WHERE userName = %s AND spotifyAlbumId = %s
-        """, (rating, comment, UserName, spotifyAlbumId, imageUrl))
+        """, (rating, comment, imageUrl, userName, spotifyAlbumId))
 
         conn.commit()
         return cursor.rowcount > 0
-    
+
     except Exception as e:
         conn.rollback()
-        raise e 
-    
+        raise e
+
     finally:
         cursor.close()
         conn.close()
