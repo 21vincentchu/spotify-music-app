@@ -152,20 +152,25 @@ def update_song_rating_route():
     
     return jsonify({"message": "Song rating updated successfully"}), 200
 
-@ratings_bp.route("/rating/album", methods=["PATCH"])
+@ratings_bp.route("/album", methods=["PATCH"])
 def update_album_rating_route():
-    userName = request.args.get("userName")
-    spotifyAlbumId = request.args.get("spotifyAlbumId")
-    rating = request.args.get("rating")
-    comment = request.args.get("comment")
-    imageUrl = request.args.get("imageUrl")
+    userName = session.get('userName')
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
 
-    if not userName or not spotifyAlbumId:
+    data = request.get_json()  # Get data from request body
+
+    spotifyAlbumId = data.get("spotifyAlbumId")
+    rating = data.get("rating")
+    comment = data.get("comment")
+    imageUrl = data.get("imageUrl")
+
+    if not spotifyAlbumId:
         return jsonify({"error": "Missing required fields"}), 400
-    
+
     updated = update_album_rating(userName=userName, spotifyAlbumId=spotifyAlbumId, rating=rating, comment=comment, imageUrl=imageUrl)
 
     if not updated:
         return jsonify({"error": "Rating not found or no changes made"}), 404
-    
-    return jsonify({"message": "Song rating updated successfully"}), 200
+
+    return jsonify({"message": "Album rating updated successfully"}), 200
