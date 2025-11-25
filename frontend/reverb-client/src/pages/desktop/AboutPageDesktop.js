@@ -52,7 +52,7 @@ function AboutPage() {
                     </div>
                     <div className="stack-layer auth">
                         <span className="layer-label">Authentication</span>
-                        <span className="layer-tech">OAuth 2.0</span>
+                        <span className="layer-tech">OAuth 2.0 through spotify</span>
                     </div>
                     <div className="stack-layer infrastructure">
                         <span className="layer-label">Infrastructure</span>
