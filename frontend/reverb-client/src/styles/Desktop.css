@@ -647,20 +647,28 @@ nav {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    padding-top: 120px;
-    height: 100vh;
-    overflow: hidden;
+    padding-top: 35px;
+    padding-bottom: 60px;
+    min-height: fit-content;
+    overflow: visible;
   }
 
   .profile-page-container {
     width: 80vw;
-    height: auto;
-    max-height: 66vh;
+    height: auto !important;
+    max-height: none !important;
+    min-height: fit-content;
     margin: 5%;
     padding: 20px 20px 10px 20px;
     overflow: visible;
     display: flex;
     flex-direction: column;
+  }
+
+  .profile-page-container.round-outline,
+  .profile-page-container.blue-box-shadow {
+    height: auto !important;
+    max-height: none !important;
   }
 
   .profile-page-container h2 {
@@ -675,6 +683,8 @@ nav {
     padding-bottom: 0px;
     display: flex;
     flex-direction: column;
+    flex: 1 1 auto;
+    height: auto;
     gap: 10px;
   }
 
@@ -684,6 +694,8 @@ nav {
     align-items: center;
     gap: 15px;
     padding: 15px;
+    height: auto;
+    flex: 1 1 auto;
   }
 
   .profile-picture-container {

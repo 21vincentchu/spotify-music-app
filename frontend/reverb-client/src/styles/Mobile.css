@@ -126,47 +126,55 @@
 /* Profile Page Mobile Styling */
 .mobile-layout .profile-page {
   width: 100%;
-  height: auto;
+  min-height: fit-content;
+  padding: 60px 0 100px 0;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  overflow: visible;
-  padding-top: 100px;
-}
-
-/* Remove scrolling for profile page */
-.mobile-layout .mobile-content:has(.profile-page) {
-  overflow: visible !important;
+  flex-direction: column;
+  align-items: center;
 }
 
 .mobile-layout .profile-page-container {
-  width: 90%;
-  max-width: 600px;
-  height: auto;
-  padding: 20px 20px 15px 20px;
   display: flex;
   flex-direction: column;
-  background: #ffffff;
+  width: 90%;
+  max-width: 500px;
   margin: 0 auto;
+  padding: 20px;
+  background: #ffffff;
+  overflow: visible;
+  height: auto !important;
+  max-height: none !important;
+  min-height: fit-content;
+}
+
+.mobile-layout .profile-page-container.round-outline,
+.mobile-layout .profile-page-container.blue-box-shadow {
+  height: auto !important;
+  max-height: none !important;
 }
 
 .mobile-layout .profile-page-container h2 {
-  flex-shrink: 0;
   margin: 0 0 20px 0;
   color: #034078;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
+  text-align: center;
 }
 
 .mobile-layout .profile-content {
-  padding: 10px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  height: auto;
 }
 
 .mobile-layout .profile-info {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 15px;
   width: 100%;
+  height: auto;
+  flex: 1 1 auto;
 }
 
 .mobile-layout .profile-picture-container {
@@ -178,19 +186,19 @@
 }
 
 .mobile-layout .profile-picture {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid #034078;
 }
 
 .mobile-layout .profile-picture-note {
-  font-size: 12px;
+  font-size: 11px;
   color: #666;
   margin: 0;
   text-align: center;
-  padding: 0 20px;
+  padding: 0 10px;
 }
 
 .mobile-layout .profile-field {
@@ -288,23 +296,23 @@
 .mobile-layout .profile-stats {
   width: 100%;
   margin-top: 0px;
-  padding: 15px;
+  padding: 12px;
   background-color: #f8f9fa;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 2px solid #034078;
 }
 
 .mobile-layout .profile-stats h3 {
-  margin: 0 0 15px 0;
+  margin: 0 0 12px 0;
   color: #034078;
-  font-size: 18px;
+  font-size: 16px;
   text-align: center;
 }
 
 .mobile-layout .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
+  gap: 8px;
 }
 
 .mobile-layout .stat-item {
@@ -315,17 +323,18 @@
 }
 
 .mobile-layout .stat-value {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   color: #1282A2;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .mobile-layout .stat-label {
-  font-size: 11px;
+  font-size: 10px;
   color: #666;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
+  line-height: 1.2;
 }
 
 .mobile-layout .profile-actions {
@@ -333,8 +342,8 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 15px;
-  margin-bottom: 0px;
+  margin-top: 12px;
+  margin-bottom: 0;
 }
 
 .mobile-layout .logout-btn,
