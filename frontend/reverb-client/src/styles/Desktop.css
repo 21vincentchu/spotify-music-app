@@ -372,10 +372,6 @@ nav {
     padding-top: 40px;
     height: 100vh;
     overflow: hidden;
-
-    h2{
-      padding: 3% 5% 5% 5%;
-    }
 }
 
 
@@ -392,8 +388,15 @@ nav {
   .home-recommended h2 {
     flex-shrink: 0; /* prevents header from being compressed or scrolled */
     margin: 0 0 10px 0;
+    padding-left: 5px;
+    text-align: left;
   }
-  
+
+  .home-recommended .song-rank {
+    display: none;
+  }
+
+
   .home-recommended-songs {
     flex: 1;
     overflow-y: auto;
@@ -445,6 +448,7 @@ nav {
 .home-stats h2 {
   flex-shrink: 0; /* prevents header from being compressed or scrolled */
   margin: 0 0 10px 0;
+  padding-left: 5px;
   text-align: left;
 }
 
@@ -465,7 +469,7 @@ nav {
   border-radius: 0.75rem;
   border: 2px solid #1282A2;
   box-sizing: border-box;
-  max-width: 90%;
+  max-width: 47%;
   width: 100%;
 }
 
@@ -563,22 +567,23 @@ nav {
 .stats-page {
     height: 100vh;
     display: flex;
-    flex-direction: row;
-    padding: 20px;
-    padding-top: 140px;
-    padding-bottom: 80px;
+    flex-direction: column;
+    padding: 10px;
+    padding-top: 10px;
     overflow: hidden;
     box-sizing: border-box;
   }
-  
+
   .stats-page h1 {
     margin-bottom: 20px;
   }
-  
+
   .stats-content {
     display: flex;
-    gap: 20px;
+    flex-direction: row;
+    justify-content: center;
     flex: 1;
+    min-height: 0;
   }
   
   .stats-timeframe-inline {
@@ -613,14 +618,16 @@ nav {
   }
 
   .stats-data {
-    flex: 1; /* Takes up remaining space */
-    overflow: hidden;
-    padding: 30px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-    box-sizing: border-box;
+    flex: 0 1 auto;
+    width: 100%;
+    max-width: 800px;
+    margin: 5% auto;
+    padding: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
+    min-height: 0;
   }
 
   .stats-data .song-list{
@@ -1369,7 +1376,7 @@ nav {
 
   /* Legacy data-container support */
   .data-container {
-    width: 40vw;
+    width: 28vw;
     height: 80vh;
     margin: 5%;
     padding: 10px;
