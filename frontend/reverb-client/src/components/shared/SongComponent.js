@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import config from '../../config';
+import { Link } from 'react-router-dom';
 
 function SongComponent({songData, showStar, isFeatured, onToggleFeatured, showRank = true, showPlay = false, timestamp = null}) {
     // Handle both songs (songName) and albums (albumName)
@@ -113,7 +114,13 @@ function SongComponent({songData, showStar, isFeatured, onToggleFeatured, showRa
             {showRank && <div className="song-rank">#{songData?.rank}</div>}
             <img className="circle stats-circle" src={songData?.imageUrl} />
             <div className="song-info">
-                <p className="song-name"><a href={`/ratings/${songData?.spotifyTrackId}`}>{displayName}</a></p>
+                <p className="song-name">
+                <Link 
+                to={`/ratings/${songData?.spotifyTrackId}`}
+                >
+                    {displayName}
+                </Link>
+                </p>
                 <p className="artist-name">{artistName}</p>
                 {timestamp && <p className="played-at-time">{timestamp}</p>}
             </div>
