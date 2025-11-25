@@ -579,37 +579,39 @@ nav {
     display: flex;
     gap: 20px;
     flex: 1;
-
-    button{
-        border: 1px solid black;
-        border-radius: 12px;
-        width: 50%;
-        margin: 5% auto;
-        padding: 5px;
-        font-weight: bold;
-        background-color: white;
-    }
-
-    button:hover{
-        color: #1282A2;
-    }
-    button.active{
-        color: white;
-        background-color: #034078;
-        padding: 5px 10px;
-        border-radius: 12px;
-    }
-
   }
   
-  .stats-categories,
-  .stats-timeframe {
-    flex: 0 0 250px; /* Fixed width of 250px */
+  .stats-timeframe-inline {
+    position: absolute;
+    right: 0;
+    bottom: 10px;
     display: flex;
-    flex-direction: column;
-    align-content: center;
+    gap: 8px;
   }
-  
+
+  .stats-timeframe-inline button {
+    background-color: white;
+    color: #034078 !important;
+    border: 1px solid #034078;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 0;
+  }
+
+  .stats-timeframe-inline button:hover {
+    background-color: #f0f0f0;
+    color: #034078 !important;
+  }
+
+  .stats-timeframe-inline button.active {
+    background-color: #034078;
+    color: white !important;
+  }
+
   .stats-data {
     flex: 1; /* Takes up remaining space */
     overflow: hidden;

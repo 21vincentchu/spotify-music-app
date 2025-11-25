@@ -99,28 +99,48 @@ function StatisticsPage() {
   return (
     <div className="stats-page">
       <div className="stats-content">
-        <div className="stats-categories">
-          <button
-            className={category === 'songs' ? 'active' : ''}
-            onClick={() => setCategory('songs')}
-          >
-            Songs
-          </button>
-          <button
-            className={category === 'artists' ? 'active' : ''}
-            onClick={() => setCategory('artists')}
-          >
-            Artists
-          </button>
-          <button
-            className={category === 'albums' ? 'active' : ''}
-            onClick={() => setCategory('albums')}
-          >
-            Albums
-          </button>
-        </div>
         <div className="stats-data round-outline blue-box-shadow">
             <h2>Top {category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+            <div className="featured-tabs">
+              <button
+                className={category === 'songs' ? 'active' : ''}
+                onClick={() => setCategory('songs')}
+              >
+                Songs
+              </button>
+              <button
+                className={category === 'artists' ? 'active' : ''}
+                onClick={() => setCategory('artists')}
+              >
+                Artists
+              </button>
+              <button
+                className={category === 'albums' ? 'active' : ''}
+                onClick={() => setCategory('albums')}
+              >
+                Albums
+              </button>
+              <div className="stats-timeframe-inline">
+                <button
+                  className={timeframe === 'short_term' ? 'active' : ''}
+                  onClick={() => setTimeframe('short_term')}
+                >
+                  4 Weeks
+                </button>
+                <button
+                  className={timeframe === 'medium_term' ? 'active' : ''}
+                  onClick={() => setTimeframe('medium_term')}
+                >
+                  6 Months
+                </button>
+                <button
+                  className={timeframe === 'long_term' ? 'active' : ''}
+                  onClick={() => setTimeframe('long_term')}
+                >
+                  1 Year
+                </button>
+              </div>
+            </div>
             <div className='song-list'>
               {loading ? (
             <LoadingSpinner message="Loading statistics..." />
@@ -140,27 +160,7 @@ function StatisticsPage() {
             ))
             )}
             </div>
-          
-        </div>
-        <div className="stats-timeframe">
-          <button 
-            className={timeframe === 'short_term' ? 'active' : ''}
-            onClick={() => setTimeframe('short_term')}
-          >
-            4 Weeks
-          </button>
-          <button 
-            className={timeframe === 'medium_term' ? 'active' : ''}
-            onClick={() => setTimeframe('medium_term')}
-          >
-            6 months
-          </button>
-          <button 
-            className={timeframe === 'long_term' ? 'active' : ''}
-            onClick={() => setTimeframe('long_term')}
-          >
-            1 Year
-          </button>
+
         </div>
       </div>
       <Footer />

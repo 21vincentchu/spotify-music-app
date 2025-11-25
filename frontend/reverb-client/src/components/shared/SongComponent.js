@@ -114,7 +114,7 @@ function SongComponent({songData, showStar, isFeatured, onToggleFeatured, showRa
             <img className="circle stats-circle" src={songData?.imageUrl} />
             <div className="song-info">
                 <p className="song-name"><a href={`/ratings/${songData?.spotifyTrackId}`}>{displayName}</a></p>
-                <p className="artist-name">{artistName}</p>
+                {itemType !== 'artist' && artistName && <p className="artist-name">{artistName}</p>}
                 {timestamp && <p className="played-at-time">{timestamp}</p>}
             </div>
             {showPlay && spotifyUrl && (
