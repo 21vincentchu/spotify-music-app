@@ -54,13 +54,13 @@ function AboutPage() {
                         <span className="layer-label">Authentication</span>
                         <span className="layer-tech">OAuth 2.0</span>
                     </div>
-                    <div className="stack-layer cloud">
-                        <span className="layer-label">Cloud & Hosting</span>
-                        <span className="layer-tech">Digital Ocean</span>
+                    <div className="stack-layer infrastructure">
+                        <span className="layer-label">Infrastructure</span>
+                        <span className="layer-tech">Digital Ocean (Hosting) • Cloudflare (DNS/CDN) • Squarespace (Domain)</span>
                     </div>
                     <div className="stack-layer database">
                         <span className="layer-label">Database</span>
-                        <span className="layer-tech">MySQL • mysql-connector-python</span>
+                        <span className="layer-tech">MySQL (Digital Ocean) • mysql-connector-python</span>
                     </div>
                 </div>
             </div>

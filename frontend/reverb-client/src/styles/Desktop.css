@@ -308,8 +308,9 @@ nav {
   border-radius: 0.75rem;
   border: 2px solid #1282A2;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
   transition: transform 0.2s, box-shadow 0.2s;
   position: relative;
 }
@@ -320,32 +321,32 @@ nav {
 }
 
 .stack-layer.frontend {
-  background-color: #E3F2FD;
+  background-color: #F5FAFF;
   border-color: #1282A2;
 }
 
 .stack-layer.backend {
-  background-color: #BBDEFB;
+  background-color: #E8F4FD;
   border-color: #0FA5D0;
 }
 
 .stack-layer.api {
-  background-color: #90CAF9;
+  background-color: #D4EDFC;
   border-color: #1282A2;
 }
 
 .stack-layer.auth {
-  background-color: #64B5F6;
+  background-color: #C4E3FB;
   border-color: #034078;
 }
 
-.stack-layer.cloud {
-  background-color: #42A5F5;
+.stack-layer.infrastructure {
+  background-color: #B3D9FA;
   border-color: #023059;
 }
 
 .stack-layer.database {
-  background-color: #2196F3;
+  background-color: #A3CFF9;
   border-color: #012340;
 }
 
