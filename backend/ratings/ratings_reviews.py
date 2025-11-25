@@ -323,13 +323,13 @@ def get_song_by_spotify_id(spotifyTrackId):
     try:
         cursor.execute("""
             SELECT * FROM (
-                SELECT songName, artistName, albumName, spotifyTrackId, imageUrl, 'TopSong' AS source
+                SELECT songName, artistName, NULL AS albumName, spotifyTrackId, imageUrl, 'TopSong' AS source
                 FROM TopSong
                 WHERE spotifyTrackId = %s
 
                 UNION ALL
 
-                SELECT songName, artistName, albumName, spotifyTrackId, imageUrl, 'RecentlyPlayed' AS source
+                SELECT songName, artistName, albumName, spotifyTrackId, NULL AS imageUrl, 'RecentlyPlayed' AS source
                 FROM RecentlyPlayed
                 WHERE spotifyTrackId = %s
 
@@ -341,7 +341,7 @@ def get_song_by_spotify_id(spotifyTrackId):
 
                 UNION ALL
 
-                SELECT songName, artistName, albumName, spotifyTrackId, imageUrl, 'RatedSong' AS source
+                SELECT songName, artistName, NULL AS albumName, spotifyTrackId, imageUrl, 'RatedSong' AS source
                 FROM RatedSong
                 WHERE spotifyTrackId = %s
             ) AS combined
@@ -392,6 +392,9 @@ def get_album_by_spotify_id(spotifyAlbumId):
         album = cursor.fetchone()
         return album
 
+    except Exception as e:
+        conn.rollback()
+        raise e
     finally:
         cursor.close()
         conn.close()

@@ -19,7 +19,7 @@ def rate_song():
         unique_id = create_song_rating(
             userName = userName,
             spotifyTrackId=data['spotifyTrackId'],
-            songName=data['artistName'],
+            songName=data['songName'],
             artistName=data['artistName'],
             rating=rating,
             imageUrl = data.get("imageUrl"),
@@ -206,17 +206,37 @@ def get_album_rating_route(spotifyAlbumId):
 
 @ratings_bp.route('/song/<spotifyTrackId>', methods=['GET'])
 def fetch_song(spotifyTrackId):
+    userName = session.get('userName')
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
+
     song = get_song_by_spotify_id(spotifyTrackId)
-    if song:
-        return jsonify({"song": song}), 200
-    else:
+    if not song:
         return jsonify({"error": "Song not found"}), 404
+
+    # Get user's existing rating if they have one
+    user_rating = get_song_rating(userName, spotifyTrackId)
+
+    return jsonify({
+        "song": song,
+        "userRating": user_rating  # None if not rated yet
+    }), 200
 
 
 @ratings_bp.route('/album/<spotifyAlbumId>', methods=['GET'])
 def fetch_album(spotifyAlbumId):
+    userName = session.get('userName')
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
+
     album = get_album_by_spotify_id(spotifyAlbumId)
-    if album:
-        return jsonify({"album": album}), 200
-    else:
+    if not album:
         return jsonify({"error": "Album not found"}), 404
+
+    # Get user's existing rating if they have one
+    user_rating = get_album_rating(userName, spotifyAlbumId)
+
+    return jsonify({
+        "album": album,
+        "userRating": user_rating  # None if not rated yet
+    }), 200
