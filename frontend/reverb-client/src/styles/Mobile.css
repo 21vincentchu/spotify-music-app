@@ -591,7 +591,7 @@
 
 .mobile-layout .user-name {
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9rem;
   margin: 0 0 4px 0;
   color: #034078;
   white-space: nowrap;
@@ -600,7 +600,7 @@
 }
 
 .mobile-layout .spotify-user-name {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #555;
   margin: 0;
 }
@@ -611,7 +611,7 @@
 .mobile-layout h1 {
   font-family: "Montserrat", sans-serif;
   font-weight: 300;
-  font-size: 2.2rem;
+  font-size: 2rem;
   margin: 0 0 12px 0;
   text-align: center;
   color: #034078;
@@ -620,7 +620,7 @@
 .mobile-layout h2 {
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
-  font-size: 2rem;
+  font-size: 1.75rem;
   color: #034078;
   margin: 16px 0 8px;
   text-align: left;
@@ -682,7 +682,7 @@
   justify-content: flex-start !important;
   width: 100% !important;
   font-family: "Inter", sans-serif;
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   font-weight: 500;
   text-align: left;
   color: #034078;
@@ -717,7 +717,7 @@
   margin: 0 0 16px 0;
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   color: #034078;
 }
 
@@ -762,7 +762,7 @@
   margin: 0 0 16px 0;
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   color: #034078;
   text-align: left;
 }
@@ -924,7 +924,7 @@
 
 .mobile-layout .song-title {
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9rem;
   margin: 0 0 4px 0;
   color: #034078;
   white-space: nowrap;
@@ -934,7 +934,7 @@
 
 .mobile-layout .song-artist,
 .mobile-layout .song-genre {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #555;
   margin: 0;
 }
@@ -946,19 +946,65 @@
   margin-top: 2px;
 }
 
+.mobile-layout .featured-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e0e0e0;
+  position: relative;
+  width: 100%;
+}
+
 .mobile-layout .featured-tabs button {
   flex: 1;
-  padding: 20x;
-  border-radius: 10px;
+  min-width: calc(33.333% - 6px);
+  padding: 8px 6px;
+  border-radius: 8px;
   border: 1px solid #034078;
   background: #fff;
   color: #034078;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  margin-bottom: 0;
 }
 
 .mobile-layout .featured-tabs button.active {
   background: #034078;
   color: #fff;
+}
+
+.mobile-layout .stats-timeframe-inline {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.mobile-layout .stats-timeframe-inline button {
+  flex: 1;
+  padding: 10px 8px;
+  border-radius: 10px;
+  border: 1px solid #034078;
+  background: #fff;
+  color: #034078;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.mobile-layout .stats-timeframe-inline button.active {
+  background: #034078;
+  color: #fff;
+}
+
+.mobile-layout .mobile-stats-data h2 {
+  margin: 0 0 16px 0;
+  font-size: 1.25rem;
+  color: #034078;
+  text-align: left;
 }
 
 .mobile-layout .friends-heading {
@@ -1048,7 +1094,7 @@
 
 .mobile-layout .friend-name-mobile {
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9rem;
   margin: 0 0 4px 0;
   color: #034078;
   white-space: nowrap;
@@ -1057,7 +1103,7 @@
 }
 
 .mobile-layout .friend-username-mobile {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #555;
   margin: 0;
   white-space: nowrap;
@@ -1072,7 +1118,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 0 8%;
+  padding: 0 8% 15px 8%;
 }
 
 /* Main stats box - styled like home page boxes */
@@ -1092,8 +1138,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0;
-  overflow: hidden;
+  gap: 12px;
+  overflow: visible;
   min-height: 0;
 }
 
@@ -1288,6 +1334,297 @@
   .mobile-layout .responsive-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* ========================================================= */
+/* =============== RECOMMENDATIONS PAGE (MOBILE) ========== */
+/* ========================================================= */
+.mobile-layout .mobile-recommendations {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 8% 15px 8%;
+}
+
+.mobile-layout .mobile-recommendations-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow: visible;
+}
+
+.mobile-layout .mobile-recommendations-box {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.mobile-layout .mobile-recommendations-box h2 {
+  margin: 0 0 16px 0;
+  font-size: 1.25rem;
+  color: #034078;
+  text-align: left;
+}
+
+.mobile-layout .mobile-recommendations-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.mobile-layout .mobile-recommendations-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mobile-layout .mobile-recommendations-list::-webkit-scrollbar-track {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.mobile-layout .mobile-friends-feed {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.mobile-layout .mobile-friends-feed::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mobile-layout .mobile-friends-feed::-webkit-scrollbar-track {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.mobile-layout .empty-message {
+  text-align: center;
+  color: #666;
+  font-size: 0.85rem;
+  padding: 20px;
+}
+
+/* Filter Button and Dropdown */
+.mobile-layout .filter-container-mobile {
+  position: relative;
+  margin-left: auto;
+}
+
+.mobile-layout .filter-button-mobile {
+  background-color: #034078;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.2s;
+}
+
+.mobile-layout .filter-button-mobile:hover {
+  opacity: 0.85;
+}
+
+.mobile-layout .filter-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.mobile-layout .filter-count {
+  background-color: #1ed760;
+  color: #034078;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.mobile-layout .filter-dropdown-mobile {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 200px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.mobile-layout .filter-dropdown-header {
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #034078;
+}
+
+.mobile-layout .clear-filter-btn {
+  background: none;
+  border: none;
+  color: #dc3545;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.mobile-layout .filter-options {
+  padding: 8px;
+}
+
+.mobile-layout .filter-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.mobile-layout .filter-option:hover {
+  background-color: #f8f9fa;
+}
+
+.mobile-layout .filter-option input[type="checkbox"] {
+  cursor: pointer;
+}
+
+/* Friend Group Styling */
+.mobile-layout .mobile-friend-group {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.mobile-layout .mobile-friend-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.mobile-layout .mobile-friend-profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #034078;
+}
+
+.mobile-layout .mobile-friend-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #034078;
+}
+
+.mobile-layout .mobile-friend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Featured Artist Display */
+.mobile-layout .mobile-featured-artist-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.mobile-layout .mobile-artist-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.mobile-layout .mobile-artist-name {
+  flex: 1;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #034078;
+}
+
+.mobile-layout .mobile-play-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: #1ed760;
+  color: white;
+  border-radius: 50%;
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: transform 0.2s;
+}
+
+.mobile-layout .mobile-play-button:hover {
+  transform: scale(1.1);
+}
+
+/* Featured Album Display */
+.mobile-layout .mobile-featured-album-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.mobile-layout .mobile-album-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.mobile-layout .mobile-album-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mobile-layout .mobile-album-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #034078;
+}
+
+.mobile-layout .mobile-album-artist {
+  font-size: 0.75rem;
+  color: #666;
 }
 
 /* ========================================================= */
