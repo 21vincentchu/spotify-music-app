@@ -315,41 +315,49 @@ def update_album_rating(userName, spotifyAlbumId, rating=None, comment=None, ima
 def get_song_by_spotify_id(spotifyTrackId):
     """
     Fetches song information based on spotifyTrackId from multiple tables.
-    Returns a dictionary with song details.
+    Returns a dictionary with song details or None if not found.
     """
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
     try:
         cursor.execute("""
-            SELECT songName, artistName, albumName, spotifyTrackId, imageUrl, 'TopSong' AS source
-            FROM TopSong
-            WHERE spotifyTrackId = %s
-            UNION
-            SELECT songName, artistName, albumName, spotifyTrackId, imageUrl, 'RecentlyPlayed' AS source
-            FROM RecentlyPlayed
-            WHERE spotifyTrackId = %s
-            UNION
-            SELECT songName, artistName, albumName, spotifyTrackId, imageUrl, 'FeaturedSong' AS source
-            FROM FeaturedSong
-            WHERE spotifyTrackId = %s
-            UNION
-            SELECT songName, artistName, albumName, spotifyTrackId, imageUrl, 'RatedSong' AS source
-            FROM RatedSong
-            WHERE spotifyTrackId = %s
+            SELECT * FROM (
+                SELECT songName, artistName, NULL AS albumName, spotifyTrackId, imageUrl, 'TopSong' AS source
+                FROM TopSong
+                WHERE spotifyTrackId = %s
+
+                UNION ALL
+
+                SELECT songName, artistName, albumName, spotifyTrackId, NULL AS imageUrl, 'RecentlyPlayed' AS source
+                FROM RecentlyPlayed
+                WHERE spotifyTrackId = %s
+
+                UNION ALL
+
+                SELECT songName, artistName, albumName, spotifyTrackId, imageUrl, 'FeaturedSong' AS source
+                FROM FeaturedSong
+                WHERE spotifyTrackId = %s
+
+                UNION ALL
+
+                SELECT songName, artistName, NULL AS albumName, spotifyTrackId, imageUrl, 'RatedSong' AS source
+                FROM RatedSong
+                WHERE spotifyTrackId = %s
+            ) AS combined
             LIMIT 1;
-            """), (spotifyTrackId, spotifyTrackId, spotifyTrackId, spotifyTrackId)
+        """, (spotifyTrackId, spotifyTrackId, spotifyTrackId, spotifyTrackId))
 
         song = cursor.fetchone()
         return song
-        
+
     except Exception as e:
         conn.rollback()
-        raise e 
-    
+        raise e
     finally:
         cursor.close()
         conn.close()
+
 
 def get_album_by_spotify_id(spotifyAlbumId):
     """
@@ -361,27 +369,54 @@ def get_album_by_spotify_id(spotifyAlbumId):
 
     try:
         cursor.execute("""
-            SELECT albumName, artistName, spotifyAlbumId, imageUrl, 'TopAlbum' AS source
-            FROM TopAlbum
-            WHERE spotifyAlbumId = %s
-            UNION
-            SELECT albumName, artistName, spotifyAlbumId, imageUrl, 'FeaturedAlbum' AS source
-            FROM FeaturedAlbum
-            WHERE spotifyAlbumId = %s
-            UNION
-            SELECT albumName, artistName, spotifyAlbumId, imageUrl, 'RatedAlbum' AS source
-            FROM RatedAlbum
-            WHERE spotifyAlbumId = %s
+            SELECT * FROM (
+                SELECT albumName, artistName, spotifyAlbumId, imageUrl, 'TopAlbum' AS source
+                FROM TopAlbum
+                WHERE spotifyAlbumId = %s
+
+                UNION ALL
+
+                SELECT albumName, artistName, spotifyAlbumId, imageUrl, 'FeaturedAlbum' AS source
+                FROM FeaturedAlbum
+                WHERE spotifyAlbumId = %s
+
+                UNION ALL
+
+                SELECT albumName, artistName, spotifyAlbumId, imageUrl, 'RatedAlbum' AS source
+                FROM RatedAlbum
+                WHERE spotifyAlbumId = %s
+            ) AS combined
             LIMIT 1;
         """, (spotifyAlbumId, spotifyAlbumId, spotifyAlbumId))
 
         album = cursor.fetchone()
         return album
 
+    except Exception as e:
+        conn.rollback()
+        raise e
     finally:
         cursor.close()
         conn.close()
 
+def get_all_song_ratings_for_user(userName):
+    """
+    Fetches all song ratings and reviews for a given user.
 
-
-
+    Args:
+        userName: The userName (Spotify ID)
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True, buffered=True)
+    try:
+        cursor.execute("""
+            SELECT uniqueID, spotifyTrackId, songName, artistName, rating, comment, imageUrl, createdAt, updatedAt
+            FROM RatedSong
+            WHERE userName = %s
+            ORDER BY updatedAt DESC
+        """, (userName,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+        

@@ -15,6 +15,7 @@ import ProfilePageDesktop from "../pages/desktop/ProfilePageDesktop";
 import AboutPageDesktop from "../pages/desktop/AboutPageDesktop";
 import RatingDetailPageDesktop from "../pages/desktop/RatingDetailPageDesktop";
 
+
 function DesktopLayout() {
     const { isAuthenticated, userName } = useAuth();
     const location = useLocation();
@@ -64,6 +65,7 @@ function DesktopLayout() {
                             <FriendsPageDesktop />
                         </ProtectedRoute>
                     } />
+                  
                     
                 </Routes>
             {/* </div> */}
