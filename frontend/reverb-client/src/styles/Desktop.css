@@ -2061,11 +2061,17 @@ nav {
   .ratings-detail-actions {
     display: flex;
     flex-direction: column;
-    align-items: flex-end; /* Align to right */
     margin: 0 auto;
     width: 25vw;
     gap: 10px; /* Space between textarea and button */
-}
+  }
+
+  .ratings-detail-actions div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
 
 .ratings-detail-container textarea {
     height: 20vh;
