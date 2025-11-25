@@ -2,7 +2,7 @@
 import { Rating } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-function RatedSongComponentDesktop({songData,rating=3.5}){
+function RatedSongComponentDesktop({songData}){
     return (
         <div className="song-component">
             <img className="circle stats-circle" src={songData?.imageUrl} />
@@ -18,7 +18,7 @@ function RatedSongComponentDesktop({songData,rating=3.5}){
                 <p className="artist-name">{songData?.artistName}</p>
             </div>
 
-            <Rating name="half-rating" defaultValue={rating} precision={0.5} readOnly/>    
+            <Rating name="half-rating" defaultValue={songData.rating} precision={0.5} readOnly/>    
         </div>
     )
 }
