@@ -177,8 +177,8 @@ def update_album_rating_route():
     return jsonify({"message": "Song rating updated successfully"}), 200
 
 
-@ratings_bp.route("/song/<spotify_track_id>", methods=['GET'])
-def get_single_song(spotifyTrackId):
+@ratings_bp.route("/rated-song/<spotifyTrackId>", methods=['GET'])
+def get_song_rating_route(spotifyTrackId):
     userName = session.get("userName")
     if not userName:
         return jsonify({"error": "Not logged in"}), 401
@@ -190,8 +190,9 @@ def get_single_song(spotifyTrackId):
 
     return jsonify(song), 200
 
-@ratings_bp.route("/song/<spotify_album_id>", methods=['GET'])
-def get_single_album(spotifyAlbumId):
+
+@ratings_bp.route("/rated-album/<spotifyAlbumId>", methods=['GET'])
+def get_album_rating_route(spotifyAlbumId):
     userName = session.get("userName")
     if not userName:
         return jsonify({"error": "Not logged in"}), 401
@@ -199,33 +200,23 @@ def get_single_album(spotifyAlbumId):
     album = get_album_rating(userName, spotifyAlbumId)
 
     if album is None:
-        return jsonify({"message": "No rating found for this song"}), 404
+        return jsonify({"message": "No rating found for this album"}), 404
 
     return jsonify(album), 200
 
-@ratings_bp.route('/api/song/<spotifyTrackId>', methods=['GET'])
+@ratings_bp.route('/song/<spotifyTrackId>', methods=['GET'])
 def fetch_song(spotifyTrackId):
     song = get_song_by_spotify_id(spotifyTrackId)
     if song:
-        return jsonify({"song": song})
+        return jsonify({"song": song}), 200
     else:
         return jsonify({"error": "Song not found"}), 404
-    
-@ratings_bp.route('/api/album/<spotifyAlbumId>', methods=['GET'])
+
+
+@ratings_bp.route('/album/<spotifyAlbumId>', methods=['GET'])
 def fetch_album(spotifyAlbumId):
     album = get_album_by_spotify_id(spotifyAlbumId)
     if album:
-        return jsonify({"album": album})
+        return jsonify({"album": album}), 200
     else:
         return jsonify({"error": "Album not found"}), 404
-
-##test
-album_id = "1ATL5GLyefJaxhQzSPVrLX"  # example Spotify album ID
-album = get_album_by_spotify_id(album_id)
-
-if album:
-    print("Album found:")
-    print(album)
-else:
-    print("Album not found")
-
