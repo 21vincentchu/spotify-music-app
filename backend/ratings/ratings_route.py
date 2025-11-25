@@ -176,34 +176,6 @@ def update_album_rating_route():
     
     return jsonify({"message": "Song rating updated successfully"}), 200
 
-
-@ratings_bp.route("/rated-song/<spotifyTrackId>", methods=['GET'])
-def get_song_rating_route(spotifyTrackId):
-    userName = session.get("userName")
-    if not userName:
-        return jsonify({"error": "Not logged in"}), 401
-
-    song = get_song_rating(userName, spotifyTrackId)
-
-    if song is None:
-        return jsonify({"message": "No rating found for this song"}), 404
-
-    return jsonify(song), 200
-
-
-@ratings_bp.route("/rated-album/<spotifyAlbumId>", methods=['GET'])
-def get_album_rating_route(spotifyAlbumId):
-    userName = session.get("userName")
-    if not userName:
-        return jsonify({"error": "Not logged in"}), 401
-
-    album = get_album_rating(userName, spotifyAlbumId)
-
-    if album is None:
-        return jsonify({"message": "No rating found for this album"}), 404
-
-    return jsonify(album), 200
-
 @ratings_bp.route('/song/<spotifyTrackId>', methods=['GET'])
 def fetch_song(spotifyTrackId):
     userName = session.get('userName')
@@ -240,3 +212,17 @@ def fetch_album(spotifyAlbumId):
         "album": album,
         "userRating": user_rating  # None if not rated yet
     }), 200
+
+@ratings_bp.route('/all-songs', methods=['GET'])
+def fetch_all_songs():
+    userName = session.get('userName')
+
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
+
+    songs = get_all_song_ratings_for_user(userName)
+
+    if not songs:
+        return jsonify({"message": "No songs found"}), 404
+
+    return jsonify(songs), 200

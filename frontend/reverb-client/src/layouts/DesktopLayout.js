@@ -14,7 +14,6 @@ import '../styles/Desktop.css';
 import ProfilePageDesktop from "../pages/desktop/ProfilePageDesktop";
 import AboutPageDesktop from "../pages/desktop/AboutPageDesktop";
 import RatingDetailPageDesktop from "../pages/desktop/RatingDetailPageDesktop";
-import EstherTest from "../pages/desktop/EstherTest";
 
 
 function DesktopLayout() {
@@ -66,11 +65,7 @@ function DesktopLayout() {
                             <FriendsPageDesktop />
                         </ProtectedRoute>
                     } />
-                     <Route path="/test" element={
-                        <ProtectedRoute>
-                            <EstherTest />
-                        </ProtectedRoute>
-                    } />
+                  
                     
                 </Routes>
             {/* </div> */}

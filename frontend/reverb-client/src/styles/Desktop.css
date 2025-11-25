@@ -2010,6 +2010,16 @@ nav {
     color: black;
   }
 
+  .rated-song-component img{
+    width: 80px;
+    height: 80px;
+  }
+
+  .rated-song-component .song-name{
+    padding: 10px;
+  }
+
+
  /* RATINGS DETAIL -------------------------------------------------------------------------------------  */
 
  .ratings-detail-page {

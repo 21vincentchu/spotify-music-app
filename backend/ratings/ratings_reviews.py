@@ -398,3 +398,25 @@ def get_album_by_spotify_id(spotifyAlbumId):
     finally:
         cursor.close()
         conn.close()
+
+def get_all_song_ratings_for_user(userName):
+    """
+    Fetches all song ratings and reviews for a given user.
+
+    Args:
+        userName: The userName (Spotify ID)
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True, buffered=True)
+    try:
+        cursor.execute("""
+            SELECT uniqueID, spotifyTrackId, songName, artistName, rating, comment, imageUrl, createdAt, updatedAt
+            FROM RatedSong
+            WHERE userName = %s
+            ORDER BY updatedAt DESC
+        """, (userName,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+        
