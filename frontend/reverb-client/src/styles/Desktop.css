@@ -2129,4 +2129,8 @@ nav {
   opacity: 0.8;
 }
 
+.ratings-detail-container .delete-button:hover{
+  background-color: rgba(162, 18, 18,0.8)
+} 
+
 

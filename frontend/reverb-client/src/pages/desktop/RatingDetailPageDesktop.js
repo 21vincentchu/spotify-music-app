@@ -70,7 +70,8 @@ function RatingsDetailPageDesktop() {
                         withCredentials: true
                     });
                     console.log('Song Rating saved:', response.data);
-                    // redirect('/ratings');
+                    navigate('/ratings');
+
                 } catch (error) {
                     console.error('Error saving rating:', error);
                 }
@@ -85,6 +86,8 @@ function RatingsDetailPageDesktop() {
                         withCredentials: true
                     });
                     console.log('Album Rating saved:', response.data);
+                    navigate('/ratings');
+
                 } catch (error) {
                     console.error('Error saving rating:', error);
                 }
@@ -92,14 +95,6 @@ function RatingsDetailPageDesktop() {
         }else{
             if(type == 'song'){
                 try {
-                    console.log("POST payload:", {
-                        spotifyTrackId: spotifyId,
-                        songName: ratingData?.songName,
-                        artistName: ratingData?.artistName,
-                        rating,
-                        imageUrl: ratingData?.imageUrl,
-                        comment
-                    });
                     const response = await axios.post(`${config.API_URL}/api/ratings/song`, {
                         spotifyTrackId: spotifyId,
                         songName: ratingData.songName,
@@ -111,7 +106,8 @@ function RatingsDetailPageDesktop() {
                         withCredentials: true
                     });
                     console.log('Song Rating Created:', response.data);
-                    // redirect('/ratings');
+                    navigate('/ratings');
+
                 } catch (error) {
                     console.error('Error saving rating:', error);
                 }
@@ -128,6 +124,8 @@ function RatingsDetailPageDesktop() {
                         withCredentials: true
                     });
                     console.log('Album Rating Created:', response.data);
+                    navigate('/ratings');
+
                 } catch (error) {
                     console.error('Error saving rating:', error);
                 }
@@ -194,7 +192,7 @@ function RatingsDetailPageDesktop() {
                         onChange={(e) => setComment(e.target.value)}
                     />
                     <div className=''>
-                        <button type="submit" onClick={handleDelete}>Delete</button>
+                        <button className='delete-button' type="submit" onClick={handleDelete}>Delete</button>
                         <button type="submit" onClick={handleSave}>Save</button>
                     </div>
                 
