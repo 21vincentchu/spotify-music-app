@@ -7,6 +7,7 @@ import CallbackPage from "../pages/mobile/CallbackPage";
 import NavbarMobile from "../components/mobile/NavbarMobile";
 import HomeMobile from "../pages/mobile/HomeMobile";
 import RatingsPage from "../pages/mobile/RatingsPage";
+import RatingDetailPageMobile from "../pages/mobile/RatingDetailPageMobile";
 import StatisticsPage from "../pages/mobile/StatisticsPage";
 import RecommendationsPage from "../pages/mobile/RecommendationsPage";
 import FriendsPage from "../pages/mobile/FriendsPage";
@@ -91,6 +92,7 @@ function MobileLayout() {
           <Route path="/callback" element={<CallbackPage />} />
           <Route path="/home" element={<HomeMobile />} />
           <Route path="/ratings" element={<RatingsPage />} />
+          <Route path="/ratings/:type/:spotifyId" element={<RatingDetailPageMobile />} />
           <Route path="/statistics" element={<StatisticsPage />} />
           <Route path="/recommendations" element={<RecommendationsPage />} />
           <Route path="/friends" element={<FriendsPage />} />

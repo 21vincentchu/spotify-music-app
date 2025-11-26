@@ -309,3 +309,24 @@ def fetch_all_albums():
         return jsonify({"message": "No albums found"}), 404
 
     return jsonify(albums), 200
+
+@ratings_bp.route('/friends', methods=['GET'])
+def fetch_friends_ratings():
+    """
+    Get all ratings (songs and albums) from the user's friends.
+    Returns a combined feed sorted by most recent.
+    """
+    userName = session.get('userName')
+
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
+
+    try:
+        friends_ratings = get_friends_ratings(userName)
+
+        if not friends_ratings:
+            return jsonify([]), 200
+
+        return jsonify(friends_ratings), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

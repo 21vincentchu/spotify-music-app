@@ -440,3 +440,65 @@ def get_all_album_ratings_for_user(userName):
     finally:
         cursor.close()
         conn.close()
+
+def get_friends_ratings(userName):
+    """
+    Fetches all ratings (songs and albums) from user's friends.
+    Combines song and album ratings into a single feed.
+
+    Args:
+        userName: The userName (Spotify ID) of the current user
+
+    Returns:
+        List of dictionaries containing friends' ratings with type indicator
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True, buffered=True)
+    try:
+        cursor.execute("""
+            SELECT
+                'song' AS type,
+                rs.uniqueID,
+                rs.spotifyTrackId,
+                NULL AS spotifyAlbumId,
+                rs.songName,
+                NULL AS albumName,
+                rs.artistName,
+                rs.rating,
+                rs.comment,
+                rs.imageUrl,
+                rs.userName,
+                u.displayName,
+                rs.updatedAt
+            FROM RatedSong rs
+            INNER JOIN UserFriends uf ON rs.userName = uf.friendUserName
+            LEFT JOIN User u ON rs.userName = u.userName
+            WHERE uf.userName = %s
+
+            UNION ALL
+
+            SELECT
+                'album' AS type,
+                ra.uniqueID,
+                NULL AS spotifyTrackId,
+                ra.spotifyAlbumId,
+                NULL AS songName,
+                ra.albumName,
+                ra.artistName,
+                ra.rating,
+                ra.comment,
+                ra.imageUrl,
+                ra.userName,
+                u.displayName,
+                ra.updatedAt
+            FROM RatedAlbum ra
+            INNER JOIN UserFriends uf ON ra.userName = uf.friendUserName
+            LEFT JOIN User u ON ra.userName = u.userName
+            WHERE uf.userName = %s
+
+            ORDER BY updatedAt DESC
+        """, (userName, userName))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()

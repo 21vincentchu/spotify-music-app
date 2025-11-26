@@ -104,7 +104,7 @@ const HomeMobile = () => {
                   };
                   return (
                     <SongComponent
-                      key={track.id || index}
+                      key={`${track.id}-${item.played_at}-${index}`}
                       songData={songData}
                       showStar={true}
                       isFeatured={isSongFeatured(track.id)}
@@ -129,11 +129,11 @@ const HomeMobile = () => {
                 <div className="mobile-stats-section">
                   <div className="mobile-stat-box">
                     <h3>Average Track Length</h3>
-                    <p className="stat-value">{recentData.listening_stats.avg_track_length_minutes} min</p>
+                    <p className="stat-value">{recentData.listening_stats?.avg_track_length_minutes || 0} min</p>
                   </div>
                   <div className="mobile-stat-box">
                     <h3>Total Minutes</h3>
-                    <p className="stat-value">{Math.round(recentData.listening_stats.total_minutes)} min</p>
+                    <p className="stat-value">{Math.round(recentData.listening_stats?.total_minutes || 0)} min</p>
                   </div>
                 </div>
                 <div className="mobile-genre-section">
