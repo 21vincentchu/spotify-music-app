@@ -2,16 +2,25 @@
 import { Rating } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-function RatedSongComponentDesktop({songData}){
+function RatedSongComponentDesktop({songData,type}){
+
+
+    let url = '';
+    if(type === 'song'){
+        url = `/ratings/song/${songData?.spotifyTrackId}`;
+    }else if(type === 'album'){
+        url = `/ratings/album/${songData?.spotifyAlbumId}`;
+    }
+
     return (
         <div className="song-component">
             <img className="circle stats-circle" src={songData?.imageUrl} />
             <div className="song-info">
                 <p className="song-name">
                     <Link 
-                    to={`/ratings/${songData?.spotifyTrackId}`}
+                    to={url}
                     >
-                        {songData?.songName}
+                        {songData?.songName || songData?.albumName}
                     </Link>
                 </p>
                 <p className="song-name">{songData?.displayName}</p>

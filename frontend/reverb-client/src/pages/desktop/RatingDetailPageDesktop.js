@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { Rating } from '@mui/material';
 import axios from 'axios';
 import config from '../../config';
-import { redirect, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 
 function RatingsDetailPageDesktop() {
 
-    const { spotifyId } = useParams();
+    const { type, spotifyId } = useParams();
     const [isRated, setIsRated] = useState(false); // null = loading, true/false = result
     const [ratingData, setRatingData] = useState(null);
     const [rating, setRating] = useState(0);
@@ -17,100 +17,139 @@ function RatingsDetailPageDesktop() {
 
     useEffect(() => {   
         fetchData();
-        // fetchRating();
     }, []);
  
     const fetchData = async () => {
-        try {
-            const response = await axios.get(
-                `${config.API_URL}/api/ratings/song/${spotifyId}`,
-                { withCredentials: true }
-            );
-            console.log('Song found:', response.data);
-            if(response.data.userRating){
-                setIsRated(true);
+        if(type == 'song'){
+            try {
+                const response = await axios.get(
+                    `${config.API_URL}/api/ratings/song/${spotifyId}`,
+                    { withCredentials: true }
+                );
+                console.log('Song found:', response.data);
+                if(response.data.userRating){
+                    setIsRated(true);
+                }
+                setRatingData(response.data.song);
+                setRating(response.data.userRating.rating || 0);
+                setComment(response.data.userRating.comment || '');
+            } catch (error) {
+                console.error('Error fetching data:', error);
             }
-            setRatingData(response.data.song);
-            setRating(response.data.userRating.rating || 0);
-            setComment(response.data.userRating.comment || '');
-        } catch (error) {
-            console.error('Error fetching data:', error);
+        }else if(type == 'album'){
+            try {
+                const response = await axios.get(
+                    `${config.API_URL}/api/ratings/album/${spotifyId}`,
+                    { withCredentials: true }
+                );
+                console.log('Album found:', response.data);
+                if(response.data.userRating){
+                    setIsRated(true);
+                }
+                setRatingData(response.data.album);
+                setRating(response.data.userRating.rating || 0);
+                setComment(response.data.userRating.comment || '');
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         }
         
     };
 
-    // const fetchRating = async () => {
-    //     axios.get(`${config.API_URL}/api/ratings/rated-song/${spotifyId}`, {
-    //         withCredentials: true
-    //     })
-    //     .then(response => { 
-    //         console.log('Rating found:', response.data);
-    //         setRating(response.data.rating || 0);
-    //         setComment(response.data.comment || '');
-    //         setIsRated(true);
-    //     })
-    //     .catch (error => {
-    //         console.error('No rating found', error);
-    //     } )
-    // }
-
     const handleSave = async () => {
 
         if(isRated){
-            console.log('Saving rating:', { spotifyId, rating, comment });
-            try {
-                const response = await axios.patch(`${config.API_URL}/api/ratings/song`, {
-                    spotifyTrackId: spotifyId,
-                    rating: rating,
-                    comment: comment
-                }, {
-                    withCredentials: true
-                });
-                console.log('Rating saved:', response.data);
-                // redirect('/ratings');
-            } catch (error) {
-                console.error('Error saving rating:', error);
+            if(type == 'song'){
+                console.log('Saving song rating:', { spotifyId, rating, comment });
+                try {
+                    const response = await axios.patch(`${config.API_URL}/api/ratings/song`, {
+                        spotifyTrackId: spotifyId,
+                        rating: rating,
+                        comment: comment
+                    }, {
+                        withCredentials: true
+                    });
+                    console.log('Song Rating saved:', response.data);
+                    // redirect('/ratings');
+                } catch (error) {
+                    console.error('Error saving rating:', error);
+                }
+            }else if(type == 'album'){
+                console.log('Saving album rating:', { spotifyId, rating, comment });
+                try {
+                    const response = await axios.patch(`${config.API_URL}/api/ratings/album`, {
+                        spotifyAlbumId: spotifyId,
+                        rating: rating,
+                        comment: comment
+                    }, {
+                        withCredentials: true
+                    });
+                    console.log('Album Rating saved:', response.data);
+                } catch (error) {
+                    console.error('Error saving rating:', error);
+                }
             }
         }else{
-            try {
-                console.log("POST payload:", {
-                    spotifyTrackId: spotifyId,
-                    songName: ratingData?.songName,
-                    artistName: ratingData?.artistName,
-                    rating,
-                    imageUrl: ratingData?.imageUrl,
-                    comment
-                });
-                const response = await axios.post(`${config.API_URL}/api/ratings/song`, {
-                    spotifyTrackId: spotifyId,
-                    songName: ratingData.songName,
-                    artistName: ratingData.artistName,
-                    rating: rating,
-                    imageUrl: ratingData.imageUrl,
-                    comment: comment
-                }, {
-                    withCredentials: true
-                });
-                console.log('Rating Created:', response.data);
-                // redirect('/ratings');
-            } catch (error) {
-                console.error('Error saving rating:', error);
+            if(type == 'song'){
+                try {
+                    console.log("POST payload:", {
+                        spotifyTrackId: spotifyId,
+                        songName: ratingData?.songName,
+                        artistName: ratingData?.artistName,
+                        rating,
+                        imageUrl: ratingData?.imageUrl,
+                        comment
+                    });
+                    const response = await axios.post(`${config.API_URL}/api/ratings/song`, {
+                        spotifyTrackId: spotifyId,
+                        songName: ratingData.songName,
+                        artistName: ratingData.artistName,
+                        rating: rating,
+                        imageUrl: ratingData.imageUrl,
+                        comment: comment
+                    }, {
+                        withCredentials: true
+                    });
+                    console.log('Song Rating Created:', response.data);
+                    // redirect('/ratings');
+                } catch (error) {
+                    console.error('Error saving rating:', error);
+                }
+            }else if(type == 'album'){
+                try {
+                    const response = await axios.post(`${config.API_URL}/api/ratings/album`, {
+                        spotifyAlbumId: spotifyId,
+                        albumName: ratingData.albumName,
+                        artistName: ratingData.artistName,
+                        rating: rating,
+                        imageUrl: ratingData.imageUrl,
+                        comment: comment
+                    }, {
+                        withCredentials: true
+                    });
+                    console.log('Album Rating Created:', response.data);
+                } catch (error) {
+                    console.error('Error saving rating:', error);
+                }
             }
         }
     };
 
     const handleDelete = async () => { 
-        try {
-            const response = await axios.delete(
-                `${config.API_URL}/api/ratings/song/${spotifyId}`,
-                { withCredentials: true }
-            );
-            console.log('Song deleted:', response.data);
-            navigate('/ratings');
+        if(type == 'song'){
+            try {
+                const response = await axios.delete(
+                    `${config.API_URL}/api/ratings/song/${spotifyId}`,
+                    { withCredentials: true }
+                );
+                console.log('Song deleted:', response.data);
+                navigate('/ratings');
 
-        } catch (error) {
-            console.error('Error deleting data:', error);
+            } catch (error) {
+                console.error('Error deleting data:', error);
+            }
         }
+        
     }
 
     return (
@@ -121,7 +160,7 @@ function RatingsDetailPageDesktop() {
                     <img className="round-outline" src={ratingData?.imageUrl} alt={ratingData?.songName} />
                     <div>
                         <div>
-                            <p className='song-name'>{ratingData?.songName}</p>
+                            <p className='song-name'>{type == 'song'? (ratingData?.songName):(ratingData?.albumName)}</p>
                             <p className='artist-name'>{ratingData?.artistName}</p>  
                         </div>  
                         <div className='star-rating-comp'>       

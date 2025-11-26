@@ -35,6 +35,17 @@ function SongComponent({songData, showStar, isFeatured, onToggleFeatured, showRa
         return null;
     };
 
+    const getRatingLink = () => {
+        if (songData.spotifyTrackId) {
+            return `/ratings/song/${songData.spotifyTrackId}`;
+        }
+        if (songData.spotifyAlbumId) {
+            return `/ratings/album/${songData.spotifyAlbumId}`;
+        }
+        
+        return "#";
+    };
+
     const handleStarToggle = async (e) => {
         e.stopPropagation();
         setIsLoading(true);
@@ -116,7 +127,7 @@ function SongComponent({songData, showStar, isFeatured, onToggleFeatured, showRa
             <div className="song-info">
                 <p className="song-name">
                 <Link 
-                to={`/ratings/${songData?.spotifyTrackId}`}
+                to={getRatingLink()}
                 >
                     {displayName}
                 </Link>

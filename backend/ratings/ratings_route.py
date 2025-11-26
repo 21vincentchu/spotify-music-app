@@ -226,3 +226,17 @@ def fetch_all_songs():
         return jsonify({"message": "No songs found"}), 404
 
     return jsonify(songs), 200
+
+@ratings_bp.route('/all-albums', methods=['GET'])
+def fetch_all_albums():
+    userName = session.get('userName')
+
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
+
+    albums = get_all_album_ratings_for_user(userName)
+
+    if not albums:
+        return jsonify({"message": "No albums found"}), 404
+
+    return jsonify(albums), 200

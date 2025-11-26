@@ -377,7 +377,7 @@ nav {
 
 .home-recommended {
     width: 40vw;
-    max-height: 80vh;
+    max-height: 70vh;
     margin: 5%;
     padding: 10px;
     overflow: hidden;
@@ -417,7 +417,7 @@ nav {
 
 .home-stats{
     width: 40vw;
-    max-height: 80vh;
+    max-height: 70vh;
     margin: 5%;
     padding: 10px 10px 10px 10px;
     overflow-y: auto;
@@ -1065,7 +1065,7 @@ nav {
 
   .friends-list-container {
     width: 40vw;
-    height: 75vh;
+    height: 70vh;
     margin: 5%;
     margin-bottom: 60px;
     padding: 20px;
@@ -1267,7 +1267,7 @@ nav {
 
   .friends-stats-container {
     width: 40vw;
-    height: 75vh;
+    height: 70vh;
     margin: 5%;
     margin-bottom: 60px;
     padding: 20px;
@@ -1450,6 +1450,7 @@ nav {
     display: flex;
     flex-direction: column;
     min-height: 0;
+    max-height: 70vh;
   }
 
   .featured-section h2,
@@ -1994,7 +1995,7 @@ nav {
 
   .ratings-container {
     width: 40vw;
-    height: 80vh;
+    height: 70vh;
     margin: auto;
     padding: 10px;
     overflow: hidden;
@@ -2007,7 +2008,7 @@ nav {
     gap: 100px;
     z-index: 10;
     position: absolute;
-    left: calc(30vw - 82px);
+    left: calc(30vw - 76px);
     top: calc(10vh + 120px);
   }
 
@@ -2041,6 +2042,17 @@ nav {
     padding: 10px;
   }
 
+  .ratings-comment{
+    padding: 10px;
+    background-color: white;
+    font-size: small;
+  }
+
+  .ratings-list{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
 
  /* RATINGS DETAIL -------------------------------------------------------------------------------------  */
 
