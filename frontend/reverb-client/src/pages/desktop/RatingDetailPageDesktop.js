@@ -148,6 +148,18 @@ function RatingsDetailPageDesktop() {
             } catch (error) {
                 console.error('Error deleting data:', error);
             }
+        }else if(type == 'album'){
+            try {
+                const response = await axios.delete(
+                    `${config.API_URL}/api/ratings/album/${spotifyId}`,
+                    { withCredentials: true }
+                );
+                console.log('Album deleted:', response.data);
+                navigate('/ratings');
+
+            } catch (error) {
+                console.error('Error deleting data:', error);
+            }
         }
         
     }
