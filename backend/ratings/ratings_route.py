@@ -1,7 +1,56 @@
 from flask import Blueprint, request, jsonify, session
 from .ratings_reviews import *
+from auth import get_authenticated_spotify_client
 
 ratings_bp = Blueprint('ratings_bp', __name__, url_prefix='/api/ratings')
+
+def fetch_song_from_spotify(sp, spotifyTrackId):
+    """
+    Fetch song data from Spotify API.
+
+    Args:
+        sp: Authenticated Spotify client
+        spotifyTrackId: Spotify track ID
+
+    Returns:
+        Dictionary with song data
+    """
+    track_data = sp.track(spotifyTrackId)
+
+    artists = track_data.get('artists', [])
+    album = track_data.get('album', {})
+    images = album.get('images', [])
+
+    return {
+        'spotifyTrackId': spotifyTrackId,
+        'songName': track_data.get('name'),
+        'artistName': artists[0]['name'] if artists else 'Unknown Artist',
+        'albumName': album.get('name'),
+        'imageUrl': images[0]['url'] if images else None
+    }
+
+def fetch_album_from_spotify(sp, spotifyAlbumId):
+    """
+    Fetch album data from Spotify API.
+
+    Args:
+        sp: Authenticated Spotify client
+        spotifyAlbumId: Spotify album ID
+
+    Returns:
+        Dictionary with album data
+    """
+    album_data = sp.album(spotifyAlbumId)
+
+    artists = album_data.get('artists', [])
+    images = album_data.get('images', [])
+
+    return {
+        'spotifyAlbumId': spotifyAlbumId,
+        'albumName': album_data.get('name'),
+        'artistName': artists[0]['name'] if artists else 'Unknown Artist',
+        'imageUrl': images[0]['url'] if images else None
+    }
 
 @ratings_bp.route('/song', methods=['POST'])
 def rate_song():
@@ -182,16 +231,26 @@ def fetch_song(spotifyTrackId):
     if not userName:
         return jsonify({'error': 'Not Authenticated'}), 401
 
+    # Try to get song from database first
     song = get_song_by_spotify_id(spotifyTrackId)
+
+    # If not in database, fetch from Spotify
     if not song:
-        return jsonify({"error": "Song not found"}), 404
+        sp, token_info = get_authenticated_spotify_client()
+        if not sp:
+            return jsonify({"error": "Spotify authentication required"}), 401
+
+        try:
+            song = fetch_song_from_spotify(sp, spotifyTrackId)
+        except Exception as e:
+            return jsonify({"error": f"Error fetching from Spotify: {str(e)}"}), 500
 
     # Get user's existing rating if they have one
     user_rating = get_song_rating(userName, spotifyTrackId)
 
     return jsonify({
         "song": song,
-        "userRating": user_rating  # None if not rated yet
+        "userRating": user_rating
     }), 200
 
 
@@ -201,16 +260,26 @@ def fetch_album(spotifyAlbumId):
     if not userName:
         return jsonify({'error': 'Not Authenticated'}), 401
 
+    # Try to get album from database first
     album = get_album_by_spotify_id(spotifyAlbumId)
+
+    # If not in database, fetch from Spotify
     if not album:
-        return jsonify({"error": "Album not found"}), 404
+        sp, token_info = get_authenticated_spotify_client()
+        if not sp:
+            return jsonify({"error": "Spotify authentication required"}), 401
+
+        try:
+            album = fetch_album_from_spotify(sp, spotifyAlbumId)
+        except Exception as e:
+            return jsonify({"error": f"Error fetching from Spotify: {str(e)}"}), 500
 
     # Get user's existing rating if they have one
     user_rating = get_album_rating(userName, spotifyAlbumId)
 
     return jsonify({
         "album": album,
-        "userRating": user_rating  # None if not rated yet
+        "userRating": user_rating
     }), 200
 
 @ratings_bp.route('/all-songs', methods=['GET'])
