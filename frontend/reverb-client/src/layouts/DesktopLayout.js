@@ -45,7 +45,7 @@ function DesktopLayout() {
                             <RatingsPageDesktop />
                         </ProtectedRoute>
                     } />
-                    <Route path="/ratings/:spotifyId" element={
+                    <Route path="/ratings/:type/:spotifyId" element={
                         <ProtectedRoute>
                             <RatingDetailPageDesktop />
                         </ProtectedRoute>
