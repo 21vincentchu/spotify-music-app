@@ -11,10 +11,12 @@ import config from "../../config";
 const HomeMobile = () => {
   const [isLoadingRecentData, setIsLoadingRecentData] = useState(true);
   const [recentData, setRecentData] = useState([]);
+  const [featuredSongs, setFeaturedSongs] = useState([]);
 
   // Load data when screen loads
   useEffect(() => {
     getRecentData();
+    getFeaturedSongs();
   }, []);
 
   // Convert timestamp to relative time (e.g., "2 hours ago")
@@ -53,6 +55,27 @@ const HomeMobile = () => {
     }
   };
 
+  // ===============================
+  // Fetch Featured Songs
+  // ===============================
+  const getFeaturedSongs = async () => {
+    try {
+      const response = await axios.get(`${config.API_URL}/api/featured-songs/`, {
+        withCredentials: true
+      });
+      setFeaturedSongs(response.data);
+    } catch (error) {
+      console.error('Error fetching featured songs:', error);
+    }
+  };
+
+  // ===============================
+  // Check if Song is Featured
+  // ===============================
+  const isSongFeatured = (spotifyTrackId) => {
+    return featuredSongs.some(song => song.spotifyTrackId === spotifyTrackId);
+  };
+
   return (
     <div className="mobile-layout">
       <ProfileButtonMobile />
@@ -84,7 +107,7 @@ const HomeMobile = () => {
                       key={track.id || index}
                       songData={songData}
                       showStar={true}
-                      isFeatured={false}
+                      isFeatured={isSongFeatured(track.id)}
                       timestamp={getRelativeTime(item.played_at)}
                     />
                   );
