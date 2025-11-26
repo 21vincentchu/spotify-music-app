@@ -3,6 +3,7 @@ import { Routes, Route, useLocation, Link, useNavigate } from "react-router-dom"
 import { useState, useEffect, useRef } from "react";
 
 import SignInPage from "../pages/mobile/SignInPage";
+import CallbackPage from "../pages/mobile/CallbackPage";
 import NavbarMobile from "../components/mobile/NavbarMobile";
 import HomeMobile from "../pages/mobile/HomeMobile";
 import RatingsPage from "../pages/mobile/RatingsPage";
@@ -87,6 +88,7 @@ function MobileLayout() {
       <div className="mobile-content">
         <Routes>
           <Route path="/" element={<SignInPage />} />
+          <Route path="/callback" element={<CallbackPage />} />
           <Route path="/home" element={<HomeMobile />} />
           <Route path="/ratings" element={<RatingsPage />} />
           <Route path="/statistics" element={<StatisticsPage />} />
