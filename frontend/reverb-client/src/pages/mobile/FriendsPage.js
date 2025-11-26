@@ -6,17 +6,20 @@ import FriendComponentMobile from "../../components/mobile/FriendComponentMobile
 import AddFriendComponentDesktop from "../../components/desktop/AddFriendComponentDesktop";
 import ProfileButtonMobile from "../../components/mobile/ProfileButtonMobile";
 import SongComponent from "../../components/shared/SongComponent";
+import RatedSongComponentDesktop from "../../components/desktop/RatedSongComponentDesktop";
 
 function FriendsMobilePage() {
   const [isLoadingFriends, setIsLoadingFriends] = useState(true);
   const [isLoadingSearch, setIsLoadingSearch] = useState(false);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
+  const [isLoadingRatings, setIsLoadingRatings] = useState(false);
 
   const [friends, setFriends] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [friendStats, setFriendStats] = useState(null);
+  const [friendRatings, setFriendRatings] = useState([]);
   const [activeTab, setActiveTab] = useState('recents');
 
   const getRelativeTime = (timestamp) => {
@@ -112,12 +115,33 @@ function FriendsMobilePage() {
   };
 
   // -------------------------------
+  // GET Friend Ratings
+  // -------------------------------
+  const getFriendRatings = async (friendUserName) => {
+    setIsLoadingRatings(true);
+    try {
+      const response = await axios.get(
+        `${config.API_URL}/api/friends/${friendUserName}/ratings`,
+        { withCredentials: true }
+      );
+      console.log('Friend Ratings:', response.data);
+      setFriendRatings(response.data);
+    } catch (error) {
+      console.error('Error fetching friend ratings:', error);
+      setFriendRatings([]);
+    } finally {
+      setIsLoadingRatings(false);
+    }
+  };
+
+  // -------------------------------
   // Handle Friend Click
   // -------------------------------
   const handleFriendClick = (friend) => {
     setSelectedFriend(friend);
     setActiveTab('recents');
     getFriendStats(friend.userName);
+    getFriendRatings(friend.userName);
   };
 
   // -------------------------------
@@ -136,6 +160,7 @@ function FriendsMobilePage() {
         if (selectedFriend?.userName === friendUserName) {
           setSelectedFriend(null);
           setFriendStats(null);
+          setFriendRatings([]);
         }
         // Refresh the friends list
         getFriendsList();
@@ -151,6 +176,7 @@ function FriendsMobilePage() {
   const handleCloseStats = () => {
     setSelectedFriend(null);
     setFriendStats(null);
+    setFriendRatings([]);
   };
 
   return (
@@ -287,8 +313,20 @@ function FriendsMobilePage() {
                       )}
                     </div>
                   ) : (
-                    <div className="mobile-ratings-placeholder">
-                      <p>TBD</p>
+                    <div className="mobile-ratings-list">
+                      {isLoadingRatings ? (
+                        <p>Loading ratings...</p>
+                      ) : friendRatings.length > 0 ? (
+                        friendRatings.map((rating) => (
+                          <RatedSongComponentDesktop
+                            key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}`}
+                            songData={rating}
+                            type={rating.type}
+                          />
+                        ))
+                      ) : (
+                        <p className="empty-message">No ratings yet</p>
+                      )}
                     </div>
                   )}
                 </div>

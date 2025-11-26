@@ -12,12 +12,15 @@ function RatingsDetailPageDesktop() {
     const [ratingData, setRatingData] = useState(null);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
+    const [friendsRatings, setFriendsRatings] = useState([]);
+    const [isLoadingFriendsRatings, setIsLoadingFriendsRatings] = useState(false);
     const navigate = useNavigate();
 
 
-    useEffect(() => {   
+    useEffect(() => {
         fetchData();
-    }, []);
+        fetchFriendsRatings();
+    }, [type, spotifyId]);
  
     const fetchData = async () => {
         if(type == 'song'){
@@ -53,7 +56,25 @@ function RatingsDetailPageDesktop() {
                 console.error('Error fetching data:', error);
             }
         }
-        
+
+    };
+
+    const fetchFriendsRatings = async () => {
+        setIsLoadingFriendsRatings(true);
+        try {
+            const endpoint = type === 'song'
+                ? `${config.API_URL}/api/ratings/song/${spotifyId}/friends`
+                : `${config.API_URL}/api/ratings/album/${spotifyId}/friends`;
+
+            const response = await axios.get(endpoint, { withCredentials: true });
+            console.log('Friends ratings:', response.data);
+            setFriendsRatings(response.data || []);
+        } catch (error) {
+            console.error('Error fetching friends ratings:', error);
+            setFriendsRatings([]);
+        } finally {
+            setIsLoadingFriendsRatings(false);
+        }
     };
 
     const handleSave = async () => {
@@ -72,6 +93,8 @@ function RatingsDetailPageDesktop() {
                     console.log('Song Rating saved:', response.data);
                     navigate('/ratings');
 
+                    // Refetch friends ratings to update the display
+                    fetchFriendsRatings();
                 } catch (error) {
                     console.error('Error saving rating:', error);
                 }
@@ -86,6 +109,8 @@ function RatingsDetailPageDesktop() {
                         withCredentials: true
                     });
                     console.log('Album Rating saved:', response.data);
+                    // Refetch friends ratings to update the display
+                    fetchFriendsRatings();
                     navigate('/ratings');
 
                 } catch (error) {
@@ -106,6 +131,8 @@ function RatingsDetailPageDesktop() {
                         withCredentials: true
                     });
                     console.log('Song Rating Created:', response.data);
+                    // Refetch friends ratings to update the display
+                    fetchFriendsRatings();
                     navigate('/ratings');
 
                 } catch (error) {
@@ -124,6 +151,8 @@ function RatingsDetailPageDesktop() {
                         withCredentials: true
                     });
                     console.log('Album Rating Created:', response.data);
+                    // Refetch friends ratings to update the display
+                    fetchFriendsRatings();
                     navigate('/ratings');
 
                 } catch (error) {

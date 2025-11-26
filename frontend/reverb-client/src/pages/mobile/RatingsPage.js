@@ -286,7 +286,7 @@ function RatingsPage() {
                 {activeTab === "friends" && (
                   <>
                     {friendsRatings.length === 0 ? (
-                      <p className="empty-text">No friends ratings yet</p>
+                      <p className="empty-text">No friends have rated anything yet.</p>
                     ) : (
                       friendsRatings.map((rating) => (
                         <RatingCard

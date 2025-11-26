@@ -4,6 +4,7 @@ import axios from 'axios';
 import config from '../../config';
 import { useParams, useNavigate } from 'react-router-dom';
 import ProfileButtonMobile from '../../components/mobile/ProfileButtonMobile';
+import StarIcon from '../../components/mobile/StarIcon';
 import '../../styles/Mobile.css';
 
 function RatingDetailPageMobile() {
@@ -14,11 +15,14 @@ function RatingDetailPageMobile() {
     const [comment, setComment] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [friendsRatings, setFriendsRatings] = useState([]);
+    const [isLoadingFriendsRatings, setIsLoadingFriendsRatings] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchData();
-    }, []);
+        fetchFriendsRatings();
+    }, [type, spotifyId]);
 
     const fetchData = async () => {
         setIsLoading(true);
@@ -56,6 +60,30 @@ function RatingDetailPageMobile() {
             }
         }
         setIsLoading(false);
+    };
+
+    const fetchFriendsRatings = async () => {
+        setIsLoadingFriendsRatings(true);
+        try {
+            const endpoint = type === 'song'
+                ? `${config.API_URL}/api/ratings/song/${spotifyId}/friends`
+                : `${config.API_URL}/api/ratings/album/${spotifyId}/friends`;
+
+            const response = await axios.get(endpoint, { withCredentials: true });
+            console.log('Friends ratings:', response.data);
+            setFriendsRatings(response.data || []);
+        } catch (error) {
+            console.error('Error fetching friends ratings:', error);
+            setFriendsRatings([]);
+        } finally {
+            setIsLoadingFriendsRatings(false);
+        }
+    };
+
+    const calculateAverageRating = () => {
+        if (friendsRatings.length === 0) return 0;
+        const sum = friendsRatings.reduce((acc, curr) => acc + curr.rating, 0);
+        return (sum / friendsRatings.length).toFixed(1);
     };
 
     const handleSave = async () => {
@@ -242,6 +270,63 @@ function RatingDetailPageMobile() {
                             </button>
                         )}
                     </div>
+
+                    {/* Friends Ratings Section */}
+                    {friendsRatings.length > 0 && (
+                        <div className="friends-ratings-section-mobile">
+                            <div className="friends-ratings-header-mobile">
+                                <h3>Friends' Ratings</h3>
+                                <div className="average-rating-mobile">
+                                    <span className="average-label">Average: </span>
+                                    <div className="average-stars">
+                                        {Array(5).fill(0).map((_, i) => (
+                                            <StarIcon
+                                                key={i}
+                                                filled={i < Math.round(parseFloat(calculateAverageRating()))}
+                                                size={16}
+                                            />
+                                        ))}
+                                    </div>
+                                    <span className="average-number">{calculateAverageRating()}</span>
+                                    <span className="ratings-count">({friendsRatings.length})</span>
+                                </div>
+                            </div>
+
+                            <div className="friends-ratings-list-mobile">
+                                {isLoadingFriendsRatings ? (
+                                    <p className="loading-text">Loading friends' ratings...</p>
+                                ) : (
+                                    friendsRatings.map((friendRating, index) => (
+                                        <div key={index} className="friend-rating-item-mobile">
+                                            <div className="friend-rating-header-mobile">
+                                                <img
+                                                    src={friendRating.profilePicture}
+                                                    alt={friendRating.displayName}
+                                                    className="friend-rating-avatar-mobile"
+                                                />
+                                                <div className="friend-rating-user-mobile">
+                                                    <p className="friend-name-mobile">{friendRating.displayName}</p>
+                                                    <div className="friend-rating-stars-mobile">
+                                                        {Array(5).fill(0).map((_, i) => (
+                                                            <StarIcon
+                                                                key={i}
+                                                                filled={i < friendRating.rating}
+                                                                size={14}
+                                                            />
+                                                        ))}
+                                                        <span className="friend-rating-number-mobile">{friendRating.rating}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {friendRating.comment && friendRating.comment.trim() !== "" && (
+                                                <p className="friend-rating-comment-mobile">{friendRating.comment}</p>
+                                            )}
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

@@ -12,10 +12,12 @@ function RatingsPage() {
   const [typeTab, setTypeTab] = useState('ratings');
   const [songRatings, setSongRatings] = useState([]);
   const [albumRatings, setAlbumRatings] = useState([]);
+  const [friendsRatings, setFriendsRatings] = useState([]);
 
-  useEffect(() => {  
+  useEffect(() => {
     getSongRatings();
     getAlbumRatings();
+    getFriendsRatings();
   }, []);
 
   const getSongRatings = async () => {
@@ -39,11 +41,24 @@ function RatingsPage() {
           `${config.API_URL}/api/ratings/all-albums`,
           { withCredentials: true }
       );
-        console.log('Songs found:', response.data);
+        console.log('Albums found:', response.data);
         setAlbumRatings(response.data);
       } catch (error) {
           console.error('Error fetching data:', error);
       }
+  };
+
+  const getFriendsRatings = async () => {
+    try {
+      const response = await axios.get(
+        `${config.API_URL}/api/ratings/friends`,
+        { withCredentials: true }
+      );
+      console.log('Friends ratings found:', response.data);
+      setFriendsRatings(response.data);
+    } catch (error) {
+      console.error('Error fetching friends ratings:', error);
+    }
   };
 
 
@@ -73,6 +88,12 @@ function RatingsPage() {
                 onClick={() => setMyFeaturedTab('albums')}
               >
                 Albums
+              </button>
+              <button
+                className={myFeaturedTab === 'friends' ? 'active' : ''}
+                onClick={() => setMyFeaturedTab('friends')}
+              >
+                Friends
               </button>
             </div>
 
@@ -137,6 +158,44 @@ function RatingsPage() {
                     </div>
                   </div>
                 ))
+            )}
+
+            {myFeaturedTab === 'friends' && typeTab === 'ratings' && (
+              friendsRatings.length > 0 ? (
+                friendsRatings.map((rating) => (
+                  <RatedSongComponentDesktop
+                    key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`}
+                    songData={rating}
+                    type={rating.type}
+                  />
+                ))
+              ) : (
+                <p className="empty-message">No friends have rated anything yet.</p>
+              )
+            )}
+
+            {myFeaturedTab === 'friends' && typeTab === 'reviews' && (
+              friendsRatings.filter(rating => rating.comment && rating.comment.trim() !== "").length > 0 ? (
+                friendsRatings
+                  .filter(rating => rating.comment && rating.comment.trim() !== "")
+                  .map((rating) => (
+                    <div className="song-component" key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`}>
+                      <img className="circle stats-circle" src={rating?.imageUrl} alt={rating.type} />
+                      <div className="song-info">
+                          <p className="song-name">
+                              <Link to={`/ratings/${rating.type}/${rating.type === 'song' ? rating.spotifyTrackId : rating.spotifyAlbumId}`}>
+                                  {rating.type === 'song' ? rating.songName : rating.albumName}
+                              </Link>
+                          </p>
+                          <p className="song-name">{rating?.displayName || rating?.userName}</p>
+                          <p className="artist-name">{rating?.artistName}</p>
+                          <p className="round-outline ratings-comment">{rating?.comment}</p>
+                      </div>
+                    </div>
+                  ))
+              ) : (
+                <p className="empty-message">No friends have written reviews yet.</p>
+              )
             )}
 
             </div>
