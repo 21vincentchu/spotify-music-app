@@ -13,11 +13,17 @@ function RatingDetailPageMobile() {
     const [ratingData, setRatingData] = useState(null);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
+    const [originalRating, setOriginalRating] = useState(0);
+    const [originalComment, setOriginalComment] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [justSaved, setJustSaved] = useState(false);
     const [friendsRatings, setFriendsRatings] = useState([]);
     const [isLoadingFriendsRatings, setIsLoadingFriendsRatings] = useState(false);
     const navigate = useNavigate();
+
+    // Check if there are unsaved changes
+    const hasChanges = rating !== originalRating || comment !== originalComment;
 
     useEffect(() => {
         fetchData();
@@ -37,8 +43,12 @@ function RatingDetailPageMobile() {
                     setIsRated(true);
                 }
                 setRatingData(response.data.song);
-                setRating(response.data.userRating?.rating || 0);
-                setComment(response.data.userRating?.comment || '');
+                const userRating = response.data.userRating?.rating || 0;
+                const userComment = response.data.userRating?.comment || '';
+                setRating(userRating);
+                setComment(userComment);
+                setOriginalRating(userRating);
+                setOriginalComment(userComment);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -53,8 +63,12 @@ function RatingDetailPageMobile() {
                     setIsRated(true);
                 }
                 setRatingData(response.data.album);
-                setRating(response.data.userRating?.rating || 0);
-                setComment(response.data.userRating?.comment || '');
+                const userRating = response.data.userRating?.rating || 0;
+                const userComment = response.data.userRating?.comment || '';
+                setRating(userRating);
+                setComment(userComment);
+                setOriginalRating(userRating);
+                setOriginalComment(userComment);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -66,14 +80,16 @@ function RatingDetailPageMobile() {
         setIsLoadingFriendsRatings(true);
         try {
             const endpoint = type === 'song'
-                ? `${config.API_URL}/api/ratings/song/${spotifyId}/friends`
-                : `${config.API_URL}/api/ratings/album/${spotifyId}/friends`;
+                ? `${config.API_URL}/api/ratings/song/${spotifyId}/all`
+                : `${config.API_URL}/api/ratings/album/${spotifyId}/all`;
 
             const response = await axios.get(endpoint, { withCredentials: true });
-            console.log('Friends ratings:', response.data);
-            setFriendsRatings(response.data || []);
+            console.log('All users ratings:', response.data);
+            // Ensure we always set an array
+            const ratings = Array.isArray(response.data) ? response.data : [];
+            setFriendsRatings(ratings);
         } catch (error) {
-            console.error('Error fetching friends ratings:', error);
+            console.error('Error fetching all users ratings:', error);
             setFriendsRatings([]);
         } finally {
             setIsLoadingFriendsRatings(false);
@@ -81,47 +97,38 @@ function RatingDetailPageMobile() {
     };
 
     const calculateAverageRating = () => {
-        if (friendsRatings.length === 0) return 0;
-        const sum = friendsRatings.reduce((acc, curr) => acc + curr.rating, 0);
+        // Safety check: ensure friendsRatings is an array and not empty
+        if (!Array.isArray(friendsRatings) || friendsRatings.length === 0) return 0;
+        const sum = friendsRatings.reduce((acc, curr) => acc + (curr.rating || 0), 0);
         return (sum / friendsRatings.length).toFixed(1);
     };
 
     const handleSave = async () => {
         setIsSaving(true);
-        if (isRated) {
-            if (type === 'song') {
-                try {
-                    const response = await axios.patch(`${config.API_URL}/api/ratings/song`, {
+        try {
+            if (isRated) {
+                // Update existing rating
+                if (type === 'song') {
+                    await axios.patch(`${config.API_URL}/api/ratings/song`, {
                         spotifyTrackId: spotifyId,
                         rating: rating,
                         comment: comment
                     }, {
                         withCredentials: true
                     });
-                    console.log('Song Rating saved:', response.data);
-                    navigate('/ratings');
-                } catch (error) {
-                    console.error('Error saving rating:', error);
-                }
-            } else if (type === 'album') {
-                try {
-                    const response = await axios.patch(`${config.API_URL}/api/ratings/album`, {
+                } else if (type === 'album') {
+                    await axios.patch(`${config.API_URL}/api/ratings/album`, {
                         spotifyAlbumId: spotifyId,
                         rating: rating,
                         comment: comment
                     }, {
                         withCredentials: true
                     });
-                    console.log('Album Rating saved:', response.data);
-                    navigate('/ratings');
-                } catch (error) {
-                    console.error('Error saving rating:', error);
                 }
-            }
-        } else {
-            if (type === 'song') {
-                try {
-                    const response = await axios.post(`${config.API_URL}/api/ratings/song`, {
+            } else {
+                // Create new rating
+                if (type === 'song') {
+                    await axios.post(`${config.API_URL}/api/ratings/song`, {
                         spotifyTrackId: spotifyId,
                         songName: ratingData.songName,
                         artistName: ratingData.artistName,
@@ -131,14 +138,8 @@ function RatingDetailPageMobile() {
                     }, {
                         withCredentials: true
                     });
-                    console.log('Song Rating Created:', response.data);
-                    navigate('/ratings');
-                } catch (error) {
-                    console.error('Error saving rating:', error);
-                }
-            } else if (type === 'album') {
-                try {
-                    const response = await axios.post(`${config.API_URL}/api/ratings/album`, {
+                } else if (type === 'album') {
+                    await axios.post(`${config.API_URL}/api/ratings/album`, {
                         spotifyAlbumId: spotifyId,
                         albumName: ratingData.albumName,
                         artistName: ratingData.artistName,
@@ -148,14 +149,27 @@ function RatingDetailPageMobile() {
                     }, {
                         withCredentials: true
                     });
-                    console.log('Album Rating Created:', response.data);
-                    navigate('/ratings');
-                } catch (error) {
-                    console.error('Error saving rating:', error);
                 }
+                setIsRated(true);
             }
+
+            // Update the original values to match current (so hasChanges becomes false)
+            setOriginalRating(rating);
+            setOriginalComment(comment);
+
+            // Show "Saved!" message
+            setJustSaved(true);
+            setTimeout(() => {
+                setJustSaved(false);
+            }, 2000);
+
+            // Refresh the reviews list
+            fetchFriendsRatings();
+        } catch (error) {
+            console.error('Error saving rating:', error);
+        } finally {
+            setIsSaving(false);
         }
-        setIsSaving(false);
     };
 
     const handleDelete = async () => {
@@ -199,16 +213,30 @@ function RatingDetailPageMobile() {
         );
     }
 
+    // Calculate average rating once
+    const averageRating = calculateAverageRating();
+
+    // Filter to only show ratings with reviews (comments)
+    const ratingsWithReviews = friendsRatings.filter(r => r.comment && r.comment.trim() !== "");
+    const reviewCount = ratingsWithReviews.length;
+
     return (
         <div className="mobile-layout">
             <ProfileButtonMobile />
             <div className="mobile-content">
                 <div className="rating-detail-page-mobile">
 
-                    {/* Back Button */}
-                    <button className="back-button-mobile" onClick={() => navigate('/ratings')}>
-                        ← Back
-                    </button>
+                    {/* Header with Back and Delete */}
+                    <div className="rating-detail-header-nav">
+                        <button className="back-button-mobile" onClick={() => navigate('/ratings')}>
+                            ← Back
+                        </button>
+                        {isRated && !hasChanges && (
+                            <button className="delete-button-header" onClick={handleDelete}>
+                                Delete
+                            </button>
+                        )}
+                    </div>
 
                     {/* Album Art & Info */}
                     <div className="rating-detail-header-mobile">
@@ -252,75 +280,82 @@ function RatingDetailPageMobile() {
                         />
                     </div>
 
-                    {/* Action Buttons */}
-                    <div className="rating-detail-actions-mobile">
-                        <button
-                            className="save-button-mobile"
-                            onClick={handleSave}
-                            disabled={isSaving}
-                        >
-                            {isSaving ? 'Saving...' : 'Save'}
-                        </button>
-                        {isRated && (
+                    {/* Action Buttons - Only show when there are changes */}
+                    {hasChanges && (
+                        <div className="rating-detail-actions-inline">
                             <button
-                                className="delete-button-mobile"
-                                onClick={handleDelete}
+                                className="save-button-inline"
+                                onClick={handleSave}
+                                disabled={isSaving}
                             >
-                                Delete
+                                {isSaving ? 'Saving...' : 'Save Changes'}
                             </button>
-                        )}
-                    </div>
+                            <button
+                                className="cancel-button-inline"
+                                onClick={() => {
+                                    setRating(originalRating);
+                                    setComment(originalComment);
+                                }}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    )}
 
-                    {/* Friends Ratings Section */}
-                    {friendsRatings.length > 0 && (
+                    {/* Saved Message */}
+                    {justSaved && !hasChanges && (
+                        <div className="saved-message-mobile">
+                            ✓ Saved!
+                        </div>
+                    )}
+
+                    {/* Reviews Section */}
+                    {reviewCount > 0 && (
                         <div className="friends-ratings-section-mobile">
                             <div className="friends-ratings-header-mobile">
-                                <h3>Friends' Ratings</h3>
+                                <h3>Reviews ({reviewCount})</h3>
                                 <div className="average-rating-mobile">
-                                    <span className="average-label">Average: </span>
+                                    <span className="average-label">Average from {friendsRatings.length} {friendsRatings.length === 1 ? 'user' : 'users'}: </span>
                                     <div className="average-stars">
                                         {Array(5).fill(0).map((_, i) => (
                                             <StarIcon
                                                 key={i}
-                                                filled={i < Math.round(parseFloat(calculateAverageRating()))}
+                                                filled={i < Math.round(parseFloat(averageRating))}
                                                 size={16}
                                             />
                                         ))}
                                     </div>
-                                    <span className="average-number">{calculateAverageRating()}</span>
-                                    <span className="ratings-count">({friendsRatings.length})</span>
+                                    <span className="average-number">{averageRating}</span>
                                 </div>
                             </div>
 
                             <div className="friends-ratings-list-mobile">
                                 {isLoadingFriendsRatings ? (
-                                    <p className="loading-text">Loading friends' ratings...</p>
+                                    <p className="loading-text">Loading reviews...</p>
                                 ) : (
-                                    friendsRatings.map((friendRating, index) => (
+                                    ratingsWithReviews.map((userRating, index) => (
                                         <div key={index} className="friend-rating-item-mobile">
                                             <div className="friend-rating-header-mobile">
                                                 <img
-                                                    src={friendRating.profilePicture}
-                                                    alt={friendRating.displayName}
+                                                    src={userRating.profilePicture || '/default-avatar.png'}
+                                                    alt={userRating.displayName}
                                                     className="friend-rating-avatar-mobile"
                                                 />
                                                 <div className="friend-rating-user-mobile">
-                                                    <p className="friend-name-mobile">{friendRating.displayName}</p>
+                                                    <p className="friend-name-mobile">{userRating.displayName || userRating.userName}</p>
                                                     <div className="friend-rating-stars-mobile">
                                                         {Array(5).fill(0).map((_, i) => (
                                                             <StarIcon
                                                                 key={i}
-                                                                filled={i < friendRating.rating}
+                                                                filled={i < userRating.rating}
                                                                 size={14}
                                                             />
                                                         ))}
-                                                        <span className="friend-rating-number-mobile">{friendRating.rating}</span>
+                                                        <span className="friend-rating-number-mobile">{userRating.rating}</span>
                                                     </div>
                                                 </div>
                                             </div>
-                                            {friendRating.comment && friendRating.comment.trim() !== "" && (
-                                                <p className="friend-rating-comment-mobile">{friendRating.comment}</p>
-                                            )}
+                                            <p className="friend-rating-comment-mobile">{userRating.comment}</p>
                                         </div>
                                     ))
                                 )}

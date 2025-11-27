@@ -502,3 +502,151 @@ def get_friends_ratings(userName):
     finally:
         cursor.close()
         conn.close()
+
+def get_friends_song_ratings(userName, spotifyTrackId):
+    """
+    Fetches all ratings for a specific song from user's friends.
+
+    Args:
+        userName: The userName (Spotify ID) of the current user
+        spotifyTrackId: Spotify track ID
+
+    Returns:
+        List of dictionaries containing friends' ratings for this song
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True, buffered=True)
+    try:
+        cursor.execute("""
+            SELECT
+                rs.uniqueID,
+                rs.spotifyTrackId,
+                rs.songName,
+                rs.artistName,
+                rs.rating,
+                rs.comment,
+                rs.imageUrl,
+                rs.userName,
+                u.displayName,
+                u.profilePicture,
+                rs.updatedAt
+            FROM RatedSong rs
+            INNER JOIN UserFriends uf ON rs.userName = uf.friendUserName
+            LEFT JOIN User u ON rs.userName = u.userName
+            WHERE uf.userName = %s AND rs.spotifyTrackId = %s
+            ORDER BY rs.updatedAt DESC
+        """, (userName, spotifyTrackId))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_friends_album_ratings(userName, spotifyAlbumId):
+    """
+    Fetches all ratings for a specific album from user's friends.
+
+    Args:
+        userName: The userName (Spotify ID) of the current user
+        spotifyAlbumId: Spotify album ID
+
+    Returns:
+        List of dictionaries containing friends' ratings for this album
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True, buffered=True)
+    try:
+        cursor.execute("""
+            SELECT
+                ra.uniqueID,
+                ra.spotifyAlbumId,
+                ra.albumName,
+                ra.artistName,
+                ra.rating,
+                ra.comment,
+                ra.imageUrl,
+                ra.userName,
+                u.displayName,
+                u.profilePicture,
+                ra.updatedAt
+            FROM RatedAlbum ra
+            INNER JOIN UserFriends uf ON ra.userName = uf.friendUserName
+            LEFT JOIN User u ON ra.userName = u.userName
+            WHERE uf.userName = %s AND ra.spotifyAlbumId = %s
+            ORDER BY ra.updatedAt DESC
+        """, (userName, spotifyAlbumId))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_all_users_song_ratings(spotifyTrackId):
+    """
+    Fetches ALL users' ratings for a specific song (global/public).
+
+    Args:
+        spotifyTrackId: Spotify track ID
+
+    Returns:
+        List of dictionaries containing all users' ratings for this song
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True, buffered=True)
+    try:
+        cursor.execute("""
+            SELECT
+                rs.uniqueID,
+                rs.spotifyTrackId,
+                rs.songName,
+                rs.artistName,
+                rs.rating,
+                rs.comment,
+                rs.imageUrl,
+                rs.userName,
+                u.displayName,
+                u.profilePicture,
+                rs.updatedAt
+            FROM RatedSong rs
+            LEFT JOIN User u ON rs.userName = u.userName
+            WHERE rs.spotifyTrackId = %s
+            ORDER BY rs.updatedAt DESC
+        """, (spotifyTrackId,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_all_users_album_ratings(spotifyAlbumId):
+    """
+    Fetches ALL users' ratings for a specific album (global/public).
+
+    Args:
+        spotifyAlbumId: Spotify album ID
+
+    Returns:
+        List of dictionaries containing all users' ratings for this album
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True, buffered=True)
+    try:
+        cursor.execute("""
+            SELECT
+                ra.uniqueID,
+                ra.spotifyAlbumId,
+                ra.albumName,
+                ra.artistName,
+                ra.rating,
+                ra.comment,
+                ra.imageUrl,
+                ra.userName,
+                u.displayName,
+                u.profilePicture,
+                ra.updatedAt
+            FROM RatedAlbum ra
+            LEFT JOIN User u ON ra.userName = u.userName
+            WHERE ra.spotifyAlbumId = %s
+            ORDER BY ra.updatedAt DESC
+        """, (spotifyAlbumId,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()

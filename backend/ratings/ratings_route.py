@@ -330,3 +330,57 @@ def fetch_friends_ratings():
         return jsonify(friends_ratings), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@ratings_bp.route('/song/<spotifyTrackId>/friends', methods=['GET'])
+def fetch_friends_song_ratings(spotifyTrackId):
+    """
+    Get all friends' ratings for a specific song.
+    """
+    userName = session.get('userName')
+
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
+
+    try:
+        friends_ratings = get_friends_song_ratings(userName, spotifyTrackId)
+        return jsonify(friends_ratings if friends_ratings else []), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@ratings_bp.route('/album/<spotifyAlbumId>/friends', methods=['GET'])
+def fetch_friends_album_ratings(spotifyAlbumId):
+    """
+    Get all friends' ratings for a specific album.
+    """
+    userName = session.get('userName')
+
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
+
+    try:
+        friends_ratings = get_friends_album_ratings(userName, spotifyAlbumId)
+        return jsonify(friends_ratings if friends_ratings else []), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@ratings_bp.route('/song/<spotifyTrackId>/all', methods=['GET'])
+def fetch_all_users_song_ratings(spotifyTrackId):
+    """
+    Get ALL users' ratings for a specific song (public/global).
+    """
+    try:
+        all_ratings = get_all_users_song_ratings(spotifyTrackId)
+        return jsonify(all_ratings if all_ratings else []), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@ratings_bp.route('/album/<spotifyAlbumId>/all', methods=['GET'])
+def fetch_all_users_album_ratings(spotifyAlbumId):
+    """
+    Get ALL users' ratings for a specific album (public/global).
+    """
+    try:
+        all_ratings = get_all_users_album_ratings(spotifyAlbumId)
+        return jsonify(all_ratings if all_ratings else []), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
