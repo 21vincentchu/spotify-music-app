@@ -179,17 +179,19 @@ function RatingsPage() {
                 friendsRatings
                   .filter(rating => rating.comment && rating.comment.trim() !== "")
                   .map((rating) => (
-                    <div className="song-component" key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`}>
-                      <img className="circle stats-circle" src={rating?.imageUrl} alt={rating.type} />
-                      <div className="song-info">
-                          <p className="song-name">
-                              <Link to={`/ratings/${rating.type}/${rating.type === 'song' ? rating.spotifyTrackId : rating.spotifyAlbumId}`}>
-                                  {rating.type === 'song' ? rating.songName : rating.albumName}
-                              </Link>
-                          </p>
-                          {/* <p className="song-name">{rating?.displayName || rating?.userName}</p> */}
-                          <p className="artist-name">{rating?.artistName}</p>
-                          <p className="round-outline ratings-comment">{rating?.comment}</p>
+                    <div className="song-component rated-song-desktop" key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`}>
+                      <p className="user-name-header">{rating.userName}</p>
+                      <div className="song-content-row">
+                        <img className="circle stats-circle" src={rating?.imageUrl} alt={rating.type} />
+                        <div className="song-info">
+                            <p className="song-name">
+                                <Link to={`/ratings/${rating.type}/${rating.type === 'song' ? rating.spotifyTrackId : rating.spotifyAlbumId}`}>
+                                    {rating.type === 'song' ? rating.songName : rating.albumName}
+                                </Link>
+                            </p>
+                            <p className="artist-name">{rating?.artistName}</p>
+                            <p className="round-outline ratings-comment">{rating?.comment}</p>
+                        </div>
                       </div>
                     </div>
                   ))

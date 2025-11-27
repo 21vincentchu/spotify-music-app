@@ -687,6 +687,11 @@ nav {
     width: 100%;
   }
 
+  song-component-container {
+    /* width: 100%; */
+    background-color: ;
+  }
+
   .stats-data .song-component {
     width: 100%;
     max-width: 100%;
@@ -2114,6 +2119,28 @@ nav {
     gap: 15px;
     flex: 1;
     overflow-y: auto;
+  }
+
+  .rated-song-desktop {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .rated-song-desktop .user-name-header {
+    margin: 0 0 8px 0;
+    font-weight: 600;
+    color: #034078;
+    text-align: left;
+    width: 100%;
+    font-size: 0.85em;
+  }
+
+  .rated-song-desktop .song-content-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
   }
 
  /* RATINGS DETAIL -------------------------------------------------------------------------------------  */
