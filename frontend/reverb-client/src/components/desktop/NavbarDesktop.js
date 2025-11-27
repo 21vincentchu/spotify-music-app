@@ -5,6 +5,7 @@ import config from '../../config';
 
 import tempLogo from "../../assets/pngegg.png";
 import tempProfile from "../../assets/istockphoto-2171382633-612x612.jpg";
+import logo from "../../assets/reverb-logo-type.svg";
 
 function NavbarDesktop() {
   const [showMenu, setShowMenu] = useState(false);
@@ -62,7 +63,7 @@ function NavbarDesktop() {
   return (
     <nav>
       <a href="/home">
-        <img src={tempLogo} className="nav-logo" />
+        <img src={logo} className="nav-logo" />
       </a>
       
       <div className="nav-links">

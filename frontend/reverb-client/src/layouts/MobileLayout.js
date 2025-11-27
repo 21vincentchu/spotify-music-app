@@ -17,7 +17,7 @@ import AboutPage from "../pages/mobile/AboutPage";
 
 
 import profileButton from "../assets/istockphoto-2171382633-612x612.jpg";
-import logo from "../assets/pngegg.png";
+import logo from "../assets/reverb-logo.svg";
 
 import "../styles/Mobile.css";
 

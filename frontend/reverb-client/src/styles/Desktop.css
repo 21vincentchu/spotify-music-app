@@ -20,8 +20,9 @@ nav {
   }
 
   .nav-logo {
-    height: 45px;
-    width: 45px;
+    height: 15vh;
+    width: 15vw;
+
     object-fit: contain;
   }
   
@@ -143,10 +144,6 @@ nav {
     padding: 1rem 2rem;
     width: 100%;
     box-sizing: border-box;
-  }
-  
-  .splash-nav .nav-logo {
-    height: 48px;
   }
 
   .splash-nav .nav-links {

@@ -5,6 +5,7 @@ import config from '../../config';
 import { useAuth } from '../../context/AuthContext';
 
 import tempLogo from "../../assets/pngegg.png";
+import logo from "../../assets/reverb-logo.svg";
 
 function SignInPage() {
     const navigate = useNavigate();
@@ -39,7 +40,7 @@ function SignInPage() {
     <div className="signin-page">
         <nav>
           <a href="/">
-            <img src={tempLogo} className="nav-logo" />
+            <img src={logo} className="nav-logo" />
           </a>
           
           <div className="nav-links">

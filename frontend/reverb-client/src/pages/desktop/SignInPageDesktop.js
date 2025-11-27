@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import config from '../../config';
 
-import tempLogo from "../../assets/pngegg.png";
+import logo from "../../assets/reverb-logo-type.svg";
 import Footer from "../../components/shared/Footer";
 
 function SignInPage() {
@@ -30,7 +30,7 @@ function SignInPage() {
     <div className="signin-page">
         <nav className="splash-nav">
             <a href="/">
-            <img src={tempLogo} className="nav-logo" alt="Logo" />
+            <img src={logo} className="nav-logo" alt="Logo" />
             </a>
         </nav>
       <div className="signin-container round-outline blue-box-shadow">
