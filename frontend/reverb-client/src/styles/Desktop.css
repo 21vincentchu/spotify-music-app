@@ -2056,8 +2056,10 @@ nav {
     height: 70vh;
     margin: auto;
     padding: 10px;
-    overflow: hidden;
+    /* overflow: hidden; */
     background-color: white;
+    display: flex;
+    flex-direction: column;
   }
 
   .type-tabs{
@@ -2066,7 +2068,7 @@ nav {
     gap: 100px;
     z-index: 10;
     position: absolute;
-    left: calc(30vw - 76px);
+    left: calc(30vw - 82px);
     top: calc(10vh + 120px);
   }
 
@@ -2110,6 +2112,8 @@ nav {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    flex: 1;
+    overflow-y: auto;
   }
 
  /* RATINGS DETAIL -------------------------------------------------------------------------------------  */

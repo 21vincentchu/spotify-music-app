@@ -187,7 +187,7 @@ function RatingsPage() {
                                   {rating.type === 'song' ? rating.songName : rating.albumName}
                               </Link>
                           </p>
-                          <p className="song-name">{rating?.displayName || rating?.userName}</p>
+                          {/* <p className="song-name">{rating?.displayName || rating?.userName}</p> */}
                           <p className="artist-name">{rating?.artistName}</p>
                           <p className="round-outline ratings-comment">{rating?.comment}</p>
                       </div>
