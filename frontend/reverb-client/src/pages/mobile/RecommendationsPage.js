@@ -390,7 +390,9 @@ function MobileRecommendationsPage() {
                                 className="mobile-play-button"
                                 title="Open in Spotify"
                               >
-                                ▶
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M8 5v14l11-7z"/>
+                                </svg>
                               </a>
                             )}
                           </div>
@@ -429,7 +431,9 @@ function MobileRecommendationsPage() {
                                 className="mobile-play-button"
                                 title="Open in Spotify"
                               >
-                                ▶
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M8 5v14l11-7z"/>
+                                </svg>
                               </a>
                             )}
                           </div>

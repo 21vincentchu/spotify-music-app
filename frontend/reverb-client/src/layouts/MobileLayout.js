@@ -49,7 +49,9 @@ function MobileLayout() {
       {/* SCROLL-AWAY TOP BAR */}
       {!hideNavbar && (
         <div className="mobile-topbar">
-          <img src={logo} alt="Logo" className="mobile-logo" />
+          <Link to="/home">
+            <img src={logo} alt="Logo" className="mobile-logo" />
+          </Link>
 
           <div className="profile-menu-wrapper" ref={menuRef}>
             <button
