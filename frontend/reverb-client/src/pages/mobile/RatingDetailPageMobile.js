@@ -99,7 +99,10 @@ function RatingDetailPageMobile() {
     const calculateAverageRating = () => {
         // Safety check: ensure friendsRatings is an array and not empty
         if (!Array.isArray(friendsRatings) || friendsRatings.length === 0) return 0;
-        const sum = friendsRatings.reduce((acc, curr) => acc + (curr.rating || 0), 0);
+        const sum = friendsRatings.reduce((acc, curr) => {
+            const rating = parseFloat(curr.rating);
+            return acc + (isNaN(rating) ? 0 : rating);
+        }, 0);
         return (sum / friendsRatings.length).toFixed(1);
     };
 

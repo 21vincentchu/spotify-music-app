@@ -610,7 +610,12 @@ def get_all_users_song_ratings(spotifyTrackId):
             WHERE rs.spotifyTrackId = %s
             ORDER BY rs.updatedAt DESC
         """, (spotifyTrackId,))
-        return cursor.fetchall()
+        results = cursor.fetchall()
+        # Convert Decimal rating to float for proper JSON serialization
+        for result in results:
+            if result.get('rating') is not None:
+                result['rating'] = float(result['rating'])
+        return results
     finally:
         cursor.close()
         conn.close()
@@ -646,7 +651,12 @@ def get_all_users_album_ratings(spotifyAlbumId):
             WHERE ra.spotifyAlbumId = %s
             ORDER BY ra.updatedAt DESC
         """, (spotifyAlbumId,))
-        return cursor.fetchall()
+        results = cursor.fetchall()
+        # Convert Decimal rating to float for proper JSON serialization
+        for result in results:
+            if result.get('rating') is not None:
+                result['rating'] = float(result['rating'])
+        return results
     finally:
         cursor.close()
         conn.close()
