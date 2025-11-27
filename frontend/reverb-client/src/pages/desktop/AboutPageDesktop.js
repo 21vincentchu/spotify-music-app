@@ -103,6 +103,20 @@ function AboutPage() {
                 <p><strong>Kevin Lee</strong> - Backend Developer</p>
             </div>
 
+            <div className="about-section">
+                <h2>Logo Design</h2>
+                <p>Logo commissioned by{' '}
+                    <a
+                        href="https://www.instagram.com/xuanieha/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="spotify-link"
+                    >
+                        Mary Ha
+                    </a>
+                </p>
+            </div>
+
         </div>
         <Footer />
     </div>
