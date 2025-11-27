@@ -384,3 +384,31 @@ def fetch_all_users_album_ratings(spotifyAlbumId):
         return jsonify(all_ratings if all_ratings else []), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@ratings_bp.route('/user/<targetUserName>', methods=['GET'])
+def fetch_user_ratings(targetUserName):
+    """
+    Get all ratings (songs and albums) for a specific user.
+    Used for viewing a friend's ratings.
+    """
+    userName = session.get('userName')
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
+
+    try:
+        # Get both song and album ratings for the target user
+        song_ratings = get_all_song_ratings_for_user(targetUserName)
+        album_ratings = get_all_album_ratings_for_user(targetUserName)
+
+        # Add type field to distinguish between songs and albums
+        songs_with_type = [{'type': 'song', **rating} for rating in (song_ratings or [])]
+        albums_with_type = [{'type': 'album', **rating} for rating in (album_ratings or [])]
+
+        # Combine and sort by updatedAt
+        combined_ratings = songs_with_type + albums_with_type
+        combined_ratings.sort(key=lambda x: x.get('updatedAt', ''), reverse=True)
+
+        return jsonify(combined_ratings), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
