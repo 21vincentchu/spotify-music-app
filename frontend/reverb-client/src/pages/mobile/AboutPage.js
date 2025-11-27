@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import ProfileButtonMobile from "../../components/mobile/ProfileButtonMobile";
+import { useAuth } from "../../context/AuthContext";
 
 function AboutPage() {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="mobile-layout">
@@ -10,8 +12,11 @@ function AboutPage() {
       <div className="mobile-content about-mobile-content">
         <div className="about-page page">
           <div className="about-content">
-              <button onClick={() => navigate('/home')} className="back-button">
-                ← Back to Home
+              <button
+                onClick={() => navigate(isAuthenticated ? '/home' : '/')}
+                className="back-button"
+              >
+                ← {isAuthenticated ? 'Back to Home' : 'Back to Sign In'}
               </button>
 
               <div className="about-section">
