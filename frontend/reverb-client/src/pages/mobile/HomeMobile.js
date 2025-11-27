@@ -125,17 +125,19 @@ const HomeMobile = () => {
             {isLoadingRecentData ? (
               <LoadingSpinner message="Loading statistics..." />
             ) : (
-              <>
-                <div className="mobile-stats-section">
-                  <div className="mobile-stat-box">
-                    <h3>Average Track Length</h3>
-                    <p className="stat-value">{recentData.listening_stats?.avg_track_length_minutes || 0} min</p>
+              <div className="home-stats-scrollable">
+                {/* NEW STAT BOXES */}
+                <div className="stat-boxes-row">
+                  <div className="stat-box-new">
+                    <div className="stat-label-new">AVERAGE TRACK LENGTH</div>
+                    <div className="stat-number-new">{recentData.listening_stats?.avg_track_length_minutes || 0} min</div>
                   </div>
-                  <div className="mobile-stat-box">
-                    <h3>Total Minutes</h3>
-                    <p className="stat-value">{Math.round(recentData.listening_stats?.total_minutes || 0)} min</p>
+                  <div className="stat-box-new">
+                    <div className="stat-label-new">TOTAL MINUTES</div>
+                    <div className="stat-number-new">{Math.round(recentData.listening_stats?.total_minutes || 0)} min</div>
                   </div>
                 </div>
+
                 <div className="mobile-genre-section">
                   <h3>Top Genres</h3>
                   <ol className="mobile-genre-list">
@@ -148,7 +150,7 @@ const HomeMobile = () => {
                   </ol>
                 </div>
                 <StatsDashboard recentTracks={recentData.recent_tracks} />
-              </>
+              </div>
             )}
           </div>
 

@@ -320,13 +320,20 @@ function RatingDetailPageMobile() {
                                 <div className="average-rating-mobile">
                                     <span className="average-label">Average from {friendsRatings.length} {friendsRatings.length === 1 ? 'user' : 'users'}: </span>
                                     <div className="average-stars">
-                                        {Array(5).fill(0).map((_, i) => (
-                                            <StarIcon
-                                                key={i}
-                                                filled={i < Math.round(parseFloat(averageRating))}
-                                                size={16}
-                                            />
-                                        ))}
+                                        <Rating
+                                            value={parseFloat(averageRating)}
+                                            precision={0.1}
+                                            size="large"
+                                            readOnly
+                                            sx={{
+                                                '& .MuiRating-iconFilled': {
+                                                    color: '#ffa726'
+                                                },
+                                                '& .MuiRating-iconHover': {
+                                                    color: '#ffa726'
+                                                }
+                                            }}
+                                        />
                                     </div>
                                     <span className="average-number">{averageRating}</span>
                                 </div>

@@ -19,21 +19,32 @@ nav {
     border: none;
   }
 
-  .nav-logo {
-    height: 15vh;
-    width: 15vw;
+  nav > a {
+    display: inline-block;
+    flex: 0 0 auto;
+    padding: 0;
+    margin: 0;
+    line-height: 0;
+    vertical-align: middle;
+  }
 
+  .nav-logo {
+    height: 160px;
+    padding-left: 30px;
+    padding-top: 5px;
+    width: auto;
     object-fit: contain;
+    display: block;
   }
   
   .nav-links {
     position: absolute;
-    left: 50%;
+    left: 51%;
     transform: translateX(-50%);
     display: flex;
     gap: 30px;
     align-items: center;
-    transition: gap 0.3s ease;
+    transition: gap 0.3s ease, left 0.3s ease, font-size 0.3s ease;
   }
 
   .nav-links a {
@@ -55,40 +66,80 @@ nav {
   }
 
   /* Responsive nav for smaller desktop screens */
+  @media screen and (max-width: 1400px) {
+    .nav-links {
+      left: 51%;
+      gap: 22px;
+    }
+
+    .nav-links a {
+      font-size: 15px;
+    }
+  }
+
   @media screen and (max-width: 1200px) {
     .nav-links {
-      gap: 45px;
+      left: 51.5%;
+      gap: 18px;
     }
 
     .nav-links a {
       font-size: 14px;
-      margin: 5px 3px;
+    }
+  }
+
+  @media screen and (max-width: 1100px) {
+    .nav-links {
+      left: 52%;
+      gap: 15px;
+    }
+
+    .nav-links a {
+      font-size: 13.5px;
     }
   }
 
   @media screen and (max-width: 1000px) {
     .nav-links {
-      gap: 35px;
+      left: 52%;
+      gap: 2px;
     }
 
     .nav-links a {
       font-size: 13px;
-      margin: 5px 2px;
     }
   }
 
   @media screen and (max-width: 900px) {
     .nav-links {
-      gap: 25px;
+      left: 52.5%;
+      gap: 2px;
     }
 
     .nav-links a {
-      font-size: 13px;
-      margin: 5px 2px;
+      font-size: 12px;
+    }
+  }
+
+  @media screen and (max-width: 850px) {
+    .nav-links {
+      left: 53%;
+      gap: 2px;
     }
 
-    .nav-links a.active {
-      padding: 5px 9px;
+    .nav-links a {
+      font-size: 10.5px;
+    }
+  }
+
+  @media screen and (max-width: 800px) {
+    .nav-links {
+      left: 53%;
+      gap: 1px;
+    }
+
+    .nav-links a {
+      font-size: 10px;
     }
   }
 
@@ -613,7 +664,7 @@ nav {
     display: flex;
     flex-direction: column;
     padding: 10px;
-    padding-top: 10px;
+    padding-top: 40px;
     overflow: hidden;
     box-sizing: border-box;
   }
@@ -664,7 +715,8 @@ nav {
   .stats-data {
     flex: 0 1 auto;
     width: 100%;
-    max-width: 800px;
+    max-width: 700px;
+    max-height: 75vh;
     margin: 5% auto;
     padding: 20px;
     overflow-y: auto;
@@ -682,11 +734,6 @@ nav {
     flex-direction: column;
     gap: 10px;
     width: 100%;
-  }
-
-  song-component-container {
-    /* width: 100%; */
-    background-color: ;
   }
 
   .stats-data .song-component {
