@@ -3,6 +3,54 @@ from .ratings_reviews import *
 
 ratings_bp = Blueprint('ratings_bp', __name__, url_prefix='/api/ratings')
 
+def fetch_song_from_spotify(sp, spotifyTrackId):
+    """
+    Fetch song data from Spotify API.
+
+    Args:
+        sp: Authenticated Spotify client
+        spotifyTrackId: Spotify track ID
+
+    Returns:
+        Dictionary with song data
+    """
+    track_data = sp.track(spotifyTrackId)
+
+    artists = track_data.get('artists', [])
+    album = track_data.get('album', {})
+    images = album.get('images', [])
+
+    return {
+        'spotifyTrackId': spotifyTrackId,
+        'songName': track_data.get('name'),
+        'artistName': artists[0]['name'] if artists else 'Unknown Artist',
+        'albumName': album.get('name'),
+        'imageUrl': images[0]['url'] if images else None
+    }
+
+def fetch_album_from_spotify(sp, spotifyAlbumId):
+    """
+    Fetch album data from Spotify API.
+
+    Args:
+        sp: Authenticated Spotify client
+        spotifyAlbumId: Spotify album ID
+
+    Returns:
+        Dictionary with album data
+    """
+    album_data = sp.album(spotifyAlbumId)
+
+    artists = album_data.get('artists', [])
+    images = album_data.get('images', [])
+
+    return {
+        'spotifyAlbumId': spotifyAlbumId,
+        'albumName': album_data.get('name'),
+        'artistName': artists[0]['name'] if artists else 'Unknown Artist',
+        'imageUrl': images[0]['url'] if images else None
+    }
+
 @ratings_bp.route('/song', methods=['POST'])
 def rate_song():
     """
