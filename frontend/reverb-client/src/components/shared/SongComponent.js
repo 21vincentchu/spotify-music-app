@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import config from '../../config';
+import { Link } from 'react-router-dom';
 
 function SongComponent({songData, showStar, isFeatured, onToggleFeatured, showRank = true, showPlay = false, timestamp = null}) {
     // Handle both songs (songName) and albums (albumName)
@@ -32,6 +33,17 @@ function SongComponent({songData, showStar, isFeatured, onToggleFeatured, showRa
             return `https://open.spotify.com/album/${songData.spotifyAlbumId}`;
         }
         return null;
+    };
+
+    const getRatingLink = () => {
+        if (songData.spotifyTrackId) {
+            return `/ratings/song/${songData.spotifyTrackId}`;
+        }
+        if (songData.spotifyAlbumId) {
+            return `/ratings/album/${songData.spotifyAlbumId}`;
+        }
+        
+        return "#";
     };
 
     const handleStarToggle = async (e) => {
@@ -113,7 +125,13 @@ function SongComponent({songData, showStar, isFeatured, onToggleFeatured, showRa
             {showRank && <div className="song-rank">#{songData?.rank}</div>}
             <img className="circle stats-circle" src={songData?.imageUrl} />
             <div className="song-info">
-                <p className="song-name"><a href={`/ratings/${songData?.spotifyTrackId}`}>{displayName}</a></p>
+                <p className="song-name">
+                <Link 
+                to={getRatingLink()}
+                >
+                    {displayName}
+                </Link>
+                </p>
                 <p className="artist-name">{artistName}</p>
                 {timestamp && <p className="played-at-time">{timestamp}</p>}
             </div>
@@ -125,7 +143,9 @@ function SongComponent({songData, showStar, isFeatured, onToggleFeatured, showRa
                     className="play-button"
                     title="Open in Spotify"
                 >
-                    ▶
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
                 </a>
             )}
             {showStar && (

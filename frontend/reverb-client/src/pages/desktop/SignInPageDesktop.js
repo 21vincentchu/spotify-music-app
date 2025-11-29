@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import config from '../../config';
 
-import tempLogo from "../../assets/pngegg.png";
+import logo from "../../assets/reverb-logo-type.svg";
 import Footer from "../../components/shared/Footer";
 
 function SignInPage() {
@@ -28,14 +28,9 @@ function SignInPage() {
     
   return(
     <div className="signin-page">
-        <nav className="splash-nav">
-            <a href="/">
-            <img src={tempLogo} className="nav-logo" alt="Logo" />
-            </a>
-        </nav>
       <div className="signin-container round-outline blue-box-shadow">
         <div className="signin-content">
-          <h1 className="signin-title">Reverb</h1>
+          <img src={logo} alt="Reverb" className="signin-logo" />
           <p className="signin-subtitle">Discover, Rate, and Share Your Music Journey</p>
           
           <div className="signin-features">

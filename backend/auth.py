@@ -37,6 +37,7 @@ def get_authenticated_spotify_client():
         return None, None
 
     from config import Config
+    # Note: Spotipy 2.23.0+ uses Authorization Code with PKCE flow by default
     sp_oauth = SpotifyOAuth(
         client_id=os.getenv("SPOTIFY_CLIENT_ID"),
         client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),

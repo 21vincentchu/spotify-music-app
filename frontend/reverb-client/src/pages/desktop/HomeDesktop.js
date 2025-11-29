@@ -147,11 +147,11 @@ function HomeDesktop() {
                 <div className='home-stats-section'>
                     <div className='stat-box'>
                         <h3>Average Track Length</h3>
-                        <p className='stat-value'>{recentData.listening_stats.avg_track_length_minutes} min</p>
+                        <p className='stat-value'>{recentData.listening_stats?.avg_track_length_minutes || 0} min</p>
                     </div>
                     <div className='stat-box'>
                         <h3>Total Minutes</h3>
-                        <p className='stat-value'>{Math.round(recentData.listening_stats.total_minutes)} min</p>
+                        <p className='stat-value'>{Math.round(recentData.listening_stats?.total_minutes || 0)} min</p>
                     </div>
                 </div>
                 <div className='genre-section'>

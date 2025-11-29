@@ -3,19 +3,21 @@ import { Routes, Route, useLocation, Link, useNavigate } from "react-router-dom"
 import { useState, useEffect, useRef } from "react";
 
 import SignInPage from "../pages/mobile/SignInPage";
+import CallbackPage from "../pages/mobile/CallbackPage";
 import NavbarMobile from "../components/mobile/NavbarMobile";
 import HomeMobile from "../pages/mobile/HomeMobile";
 import RatingsPage from "../pages/mobile/RatingsPage";
+import RatingDetailPageMobile from "../pages/mobile/RatingDetailPageMobile";
 import StatisticsPage from "../pages/mobile/StatisticsPage";
 import RecommendationsPage from "../pages/mobile/RecommendationsPage";
 import FriendsPage from "../pages/mobile/FriendsPage";
-import UserPage from "../pages/shared/UserPage";
+import ProfilePage from "../pages/mobile/ProfilePage";
 import AboutPage from "../pages/mobile/AboutPage";
 
 
 
 import profileButton from "../assets/istockphoto-2171382633-612x612.jpg";
-import logo from "../assets/pngegg.png";
+import logo from "../assets/reverb-logo.svg";
 
 import "../styles/Mobile.css";
 
@@ -47,7 +49,9 @@ function MobileLayout() {
       {/* SCROLL-AWAY TOP BAR */}
       {!hideNavbar && (
         <div className="mobile-topbar">
-          <img src={logo} alt="Logo" className="mobile-logo" />
+          <Link to="/home">
+            <img src={logo} alt="Logo" className="mobile-logo" />
+          </Link>
 
           <div className="profile-menu-wrapper" ref={menuRef}>
             <button
@@ -87,12 +91,14 @@ function MobileLayout() {
       <div className="mobile-content">
         <Routes>
           <Route path="/" element={<SignInPage />} />
+          <Route path="/callback" element={<CallbackPage />} />
           <Route path="/home" element={<HomeMobile />} />
           <Route path="/ratings" element={<RatingsPage />} />
+          <Route path="/ratings/:type/:spotifyId" element={<RatingDetailPageMobile />} />
           <Route path="/statistics" element={<StatisticsPage />} />
           <Route path="/recommendations" element={<RecommendationsPage />} />
           <Route path="/friends" element={<FriendsPage />} />
-          <Route path="/profile" element={<UserPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/about" element={<AboutPage />} />
 
         </Routes>

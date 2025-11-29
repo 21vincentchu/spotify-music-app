@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, session
 from .ratings_reviews import *
+from auth import get_authenticated_spotify_client
 
 ratings_bp = Blueprint('ratings_bp', __name__, url_prefix='/api/ratings')
 
@@ -245,47 +246,190 @@ def update_album_rating_route():
     
     return jsonify({"message": "Song rating updated successfully"}), 200
 
-
-@ratings_bp.route("/rating/song/<spotifyTrackId>", methods=['GET'])
-def get_song_rating_route(spotifyTrackId):
-    userName = session.get("userName")
-    if not userName:
-        return jsonify({"error": "Not logged in"}), 401
-
-    song = get_song_rating(userName, spotifyTrackId)
-
-    if song is None:
-        return jsonify({"message": "No rating found for this song"}), 404
-
-    return jsonify(song), 200
-
-
-@ratings_bp.route("/rating/album/<spotifyAlbumId>", methods=['GET'])
-def get_album_rating_route(spotifyAlbumId):
-    userName = session.get("userName")
-    if not userName:
-        return jsonify({"error": "Not logged in"}), 401
-
-    album = get_album_rating(userName, spotifyAlbumId)
-
-    if album is None:
-        return jsonify({"message": "No rating found for this album"}), 404
-
-    return jsonify(album), 200
-
 @ratings_bp.route('/song/<spotifyTrackId>', methods=['GET'])
 def fetch_song(spotifyTrackId):
+    userName = session.get('userName')
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
+
+    # Try to get song from database first
     song = get_song_by_spotify_id(spotifyTrackId)
-    if song:
-        return jsonify({"song": song}), 200
-    else:
-        return jsonify({"error": "Song not found"}), 404
+
+    # If not in database, fetch from Spotify
+    if not song:
+        sp, token_info = get_authenticated_spotify_client()
+        if not sp:
+            return jsonify({"error": "Spotify authentication required"}), 401
+
+        try:
+            song = fetch_song_from_spotify(sp, spotifyTrackId)
+        except Exception as e:
+            return jsonify({"error": f"Error fetching from Spotify: {str(e)}"}), 500
+
+    # Get user's existing rating if they have one
+    user_rating = get_song_rating(userName, spotifyTrackId)
+
+    return jsonify({
+        "song": song,
+        "userRating": user_rating
+    }), 200
 
 
 @ratings_bp.route('/album/<spotifyAlbumId>', methods=['GET'])
 def fetch_album(spotifyAlbumId):
+    userName = session.get('userName')
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
+
+    # Try to get album from database first
     album = get_album_by_spotify_id(spotifyAlbumId)
-    if album:
-        return jsonify({"album": album}), 200
-    else:
-        return jsonify({"error": "Album not found"}), 404
+
+    # If not in database, fetch from Spotify
+    if not album:
+        sp, token_info = get_authenticated_spotify_client()
+        if not sp:
+            return jsonify({"error": "Spotify authentication required"}), 401
+
+        try:
+            album = fetch_album_from_spotify(sp, spotifyAlbumId)
+        except Exception as e:
+            return jsonify({"error": f"Error fetching from Spotify: {str(e)}"}), 500
+
+    # Get user's existing rating if they have one
+    user_rating = get_album_rating(userName, spotifyAlbumId)
+
+    return jsonify({
+        "album": album,
+        "userRating": user_rating
+    }), 200
+
+@ratings_bp.route('/all-songs', methods=['GET'])
+def fetch_all_songs():
+    userName = session.get('userName')
+
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
+
+    songs = get_all_song_ratings_for_user(userName)
+
+    if not songs:
+        return jsonify({"message": "No songs found"}), 404
+
+    return jsonify(songs), 200
+
+@ratings_bp.route('/all-albums', methods=['GET'])
+def fetch_all_albums():
+    userName = session.get('userName')
+
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
+
+    albums = get_all_album_ratings_for_user(userName)
+
+    if not albums:
+        return jsonify({"message": "No albums found"}), 404
+
+    return jsonify(albums), 200
+
+@ratings_bp.route('/friends', methods=['GET'])
+def fetch_friends_ratings():
+    """
+    Get all ratings (songs and albums) from the user's friends.
+    Returns a combined feed sorted by most recent.
+    """
+    userName = session.get('userName')
+
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
+
+    try:
+        friends_ratings = get_friends_ratings(userName)
+
+        if not friends_ratings:
+            return jsonify([]), 200
+
+        return jsonify(friends_ratings), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@ratings_bp.route('/song/<spotifyTrackId>/friends', methods=['GET'])
+def fetch_friends_song_ratings(spotifyTrackId):
+    """
+    Get all friends' ratings for a specific song.
+    """
+    userName = session.get('userName')
+
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
+
+    try:
+        friends_ratings = get_friends_song_ratings(userName, spotifyTrackId)
+        return jsonify(friends_ratings if friends_ratings else []), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@ratings_bp.route('/album/<spotifyAlbumId>/friends', methods=['GET'])
+def fetch_friends_album_ratings(spotifyAlbumId):
+    """
+    Get all friends' ratings for a specific album.
+    """
+    userName = session.get('userName')
+
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
+
+    try:
+        friends_ratings = get_friends_album_ratings(userName, spotifyAlbumId)
+        return jsonify(friends_ratings if friends_ratings else []), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@ratings_bp.route('/song/<spotifyTrackId>/all', methods=['GET'])
+def fetch_all_users_song_ratings(spotifyTrackId):
+    """
+    Get ALL users' ratings for a specific song (public/global).
+    """
+    try:
+        all_ratings = get_all_users_song_ratings(spotifyTrackId)
+        return jsonify(all_ratings if all_ratings else []), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@ratings_bp.route('/album/<spotifyAlbumId>/all', methods=['GET'])
+def fetch_all_users_album_ratings(spotifyAlbumId):
+    """
+    Get ALL users' ratings for a specific album (public/global).
+    """
+    try:
+        all_ratings = get_all_users_album_ratings(spotifyAlbumId)
+        return jsonify(all_ratings if all_ratings else []), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@ratings_bp.route('/user/<targetUserName>', methods=['GET'])
+def fetch_user_ratings(targetUserName):
+    """
+    Get all ratings (songs and albums) for a specific user.
+    Used for viewing a friend's ratings.
+    """
+    userName = session.get('userName')
+    if not userName:
+        return jsonify({'error': 'Not Authenticated'}), 401
+
+    try:
+        # Get both song and album ratings for the target user
+        song_ratings = get_all_song_ratings_for_user(targetUserName)
+        album_ratings = get_all_album_ratings_for_user(targetUserName)
+
+        # Add type field to distinguish between songs and albums
+        songs_with_type = [{'type': 'song', **rating} for rating in (song_ratings or [])]
+        albums_with_type = [{'type': 'album', **rating} for rating in (album_ratings or [])]
+
+        # Combine and sort by updatedAt
+        combined_ratings = songs_with_type + albums_with_type
+        combined_ratings.sort(key=lambda x: x.get('updatedAt', ''), reverse=True)
+
+        return jsonify(combined_ratings), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

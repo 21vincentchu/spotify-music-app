@@ -221,7 +221,7 @@ def update_song_rating(userName, spotifyTrackId, rating=None, comment=None):
         Boolean indicating if the update was successful
     """
     conn = get_db()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True, buffered=True)
 
     try:
 
@@ -323,13 +323,13 @@ def get_song_by_spotify_id(spotifyTrackId):
     try:
         cursor.execute("""
             SELECT * FROM (
-                SELECT songName, artistName, albumName, spotifyTrackId, imageUrl, 'TopSong' AS source
+                SELECT songName, artistName, NULL AS albumName, spotifyTrackId, imageUrl, 'TopSong' AS source
                 FROM TopSong
                 WHERE spotifyTrackId = %s
 
                 UNION ALL
 
-                SELECT songName, artistName, albumName, spotifyTrackId, imageUrl, 'RecentlyPlayed' AS source
+                SELECT songName, artistName, albumName, spotifyTrackId, NULL AS imageUrl, 'RecentlyPlayed' AS source
                 FROM RecentlyPlayed
                 WHERE spotifyTrackId = %s
 
@@ -341,7 +341,7 @@ def get_song_by_spotify_id(spotifyTrackId):
 
                 UNION ALL
 
-                SELECT songName, artistName, albumName, spotifyTrackId, imageUrl, 'RatedSong' AS source
+                SELECT songName, artistName, NULL AS albumName, spotifyTrackId, imageUrl, 'RatedSong' AS source
                 FROM RatedSong
                 WHERE spotifyTrackId = %s
             ) AS combined
@@ -392,6 +392,271 @@ def get_album_by_spotify_id(spotifyAlbumId):
         album = cursor.fetchone()
         return album
 
+    except Exception as e:
+        conn.rollback()
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_all_song_ratings_for_user(userName):
+    """
+    Fetches all song ratings and reviews for a given user.
+
+    Args:
+        userName: The userName (Spotify ID)
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True, buffered=True)
+    try:
+        cursor.execute("""
+            SELECT uniqueID, spotifyTrackId, songName, artistName, rating, comment, imageUrl, createdAt, updatedAt
+            FROM RatedSong
+            WHERE userName = %s
+            ORDER BY updatedAt DESC
+        """, (userName,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+        
+def get_all_album_ratings_for_user(userName):
+    """
+    Fetches all album ratings and reviews for a given user.
+
+    Args:
+        userName: The userName (Spotify ID)
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True, buffered=True)
+    try:
+        cursor.execute("""
+            SELECT uniqueID, spotifyAlbumId, albumName, artistName, rating, comment, imageUrl, createdAt, updatedAt
+            FROM RatedAlbum
+            WHERE userName = %s
+            ORDER BY updatedAt DESC
+        """, (userName,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_friends_ratings(userName):
+    """
+    Fetches all ratings (songs and albums) from user's friends.
+    Combines song and album ratings into a single feed.
+
+    Args:
+        userName: The userName (Spotify ID) of the current user
+
+    Returns:
+        List of dictionaries containing friends' ratings with type indicator
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True, buffered=True)
+    try:
+        cursor.execute("""
+            SELECT
+                'song' AS type,
+                rs.uniqueID,
+                rs.spotifyTrackId,
+                NULL AS spotifyAlbumId,
+                rs.songName,
+                NULL AS albumName,
+                rs.artistName,
+                rs.rating,
+                rs.comment,
+                rs.imageUrl,
+                rs.userName,
+                u.displayName,
+                rs.updatedAt
+            FROM RatedSong rs
+            INNER JOIN UserFriends uf ON rs.userName = uf.friendUserName
+            LEFT JOIN User u ON rs.userName = u.userName
+            WHERE uf.userName = %s
+
+            UNION ALL
+
+            SELECT
+                'album' AS type,
+                ra.uniqueID,
+                NULL AS spotifyTrackId,
+                ra.spotifyAlbumId,
+                NULL AS songName,
+                ra.albumName,
+                ra.artistName,
+                ra.rating,
+                ra.comment,
+                ra.imageUrl,
+                ra.userName,
+                u.displayName,
+                ra.updatedAt
+            FROM RatedAlbum ra
+            INNER JOIN UserFriends uf ON ra.userName = uf.friendUserName
+            LEFT JOIN User u ON ra.userName = u.userName
+            WHERE uf.userName = %s
+
+            ORDER BY updatedAt DESC
+        """, (userName, userName))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_friends_song_ratings(userName, spotifyTrackId):
+    """
+    Fetches all ratings for a specific song from user's friends.
+
+    Args:
+        userName: The userName (Spotify ID) of the current user
+        spotifyTrackId: Spotify track ID
+
+    Returns:
+        List of dictionaries containing friends' ratings for this song
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True, buffered=True)
+    try:
+        cursor.execute("""
+            SELECT
+                rs.uniqueID,
+                rs.spotifyTrackId,
+                rs.songName,
+                rs.artistName,
+                rs.rating,
+                rs.comment,
+                rs.imageUrl,
+                rs.userName,
+                u.displayName,
+                u.profilePicture,
+                rs.updatedAt
+            FROM RatedSong rs
+            INNER JOIN UserFriends uf ON rs.userName = uf.friendUserName
+            LEFT JOIN User u ON rs.userName = u.userName
+            WHERE uf.userName = %s AND rs.spotifyTrackId = %s
+            ORDER BY rs.updatedAt DESC
+        """, (userName, spotifyTrackId))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_friends_album_ratings(userName, spotifyAlbumId):
+    """
+    Fetches all ratings for a specific album from user's friends.
+
+    Args:
+        userName: The userName (Spotify ID) of the current user
+        spotifyAlbumId: Spotify album ID
+
+    Returns:
+        List of dictionaries containing friends' ratings for this album
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True, buffered=True)
+    try:
+        cursor.execute("""
+            SELECT
+                ra.uniqueID,
+                ra.spotifyAlbumId,
+                ra.albumName,
+                ra.artistName,
+                ra.rating,
+                ra.comment,
+                ra.imageUrl,
+                ra.userName,
+                u.displayName,
+                u.profilePicture,
+                ra.updatedAt
+            FROM RatedAlbum ra
+            INNER JOIN UserFriends uf ON ra.userName = uf.friendUserName
+            LEFT JOIN User u ON ra.userName = u.userName
+            WHERE uf.userName = %s AND ra.spotifyAlbumId = %s
+            ORDER BY ra.updatedAt DESC
+        """, (userName, spotifyAlbumId))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_all_users_song_ratings(spotifyTrackId):
+    """
+    Fetches ALL users' ratings for a specific song (global/public).
+
+    Args:
+        spotifyTrackId: Spotify track ID
+
+    Returns:
+        List of dictionaries containing all users' ratings for this song
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True, buffered=True)
+    try:
+        cursor.execute("""
+            SELECT
+                rs.uniqueID,
+                rs.spotifyTrackId,
+                rs.songName,
+                rs.artistName,
+                rs.rating,
+                rs.comment,
+                rs.imageUrl,
+                rs.userName,
+                u.displayName,
+                u.profilePicture,
+                rs.updatedAt
+            FROM RatedSong rs
+            LEFT JOIN User u ON rs.userName = u.userName
+            WHERE rs.spotifyTrackId = %s
+            ORDER BY rs.updatedAt DESC
+        """, (spotifyTrackId,))
+        results = cursor.fetchall()
+        # Convert Decimal rating to float for proper JSON serialization
+        for result in results:
+            if result.get('rating') is not None:
+                result['rating'] = float(result['rating'])
+        return results
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_all_users_album_ratings(spotifyAlbumId):
+    """
+    Fetches ALL users' ratings for a specific album (global/public).
+
+    Args:
+        spotifyAlbumId: Spotify album ID
+
+    Returns:
+        List of dictionaries containing all users' ratings for this album
+    """
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True, buffered=True)
+    try:
+        cursor.execute("""
+            SELECT
+                ra.uniqueID,
+                ra.spotifyAlbumId,
+                ra.albumName,
+                ra.artistName,
+                ra.rating,
+                ra.comment,
+                ra.imageUrl,
+                ra.userName,
+                u.displayName,
+                u.profilePicture,
+                ra.updatedAt
+            FROM RatedAlbum ra
+            LEFT JOIN User u ON ra.userName = u.userName
+            WHERE ra.spotifyAlbumId = %s
+            ORDER BY ra.updatedAt DESC
+        """, (spotifyAlbumId,))
+        results = cursor.fetchall()
+        # Convert Decimal rating to float for proper JSON serialization
+        for result in results:
+            if result.get('rating') is not None:
+                result['rating'] = float(result['rating'])
+        return results
     finally:
         cursor.close()
         conn.close()

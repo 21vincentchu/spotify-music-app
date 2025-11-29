@@ -1,89 +1,235 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Rating } from '@mui/material';
 import axios from 'axios';
+import config from '../../config';
+import { useParams } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-export default function EstherTest() {
-  const [trackId, setTrackId] = useState('');
-  const [albumId, setAlbumId] = useState('');
-  const [songData, setSongData] = useState(null);
-  const [albumData, setAlbumData] = useState(null);
-  const [error, setError] = useState('');
+function RatingsDetailPageDesktop() {
 
-  const fetchSong = async () => {
-  setError('');
-  try {
-    const res = await axios.get(`/song/${trackId}`, { withCredentials: true });
-    setSongData(res.data.song);
-  } catch (err) {
-    setError(err.response?.data?.error || 'Song not found');
-    setSongData(null);
-  }
-};
-
-const fetchAlbum = async () => {
-  setError('');
-  try {
-    const res = await axios.get(`/album/${albumId}`, { withCredentials: true });
-    setAlbumData(res.data.album);
-  } catch (err) {
-    setError(err.response?.data?.error || 'Album not found');
-    setAlbumData(null);
-  }
-};
+    const { type, spotifyId } = useParams();
+    const [isRated, setIsRated] = useState(false); // null = loading, true/false = result
+    const [ratingData, setRatingData] = useState(null);
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState('');
+    const [friendsRatings, setFriendsRatings] = useState([]);
+    const [isLoadingFriendsRatings, setIsLoadingFriendsRatings] = useState(false);
+    const navigate = useNavigate();
 
 
-  return (
-    <div className="ratings-detail-page" style={{ padding: '20px' }}>
-      <h2>Test Song & Album API</h2>
+    useEffect(() => {
+        fetchData();
+        fetchFriendsRatings();
+    }, [type, spotifyId]);
+ 
+    const fetchData = async () => {
+        if(type == 'song'){
+            try {
+                const response = await axios.get(
+                    `${config.API_URL}/api/ratings/song/${spotifyId}`,
+                    { withCredentials: true }
+                );
+                console.log('Song found:', response.data);
+                if(response.data.userRating){
+                    setIsRated(true);
+                }
+                setRatingData(response.data.song);
+                setRating(response.data.userRating.rating || 0);
+                setComment(response.data.userRating.comment || '');
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }else if(type == 'album'){
+            try {
+                const response = await axios.get(
+                    `${config.API_URL}/api/ratings/album/${spotifyId}`,
+                    { withCredentials: true }
+                );
+                console.log('Album found:', response.data);
+                if(response.data.userRating){
+                    setIsRated(true);
+                }
+                setRatingData(response.data.album);
+                setRating(response.data.userRating.rating || 0);
+                setComment(response.data.userRating.comment || '');
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
 
-      {/* Song Section */}
-      <div className="ratings-detail-container round-outline blue-box-shadow" style={{ marginBottom: '20px', padding: '10px' }}>
-        <h3>Fetch Song</h3>
-        <input
-          type="text"
-          value={trackId}
-          onChange={(e) => setTrackId(e.target.value)}
-          placeholder="Spotify Track ID"
-          style={{ width: '300px' }}
-        />
-        <button onClick={fetchSong} style={{ marginLeft: '10px' }}>Fetch Song</button>
+    };
 
-        {songData && (
-          <div className="ratings-detail-info" style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
-            <img src={songData.imageUrl} alt="song cover" style={{ width: '80px', height: '80px', borderRadius: '8px' }} />
-            <div style={{ marginLeft: '15px' }}>
-              <p><strong>{songData.songName}</strong></p>
-              <p>{songData.artistName}</p>
-              <Rating value={songData.rating || 0} precision={0.5} readOnly />
+    const fetchFriendsRatings = async () => {
+        setIsLoadingFriendsRatings(true);
+        try {
+            const endpoint = type === 'song'
+                ? `${config.API_URL}/api/ratings/song/${spotifyId}/friends`
+                : `${config.API_URL}/api/ratings/album/${spotifyId}/friends`;
+
+            const response = await axios.get(endpoint, { withCredentials: true });
+            console.log('Friends ratings:', response.data);
+            setFriendsRatings(response.data || []);
+        } catch (error) {
+            console.error('Error fetching friends ratings:', error);
+            setFriendsRatings([]);
+        } finally {
+            setIsLoadingFriendsRatings(false);
+        }
+    };
+
+    const handleSave = async () => {
+
+        if(isRated){
+            if(type == 'song'){
+                console.log('Saving song rating:', { spotifyId, rating, comment });
+                try {
+                    const response = await axios.patch(`${config.API_URL}/api/ratings/song`, {
+                        spotifyTrackId: spotifyId,
+                        rating: rating,
+                        comment: comment
+                    }, {
+                        withCredentials: true
+                    });
+                    console.log('Song Rating saved:', response.data);
+                    navigate('/ratings');
+
+                    // Refetch friends ratings to update the display
+                    fetchFriendsRatings();
+                } catch (error) {
+                    console.error('Error saving rating:', error);
+                }
+            }else if(type == 'album'){
+                console.log('Saving album rating:', { spotifyId, rating, comment });
+                try {
+                    const response = await axios.patch(`${config.API_URL}/api/ratings/album`, {
+                        spotifyAlbumId: spotifyId,
+                        rating: rating,
+                        comment: comment
+                    }, {
+                        withCredentials: true
+                    });
+                    console.log('Album Rating saved:', response.data);
+                    // Refetch friends ratings to update the display
+                    fetchFriendsRatings();
+                    navigate('/ratings');
+
+                } catch (error) {
+                    console.error('Error saving rating:', error);
+                }
+            }
+        }else{
+            if(type == 'song'){
+                try {
+                    const response = await axios.post(`${config.API_URL}/api/ratings/song`, {
+                        spotifyTrackId: spotifyId,
+                        songName: ratingData.songName,
+                        artistName: ratingData.artistName,
+                        rating: rating,
+                        imageUrl: ratingData.imageUrl,
+                        comment: comment
+                    }, {
+                        withCredentials: true
+                    });
+                    console.log('Song Rating Created:', response.data);
+                    // Refetch friends ratings to update the display
+                    fetchFriendsRatings();
+                    navigate('/ratings');
+
+                } catch (error) {
+                    console.error('Error saving rating:', error);
+                }
+            }else if(type == 'album'){
+                try {
+                    const response = await axios.post(`${config.API_URL}/api/ratings/album`, {
+                        spotifyAlbumId: spotifyId,
+                        albumName: ratingData.albumName,
+                        artistName: ratingData.artistName,
+                        rating: rating,
+                        imageUrl: ratingData.imageUrl,
+                        comment: comment
+                    }, {
+                        withCredentials: true
+                    });
+                    console.log('Album Rating Created:', response.data);
+                    // Refetch friends ratings to update the display
+                    fetchFriendsRatings();
+                    navigate('/ratings');
+
+                } catch (error) {
+                    console.error('Error saving rating:', error);
+                }
+            }
+        }
+    };
+
+    const handleDelete = async () => { 
+        if(type == 'song'){
+            try {
+                const response = await axios.delete(
+                    `${config.API_URL}/api/ratings/song/${spotifyId}`,
+                    { withCredentials: true }
+                );
+                console.log('Song deleted:', response.data);
+                navigate('/ratings');
+
+            } catch (error) {
+                console.error('Error deleting data:', error);
+            }
+        }else if(type == 'album'){
+            try {
+                const response = await axios.delete(
+                    `${config.API_URL}/api/ratings/album/${spotifyId}`,
+                    { withCredentials: true }
+                );
+                console.log('Album deleted:', response.data);
+                navigate('/ratings');
+
+            } catch (error) {
+                console.error('Error deleting data:', error);
+            }
+        }
+        
+    }
+
+    return (
+        <div className='ratings-detail-page'>
+            <div className='ratings-detail-container round-outline blue-box-shadow'>
+                
+                <div className='ratings-detail-info'>
+                    <img className="round-outline" src={ratingData?.imageUrl} alt={ratingData?.songName} />
+                    <div>
+                        <div>
+                            <p className='song-name'>{type == 'song'? (ratingData?.songName):(ratingData?.albumName)}</p>
+                            <p className='artist-name'>{ratingData?.artistName}</p>  
+                        </div>  
+                        <div className='star-rating-comp'>       
+                            <Rating 
+                                name="half-rating" 
+                                value={rating} 
+                                precision={0.5}
+                                onChange={(event, newValue) => setRating(newValue)}
+                            />  
+                            <p>{rating}</p>  
+                        </div>
+                    </div>
+                </div>
+                
+                <div className='ratings-detail-actions'>
+                    <textarea 
+                        className="round-outline" 
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                    />
+                    <div className=''>
+                        <button className='delete-button' type="submit" onClick={handleDelete}>Delete</button>
+                        <button type="submit" onClick={handleSave}>Save</button>
+                    </div>
+                
+                </div>
             </div>
-          </div>
-        )}
-      </div>
+        </div>
 
-      {/* Album Section */}
-      <div className="ratings-detail-container round-outline blue-box-shadow" style={{ marginBottom: '20px', padding: '10px' }}>
-        <h3>Fetch Album</h3>
-        <input
-          type="text"
-          value={albumId}
-          onChange={(e) => setAlbumId(e.target.value)}
-          placeholder="Spotify Album ID"
-          style={{ width: '300px' }}
-        />
-        <button onClick={fetchAlbum} style={{ marginLeft: '10px' }}>Fetch Album</button>
+        )
+    }
 
-        {albumData && (
-          <div className="ratings-detail-info" style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
-            <img src={albumData.imageUrl} alt="album cover" style={{ width: '80px', height: '80px', borderRadius: '8px' }} />
-            <div style={{ marginLeft: '15px' }}>
-              <p><strong>{albumData.albumName}</strong></p>
-              <p>{albumData.artistName}</p>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {error && <div style={{ color: 'red', marginTop: '20px' }}>{error}</div>}
-    </div>
-  );
-}
+export default RatingsDetailPageDesktop;

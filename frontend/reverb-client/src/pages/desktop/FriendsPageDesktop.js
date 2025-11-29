@@ -5,6 +5,7 @@ import config from '../../config';
 import FriendComponentDesktop from "../../components/desktop/FriendComponentDesktop";
 import AddFriendComponentDesktop from '../../components/desktop/AddFriendComponentDesktop';
 import SongComponent from '../../components/shared/SongComponent';
+import RatedSongComponentDesktop from '../../components/desktop/RatedSongComponentDesktop';
 import Footer from '../../components/shared/Footer';
 
 function FriendsPage() {
@@ -16,7 +17,9 @@ function FriendsPage() {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [friendStats, setFriendStats] = useState(null);
+  const [friendRatings, setFriendRatings] = useState([]);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
+  const [isLoadingRatings, setIsLoadingRatings] = useState(false);
   const [activeTab, setActiveTab] = useState('recents');
 
   const getRelativeTime = (timestamp) => {
@@ -108,10 +111,28 @@ function FriendsPage() {
       });
   }
 
+  const getFriendRatings = async (friendUserName) => {
+    setIsLoadingRatings(true);
+    try {
+      const response = await axios.get(
+        `${config.API_URL}/api/friends/${friendUserName}/ratings`,
+        { withCredentials: true }
+      );
+      console.log('Friend Ratings:', response.data);
+      setFriendRatings(response.data);
+    } catch (error) {
+      console.error('Error fetching friend ratings:', error);
+      setFriendRatings([]);
+    } finally {
+      setIsLoadingRatings(false);
+    }
+  }
+
   const handleFriendClick = (friend) => {
     setSelectedFriend(friend);
     setActiveTab('recents');
     getFriendStats(friend.userName);
+    getFriendRatings(friend.userName);
   }
 
   const handleRemoveFriend = async (friendUserName) => {
@@ -127,6 +148,7 @@ function FriendsPage() {
         if (selectedFriend?.userName === friendUserName) {
           setSelectedFriend(null);
           setFriendStats(null);
+          setFriendRatings([]);
         }
         // Refresh the friends list
         getFriendsList();
@@ -252,8 +274,20 @@ function FriendsPage() {
                   )}
                 </div>
               ) : (
-                <div className="ratings-placeholder">
-                  <p>TBD</p>
+                <div className="ratings-list">
+                  {isLoadingRatings ? (
+                    <p>Loading ratings...</p>
+                  ) : friendRatings.length > 0 ? (
+                    friendRatings.map((rating) => (
+                      <RatedSongComponentDesktop
+                        key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}`}
+                        songData={rating}
+                        type={rating.type}
+                      />
+                    ))
+                  ) : (
+                    <p className="empty-message">No ratings yet</p>
+                  )}
                 </div>
               )}
             </div>
