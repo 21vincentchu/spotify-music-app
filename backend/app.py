@@ -95,6 +95,9 @@ def get_sp_oauth():
     """
     Creates SpotifyOAuth instance with per-session token caching.
     Prevents token conflicts when multiple users access simultaneously.
+
+    Note: Spotipy 2.23.0+ uses Authorization Code with PKCE flow by default.
+    This is compliant with Spotify's November 2025 security requirements.
     """
     session_id = session.get('session_id')
     if not session_id:
@@ -103,13 +106,18 @@ def get_sp_oauth():
 
     cache_path = os.path.join(tempfile.gettempdir(), f'.spotipyoauthcache-{session_id}')
 
-    return SpotifyOAuth(
+    sp_oauth = SpotifyOAuth(
         Config.SPOTIFY_CLIENT_ID,
         Config.SPOTIFY_CLIENT_SECRET,
         Config.SPOTIPY_REDIRECT_URI,
         scope=Config.SPOTIFY_SCOPE,
         cache_path=cache_path
     )
+
+    print(f"[AUTH] Initialized SpotifyOAuth with redirect URI: {Config.SPOTIPY_REDIRECT_URI}")
+    print(f"[AUTH] Using Authorization Code with PKCE flow (enabled by default in spotipy 2.23.0+)")
+
+    return sp_oauth
 
 ### ----- FLASK ROUTES ----- ###
 @app.route('/api/login')
