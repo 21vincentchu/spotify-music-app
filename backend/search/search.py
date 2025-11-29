@@ -1,3 +1,4 @@
+
 from db import get_db
 from typing import List, Dict
 from ratings.ratings_route import *
@@ -105,7 +106,6 @@ def search_music_all(searchQuery: str, limit: int = 20) -> List[Dict]:
             cursor.close()
             conn.close() 
 
-            
 
         
            

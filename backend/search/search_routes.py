@@ -1,3 +1,4 @@
+'''
 from flask import Blueprint, request, jsonify, session
 from .search import *
 
@@ -25,3 +26,4 @@ def search_music_route():
     except Exception as e:
         print(f"error searching music: {e}")
         return jsonify({'error': str(e)}), 500
+'''
