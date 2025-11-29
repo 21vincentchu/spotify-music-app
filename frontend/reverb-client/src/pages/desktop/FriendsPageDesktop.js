@@ -119,7 +119,8 @@ function FriendsPage() {
         { withCredentials: true }
       );
       console.log('Friend Ratings:', response.data);
-      setFriendRatings(response.data);
+      // Ensure we only set ratings if response is an array
+      setFriendRatings(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Error fetching friend ratings:', error);
       setFriendRatings([]);
