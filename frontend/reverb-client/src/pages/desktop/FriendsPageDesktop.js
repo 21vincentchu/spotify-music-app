@@ -115,7 +115,7 @@ function FriendsPage() {
     setIsLoadingRatings(true);
     try {
       const response = await axios.get(
-        `${config.API_URL}/api/friends/${friendUserName}/ratings`,
+        `${config.API_URL}/api/ratings/user/${friendUserName}`,
         { withCredentials: true }
       );
       console.log('Friend Ratings:', response.data);
