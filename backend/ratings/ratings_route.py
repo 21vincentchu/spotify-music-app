@@ -88,7 +88,7 @@ def rate_song():
         unique_id = create_song_rating(
             userName = userName,
             spotifyTrackId=data['spotifyTrackId'],
-            songName=data['artistName'],
+            songName=data['songName'],
             artistName=data['artistName'],
             rating=rating,
             imageUrl = data.get("imageUrl"),

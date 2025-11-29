@@ -60,7 +60,10 @@ def search_music_all(searchQuery: str, limit: int = 20) -> List[Dict]:
         results.extend(cursor.fetchall())
                        
         if not results:
-            sp = get_authenticated_spotify_client()
+            sp, token_info = get_authenticated_spotify_client()
+            if not sp:
+                return results
+
             spotify_id = searchQuery.strip()
             try:
                  song = fetch_song_from_spotify(sp, spotify_id)
