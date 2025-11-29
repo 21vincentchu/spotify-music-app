@@ -1,6 +1,6 @@
 from db import get_db
 from typing import List, Dict
-
+from ratings import ratings_route
 """
 search an artist, album, song in db 
 if this is empty, use the spotify API 
@@ -57,8 +57,7 @@ def search_music_all(searchQuery: str, limit: int = 20):
         results.extend(cursor.fetchall())
                        
         if not results:
-            pass
-            ##return the spotify search function
+            ratings_route.fetch_song_from_spotify, ratings_route.fetch_album_from_spotify
 
         return results
     

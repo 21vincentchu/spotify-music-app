@@ -51,6 +51,27 @@ def fetch_album_from_spotify(sp, spotifyAlbumId):
         'imageUrl': images[0]['url'] if images else None
     }
 
+def fetch_artist_from_spotify(sp, spotifyArtistId):
+    """
+    Fetch artist data from Spotify API.
+
+    Args:
+        sp: Authenticated Spotify client
+        spotifyArtistId: Spotify artist ID
+
+    Returns:
+        Dictionary with artist data
+    """
+    artist_data = sp.artist(spotifyArtistId)
+
+    images = artist_data.get('images', [])
+
+    return {
+        'spotifyArtistId': spotifyArtistId,
+        'artistName': artist_data.get('name'),
+        'imageUrl': images[0]['url'] if images else None
+    }
+
 @ratings_bp.route('/song', methods=['POST'])
 def rate_song():
     """
