@@ -18,6 +18,7 @@ function RatingsDetailPageDesktop() {
     const [justSaved, setJustSaved] = useState(false);
     const [friendsRatings, setFriendsRatings] = useState([]);
     const [isLoadingFriendsRatings, setIsLoadingFriendsRatings] = useState(false);
+    const [isLoadingData, setIsLoadingData] = useState(true);
     const navigate = useNavigate();
 
     // Check if there are unsaved changes
@@ -30,6 +31,7 @@ function RatingsDetailPageDesktop() {
     }, [type, spotifyId]);
  
     const fetchData = async () => {
+        setIsLoadingData(true);
         if(type == 'song'){
             try {
                 const response = await axios.get(
@@ -71,7 +73,7 @@ function RatingsDetailPageDesktop() {
                 console.error('Error fetching data:', error);
             }
         }
-
+        setIsLoadingData(false);
     };
 
     const fetchFriendsRatings = async () => {
@@ -205,17 +207,28 @@ function RatingsDetailPageDesktop() {
                 <button className="back-button-desktop" onClick={() => navigate('/ratings')}>
                     ← Back
                 </button>
-                {isRated && !hasChanges && (
-                    <button className="delete-button-header-desktop" onClick={handleDelete}>
+                {!isLoadingData && isRated && !hasChanges && (
+                    <button className="delete-button-header-desktop fade-in-item" onClick={handleDelete}>
                         Delete
                     </button>
                 )}
             </div>
 
-            <div className='ratings-detail-container round-outline blue-box-shadow'>
+            {isLoadingData ? (
+                <div className='ratings-detail-container round-outline blue-box-shadow'>
+                    <p className="loading-text" style={{ textAlign: 'center', padding: '40px' }}>Loading...</p>
+                </div>
+            ) : (
+            <div className='ratings-detail-container round-outline blue-box-shadow fade-in-item'>
 
                 <div className='ratings-detail-info'>
-                    <img className="round-outline" src={ratingData?.imageUrl} alt={ratingData?.songName} />
+                    <img
+                        className="round-outline"
+                        src={ratingData?.imageUrl}
+                        alt={ratingData?.songName}
+                        loading="eager"
+                        decoding="async"
+                    />
                     <div>
                         <div>
                             <p className='song-name'>{type == 'song'? (ratingData?.songName):(ratingData?.albumName)}</p>
@@ -273,9 +286,10 @@ function RatingsDetailPageDesktop() {
                     )}
                 </div>
             </div>
+            )}
 
             {/* Reviews Section */}
-            {(() => {
+            {!isLoadingData && (() => {
                 const ratingsWithReviews = friendsRatings.filter(r => r.comment && r.comment.trim() !== "");
                 const reviewCount = ratingsWithReviews.length;
                 const averageRating = calculateAverageRating();
