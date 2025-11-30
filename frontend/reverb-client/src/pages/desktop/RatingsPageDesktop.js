@@ -352,7 +352,7 @@ function RatingsPage() {
                   .filter(rating => rating.comment && rating.comment.trim() !== "")
                   .map((rating) => (
                     <div className="song-component rated-song-desktop" key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`}>
-                      <p className="user-name-header">{rating.userName}</p>
+                      <p className="user-name-header">{rating.displayName}</p>
                       <div className="song-content-row">
                         <img className="circle stats-circle" src={rating?.imageUrl} alt={rating.type} />
                         <div className="song-info">
