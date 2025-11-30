@@ -25,6 +25,15 @@ function RatingsPage() {
     getFriendsRatings();
   }, []);
 
+  // Disable body scroll on ratings page
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
   // Search handler with debounce
   useEffect(() => {
     if (searchQuery.trim() === "") {
@@ -156,7 +165,7 @@ function RatingsPage() {
 
 
   return (
-    <div className="recommendations-page">
+    <div className="recommendations-page ratings-page page">
           <div className="type-tabs">
             <button className={typeTab === 'ratings' ? 'active' : ''}
              onClick={() => setTypeTab('ratings')}
@@ -273,30 +282,32 @@ function RatingsPage() {
             <div className="ratings-list">
             
             {myFeaturedTab === 'songs' && typeTab === 'ratings' && (
-              songRatings.map((rating) => (
-                <RatedSongComponentDesktop
-                  key={rating.spotifyTrackId}
-                  songData={rating}
-                  type={"song"}
-                />
+              songRatings.map((rating, index) => (
+                <div key={rating.spotifyTrackId} className="fade-in-item">
+                  <RatedSongComponentDesktop
+                    songData={rating}
+                    type={"song"}
+                  />
+                </div>
               ))
             )}
 
             {myFeaturedTab === 'albums' && typeTab === 'ratings' && (
-              albumRatings.map((rating) => (
-                <RatedSongComponentDesktop
-                  key={rating.spotifyAlbumId}
-                  songData={rating}
-                  type={"album"}
-                />
+              albumRatings.map((rating, index) => (
+                <div key={rating.spotifyAlbumId} className="fade-in-item">
+                  <RatedSongComponentDesktop
+                    songData={rating}
+                    type={"album"}
+                  />
+                </div>
               ))
             )}
 
             {myFeaturedTab === 'songs' && typeTab === 'reviews' && (
               songRatings
                 .filter(rating => rating.comment && rating.comment.trim() !== "")
-                .map((rating) => (
-                  <div className="song-component" key={rating.spotifyTrackId}>
+                .map((rating, index) => (
+                  <div className="song-component fade-in-item" key={rating.spotifyTrackId}>
                     <img className="circle stats-circle" src={rating?.imageUrl} alt="{rating.spotifyTrackId}" />
                     <div className="song-info">
                         <p className="song-name">
@@ -315,8 +326,8 @@ function RatingsPage() {
             {myFeaturedTab === 'albums' && typeTab === 'reviews' && (
               albumRatings
                 .filter(rating => rating.comment && rating.comment.trim() !== "")
-                .map((rating) => (
-                  <div className="song-component" key={rating.spotifyTrackId}>
+                .map((rating, index) => (
+                  <div className="song-component fade-in-item" key={rating.spotifyTrackId}>
                     <img className="circle stats-circle" src={rating?.imageUrl} alt="{rating.spotifyAlbumId}" />
                     <div className="song-info">
                         <p className="song-name">
@@ -334,12 +345,13 @@ function RatingsPage() {
 
             {myFeaturedTab === 'friends' && typeTab === 'ratings' && (
               friendsRatings.length > 0 ? (
-                friendsRatings.map((rating) => (
-                  <RatedSongComponentDesktop
-                    key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`}
-                    songData={rating}
-                    type={rating.type}
-                  />
+                friendsRatings.map((rating, index) => (
+                  <div key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`} className="fade-in-item">
+                    <RatedSongComponentDesktop
+                      songData={rating}
+                      type={rating.type}
+                    />
+                  </div>
                 ))
               ) : (
                 <p className="empty-message">No friends have rated anything yet.</p>
@@ -350,8 +362,8 @@ function RatingsPage() {
               friendsRatings.filter(rating => rating.comment && rating.comment.trim() !== "").length > 0 ? (
                 friendsRatings
                   .filter(rating => rating.comment && rating.comment.trim() !== "")
-                  .map((rating) => (
-                    <div className="song-component rated-song-desktop" key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`}>
+                  .map((rating, index) => (
+                    <div className="song-component rated-song-desktop fade-in-item" key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`}>
                       <p className="user-name-header">{rating.displayName}</p>
                       <div className="song-content-row">
                         <img className="circle stats-circle" src={rating?.imageUrl} alt={rating.type} />

@@ -21,6 +21,15 @@ function HomeDesktop() {
         getFeaturedAlbums();
     }, []);
 
+    // Disable body scroll on home page
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, []);
+
     const getFeaturedSongs = async () => {
         try {
             const response = await axios.get(`${config.API_URL}/api/featured-songs/`, {
@@ -106,7 +115,7 @@ function HomeDesktop() {
 
 
   return (
-    <div className="home-page">
+    <div className="home-page page">
         <div className="home-recommended round-outline blue-box-shadow">
             <h2>Recently Played Songs</h2>
             <div className="home-recommended-songs">
@@ -124,7 +133,7 @@ function HomeDesktop() {
                     rank: index + 1
                 };
                 return (
-                    <div key={`${track.id}-${index}`}>
+                    <div key={`${track.id}-${index}`} className="fade-in-item">
                         <SongComponent
                             songData={songData}
                             showStar={true}
@@ -158,7 +167,7 @@ function HomeDesktop() {
                     <h3>Top Genres</h3>
                     <ol className='genre-list'>
                         {recentData.genre_stats?.top_genres?.map((item, index) => (
-                            <li key={index}>
+                            <li key={index} className="fade-in-item">
                                 <span className='genre-name'>{item.genre}</span>
                                 <span className='genre-count'>{item.count} song{item.count !== 1 ? 's' : ''}</span>
                             </li>

@@ -199,7 +199,7 @@ function RatingsDetailPageDesktop() {
     }
 
     return (
-        <div className='ratings-detail-page'>
+        <div className='ratings-detail-page page'>
             {/* Header with Back and Delete */}
             <div className="rating-detail-header-nav-desktop">
                 <button className="back-button-desktop" onClick={() => navigate('/ratings')}>
@@ -305,7 +305,7 @@ function RatingsDetailPageDesktop() {
                                 <p className="loading-text">Loading reviews...</p>
                             ) : (
                                 ratingsWithReviews.map((userRating, index) => (
-                                    <div key={index} className="friend-rating-item-desktop">
+                                    <div key={index} className="friend-rating-item-desktop fade-in-item">
                                         <div className="friend-rating-header-desktop">
                                             <img
                                                 src={userRating.profilePicture || '/default-avatar.png'}

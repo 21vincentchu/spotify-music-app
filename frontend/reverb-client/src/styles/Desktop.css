@@ -2,6 +2,63 @@
   height: 100%;
 }
 
+/* ANIMATIONS ------------------------------------------------------------------------------*/
+
+/* Page transition fade in */
+@keyframes pageTransitionFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade only (no transform) for pages with absolute positioned children */
+@keyframes pageTransitionFadeOnly {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.page {
+  animation: pageTransitionFadeIn 0.5s ease-out;
+}
+
+
+/* Staggered fade-in for list items */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-item {
+  animation: fadeInUp 0.5s ease-out backwards;
+}
+
+.fade-in-item:nth-child(1) { animation-delay: 0.05s; }
+.fade-in-item:nth-child(2) { animation-delay: 0.1s; }
+.fade-in-item:nth-child(3) { animation-delay: 0.15s; }
+.fade-in-item:nth-child(4) { animation-delay: 0.2s; }
+.fade-in-item:nth-child(5) { animation-delay: 0.25s; }
+.fade-in-item:nth-child(6) { animation-delay: 0.3s; }
+.fade-in-item:nth-child(7) { animation-delay: 0.35s; }
+.fade-in-item:nth-child(8) { animation-delay: 0.4s; }
+.fade-in-item:nth-child(9) { animation-delay: 0.45s; }
+.fade-in-item:nth-child(10) { animation-delay: 0.5s; }
+.fade-in-item:nth-child(n+11) { animation-delay: 0.55s; }
+
 /* NAVIGATION BAR ------------------------------------------------------------------------------*/
 nav {
     position: fixed;
@@ -574,7 +631,7 @@ nav {
   .home-recommended h2 {
     flex-shrink: 0; /* prevents header from being compressed or scrolled */
     margin: 0 0 10px 0;
-    padding-left: 5px;
+    padding: 10px 15px;
     text-align: left;
   }
 
@@ -633,9 +690,14 @@ nav {
 
 .home-stats h2 {
   flex-shrink: 0; /* prevents header from being compressed or scrolled */
-  margin: 0 0 10px 0;
-  padding-left: 5px;
+  margin: 0;
+  padding: 10px 15px;
   text-align: left;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 10;
+  box-shadow: 0 -15px 0 0 white;
 }
 
 .home-stats .home-stats-section{
@@ -1610,6 +1672,22 @@ nav {
     padding-top: 40px;
   }
 
+  /* Ratings page keeps its original column layout */
+  .desktop-layout .recommendations-page.page {
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 10px;
+    padding-top: 40px;
+    overflow: hidden;
+  }
+
+  /* Rating detail page keeps its original block layout */
+  .desktop-layout .ratings-detail-page.page {
+    display: block;
+    padding-top: 100px;
+    overflow-y: auto;
+  }
+
   .song-list{
     display: flex;
     flex-direction: column;
@@ -2067,7 +2145,7 @@ nav {
     transition: color 0.2s;
   }
 
-  .remove-featured-btn:hover {
+  .rethemove-featured-btn:hover {
     color: #e74c3c;
   }
 
@@ -2107,7 +2185,7 @@ nav {
     color: #FFD700;
     background: #FFF9E6;
     border-color: #FFD700;
-  }
+  }cl
 
   .star-button:disabled {
     opacity: 0.5;
@@ -2216,7 +2294,7 @@ nav {
     flex-direction: column;
     gap: 100px;
     z-index: 10;
-    position: absolute;
+    position: fixed;
     left: calc(30vw - 76px);
     top: calc(10vh + 210px);
   }

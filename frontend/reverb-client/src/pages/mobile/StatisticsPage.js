@@ -95,7 +95,7 @@ function StatisticsPage() {
   return (
     <div className="mobile-layout">
       <ProfileButtonMobile />
-      <div className="mobile-stats">
+      <div className="mobile-stats page">
         <div className="mobile-stats-content">
           <div className="mobile-stats-data round-outline blue-box-shadow">
             <h2>Top {category.charAt(0).toUpperCase() + category.slice(1)}</h2>
@@ -129,12 +129,13 @@ function StatisticsPage() {
                 </div>
               ) : (
                 songs.slice(0, 150).map((song, index) => (
-                  <SongComponent
-                    key={song.id || index}
-                    songData={song}
-                    showStar={true}
-                    isFeatured={getIsFeatured(song)}
-                  />
+                  <div key={song.id || index} className="fade-in-item">
+                    <SongComponent
+                      songData={song}
+                      showStar={true}
+                      isFeatured={getIsFeatured(song)}
+                    />
+                  </div>
                 ))
               )}
             </div>

@@ -48,6 +48,15 @@ function RecommendationsPage() {
     };
   }, [showFriendFilter]);
 
+  // Disable body scroll on recommendations page
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
   const fetchFriends = async () => {
     try {
       const response = await axios.get(`${config.API_URL}/api/friends/`, {
@@ -179,7 +188,7 @@ function RecommendationsPage() {
   };
 
   return (
-    <div className="recommendations-page">
+    <div className="recommendations-page page">
       <div className="recommendations-content">
         {/* Your Featured Section - Tabbed Interface */}
         <div className="featured-section round-outline blue-box-shadow">
@@ -214,14 +223,15 @@ function RecommendationsPage() {
                 <LoadingSpinner message="Loading..." />
               ) : myFeaturedSongs.length > 0 ? (
                 myFeaturedSongs.map((song, index) => (
-                  <SongComponent
-                    key={song.id || index}
-                    songData={song}
-                    showStar={true}
-                    isFeatured={true}
-                    showRank={false}
-                    onToggleFeatured={handleToggleFeatured}
-                  />
+                  <div key={song.id || index} className="fade-in-item">
+                    <SongComponent
+                      songData={song}
+                      showStar={true}
+                      isFeatured={true}
+                      showRank={false}
+                      onToggleFeatured={handleToggleFeatured}
+                    />
+                  </div>
                 ))
               ) : (
                 <p className="empty-message">No featured songs yet. Star songs from the Statistics page!</p>

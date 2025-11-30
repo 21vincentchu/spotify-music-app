@@ -80,7 +80,7 @@ const HomeMobile = () => {
     <div className="mobile-layout">
       <ProfileButtonMobile />
       <div className="mobile-content">
-        <div className="home-page">
+        <div className="home-page page">
 
           {/* ================================
               RECENTLY PLAYED SONGS
@@ -103,13 +103,14 @@ const HomeMobile = () => {
                     rank: index + 1
                   };
                   return (
-                    <SongComponent
-                      key={`${track.id}-${item.played_at}-${index}`}
-                      songData={songData}
-                      showStar={true}
-                      isFeatured={isSongFeatured(track.id)}
-                      timestamp={getRelativeTime(item.played_at)}
-                    />
+                    <div key={`${track.id}-${item.played_at}-${index}`} className="fade-in-item">
+                      <SongComponent
+                        songData={songData}
+                        showStar={true}
+                        isFeatured={isSongFeatured(track.id)}
+                        timestamp={getRelativeTime(item.played_at)}
+                      />
+                    </div>
                   );
                 })}
               </div>

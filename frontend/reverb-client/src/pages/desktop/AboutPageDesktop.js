@@ -170,7 +170,7 @@ function AboutPage() {
                 <h2>Team: Auralytics</h2>
                 <p><strong>Amanda Ngo</strong> - Team Leader, Frontend Desktop Developer</p>
                 <p><strong>Julie To</strong> - Frontend Mobile Develop</p>
-                <p><strong>Vincent Chu</strong> - Backend Developer</p>
+                <p><strong>Vincent Chu</strong> - Full Stack Developer</p>
                 <p><strong>Esther Brandwein</strong> - Backend Developer</p>
                 <p><strong>Kevin Lee</strong> - Backend Developer</p>
             </div>

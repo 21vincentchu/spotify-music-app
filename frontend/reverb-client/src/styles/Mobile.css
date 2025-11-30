@@ -5,6 +5,52 @@
   box-sizing: border-box;
 }
 
+/* ANIMATIONS ------------------------------------------------------------------------------*/
+
+/* Page transition fade in */
+@keyframes pageTransitionFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-layout .page {
+  animation: pageTransitionFadeIn 0.5s ease-out;
+}
+
+/* Staggered fade-in for list items */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-layout .fade-in-item {
+  animation: fadeInUp 0.5s ease-out backwards;
+}
+
+.mobile-layout .fade-in-item:nth-child(1) { animation-delay: 0.05s; }
+.mobile-layout .fade-in-item:nth-child(2) { animation-delay: 0.1s; }
+.mobile-layout .fade-in-item:nth-child(3) { animation-delay: 0.15s; }
+.mobile-layout .fade-in-item:nth-child(4) { animation-delay: 0.2s; }
+.mobile-layout .fade-in-item:nth-child(5) { animation-delay: 0.25s; }
+.mobile-layout .fade-in-item:nth-child(6) { animation-delay: 0.3s; }
+.mobile-layout .fade-in-item:nth-child(7) { animation-delay: 0.35s; }
+.mobile-layout .fade-in-item:nth-child(8) { animation-delay: 0.4s; }
+.mobile-layout .fade-in-item:nth-child(9) { animation-delay: 0.45s; }
+.mobile-layout .fade-in-item:nth-child(10) { animation-delay: 0.5s; }
+.mobile-layout .fade-in-item:nth-child(n+11) { animation-delay: 0.55s; }
+
 .mobile-layout .mobile-topbar {
   position: sticky;
   top: 0;
@@ -634,6 +680,61 @@
   padding: 20px;
   margin-top: 100px;
   justify-content: center;
+}
+
+/* Mobile page layout overrides to preserve original layouts */
+.mobile-layout .home-page.page {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 32px;
+  width: 100%;
+  min-height: calc(100vh - 120px);
+  padding: 0;
+  margin-top: 0;
+}
+
+.mobile-layout .mobile-stats.page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 2% 15px 2%;
+  height: auto;
+  margin-top: 0;
+  justify-content: flex-start;
+}
+
+.mobile-layout .mobile-recommendations.page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 2% 15px 2%;
+  height: auto;
+  margin-top: 0;
+  justify-content: flex-start;
+}
+
+.mobile-layout .mobile-friends.page {
+  width: 100%;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px 80px 12px;
+  box-sizing: border-box;
+  height: auto;
+  margin-top: 0;
+  justify-content: flex-start;
+}
+
+.mobile-layout .ratings-page.page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  margin-top: 0;
+  padding: 0;
+  justify-content: flex-start;
 }
 
 .mobile-layout .song-list {

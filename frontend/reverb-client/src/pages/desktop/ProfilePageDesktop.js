@@ -102,7 +102,7 @@ function ProfilePageDesktop(){
     };
 
     return (
-        <div className="profile-page">
+        <div className="profile-page page">
             <div className="profile-page-container round-outline blue-box-shadow">
                 <h2>Profile</h2>
                 <div className="profile-content">

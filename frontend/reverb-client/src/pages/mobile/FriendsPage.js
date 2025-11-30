@@ -182,7 +182,7 @@ function FriendsMobilePage() {
   return (
     <div className="mobile-layout">
       <ProfileButtonMobile />
-      <div className="mobile-friends">
+      <div className="mobile-friends page">
         <div className="mobile-friends-content">
 
         {/* ----------------------- */}
