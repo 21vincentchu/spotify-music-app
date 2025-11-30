@@ -26,6 +26,15 @@ function StatisticsPage() {
    getFeaturedAlbums();
   }, [category, timeframe]); // Runs whenever category or timeframe changes
 
+  // Disable body scroll on statistics page
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
   const getFeaturedSongs = async () => {
     try {
       const response = await axios.get(`${config.API_URL}/api/featured-songs/`, {
@@ -97,7 +106,7 @@ function StatisticsPage() {
 
 
   return (
-    <div className="stats-page">
+    <div className="stats-page page">
       <div className="stats-content">
         <div className="stats-data round-outline blue-box-shadow">
             <h2>Top {category.charAt(0).toUpperCase() + category.slice(1)}</h2>
@@ -151,12 +160,13 @@ function StatisticsPage() {
               </div>
             ) : (
             songs.slice(0, 150).map((song, index) => (
-                <SongComponent
-                  key={song.id || index}
-                  songData={song}
-                  showStar={true}
-                  isFeatured={getIsFeatured(song)}
-                />
+                <div key={song.id || index} className="fade-in-item">
+                  <SongComponent
+                    songData={song}
+                    showStar={true}
+                    isFeatured={getIsFeatured(song)}
+                  />
+                </div>
             ))
             )}
             </div>

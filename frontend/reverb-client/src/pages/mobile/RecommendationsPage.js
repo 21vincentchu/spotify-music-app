@@ -179,7 +179,7 @@ function MobileRecommendationsPage() {
   return (
     <div className="mobile-layout">
       <ProfileButtonMobile />
-      <div className="mobile-recommendations">
+      <div className="mobile-recommendations page">
         <div className="mobile-recommendations-content">
 
           {/* Your Featured Section */}

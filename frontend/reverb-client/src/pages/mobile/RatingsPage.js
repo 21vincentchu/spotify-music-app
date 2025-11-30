@@ -225,7 +225,7 @@ function RatingsPage() {
     <>
       <ProfileButtonMobile />
       <div className="mobile-layout">
-        <div className="ratings-page">
+        <div className="ratings-page page">
 
         {/* Tabs + Search Bar */}
         <div className="ratings-tabs-with-search">
@@ -342,12 +342,13 @@ function RatingsPage() {
                     {songRatings.length === 0 ? (
                       <p className="empty-text">No rated songs yet</p>
                     ) : (
-                      songRatings.map((rating) => (
-                        <RatingCard
-                          key={rating.spotifyTrackId}
-                          item={rating}
-                          type="song"
-                        />
+                      songRatings.map((rating, index) => (
+                        <div key={rating.spotifyTrackId} className="fade-in-item">
+                          <RatingCard
+                            item={rating}
+                            type="song"
+                          />
+                        </div>
                       ))
                     )}
                   </>
@@ -358,12 +359,13 @@ function RatingsPage() {
                     {albumRatings.length === 0 ? (
                       <p className="empty-text">No rated albums yet</p>
                     ) : (
-                      albumRatings.map((rating) => (
-                        <RatingCard
-                          key={rating.spotifyAlbumId}
-                          item={rating}
-                          type="album"
-                        />
+                      albumRatings.map((rating, index) => (
+                        <div key={rating.spotifyAlbumId} className="fade-in-item">
+                          <RatingCard
+                            item={rating}
+                            type="album"
+                          />
+                        </div>
                       ))
                     )}
                   </>
@@ -374,12 +376,13 @@ function RatingsPage() {
                     {friendsRatings.length === 0 ? (
                       <p className="empty-text">No friends have rated anything yet.</p>
                     ) : (
-                      friendsRatings.map((rating) => (
-                        <RatingCard
-                          key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`}
-                          item={rating}
-                          type={rating.type}
-                        />
+                      friendsRatings.map((rating, index) => (
+                        <div key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`} className="fade-in-item">
+                          <RatingCard
+                            item={rating}
+                            type={rating.type}
+                          />
+                        </div>
                       ))
                     )}
                   </>

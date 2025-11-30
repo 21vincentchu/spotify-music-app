@@ -6,22 +6,114 @@
       .st0 {
         fill: #0b1129;
       }
+
+      @keyframes slideInOutPill1 {
+        0% {
+          transform: translate(80px, -120px);
+          opacity: 0;
+        }
+        6% {
+          transform: translate(0, 0);
+          opacity: 1;
+        }
+        94% {
+          transform: translate(0, 0);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(-80px, 120px);
+          opacity: 0;
+        }
+      }
+
+      @keyframes slideInOutPill2 {
+        0%, 2% {
+          transform: translate(80px, -120px);
+          opacity: 0;
+        }
+        8% {
+          transform: translate(0, 0);
+          opacity: 1;
+        }
+        91% {
+          transform: translate(0, 0);
+          opacity: 1;
+        }
+        97%, 100% {
+          transform: translate(-80px, 120px);
+          opacity: 0;
+        }
+      }
+
+      @keyframes slideInOutPill3 {
+        0%, 4% {
+          transform: translate(80px, -120px);
+          opacity: 0;
+        }
+        10% {
+          transform: translate(0, 0);
+          opacity: 1;
+        }
+        88% {
+          transform: translate(0, 0);
+          opacity: 1;
+        }
+        94%, 100% {
+          transform: translate(-80px, 120px);
+          opacity: 0;
+        }
+      }
+
+      @keyframes slideInOutPill4 {
+        0%, 6% {
+          transform: translate(80px, -120px);
+          opacity: 0;
+        }
+        12% {
+          transform: translate(0, 0);
+          opacity: 1;
+        }
+        85% {
+          transform: translate(0, 0);
+          opacity: 1;
+        }
+        91%, 100% {
+          transform: translate(-80px, 120px);
+          opacity: 0;
+        }
+      }
+
+      .pill-1 {
+        animation: slideInOutPill1 7s ease-in-out infinite;
+      }
+
+      .pill-2 {
+        animation: slideInOutPill2 7s ease-in-out infinite;
+      }
+
+      .pill-3 {
+        animation: slideInOutPill3 7s ease-in-out infinite;
+      }
+
+      .pill-4 {
+        animation: slideInOutPill4 7s ease-in-out infinite;
+      }
     </style>
   </defs>
-  <g>
-    <line class="st0" x1="118.06" y1="24.6" x2="75.98" y2="86.06"/>
-    <path class="st0" d="M75.83,93.03c-1.4,0-2.82-.34-4.1-1.04-3.69-2.03-4.85-6.37-2.58-9.68l42.08-61.46c2.27-3.31,7.1-4.35,10.8-2.32,3.69,2.03,4.85,6.37,2.58,9.68l-42.08,61.46c-1.48,2.16-4.06,3.36-6.7,3.36Z"/>
-  </g>
-  <g>
-    <line class="st0" x1="144.24" y1="23.99" x2="103.65" y2="82.01"/>
-    <path class="st0" d="M103.36,88.9c-1.4,0-2.82-.34-4.1-1.04-3.69-2.03-4.85-6.37-2.58-9.68l40.58-58.02c2.27-3.31,7.1-4.35,10.8-2.32,3.69,2.03,4.85,6.37,2.58,9.68l-40.58,58.02c-1.48,2.16-4.06,3.36-6.7,3.36Z"/>
-  </g>
-  <g>
+  <g class="pill-1">
     <line class="st0" x1="92.58" y1="25.33" x2="16.7" y2="136.16"/>
     <path class="st0" d="M16.04,143.2c-1.4,0-2.82-.34-4.1-1.04-3.69-2.03-4.85-6.37-2.58-9.68L85.24,21.64c2.27-3.31,7.1-4.35,10.8-2.32,3.69,2.03,4.85,6.37,2.58,9.68L22.74,139.84c-1.48,2.16-4.06,3.36-6.7,3.36Z"/>
   </g>
-  <g>
+  <g class="pill-2">
+    <line class="st0" x1="118.06" y1="24.6" x2="75.98" y2="86.06"/>
+    <path class="st0" d="M75.83,93.03c-1.4,0-2.82-.34-4.1-1.04-3.69-2.03-4.85-6.37-2.58-9.68l42.08-61.46c2.27-3.31,7.1-4.35,10.8-2.32,3.69,2.03,4.85,6.37,2.58,9.68l-42.08,61.46c-1.48,2.16-4.06,3.36-6.7,3.36Z"/>
+  </g>
+  <g class="pill-4">
     <line class="st0" x1="133.98" y1="74.68" x2="91.9" y2="136.14"/>
     <path class="st0" d="M91.89,141.96c-1.4,0-2.82-.34-4.1-1.04-3.69-2.03-4.85-6.37-2.58-9.68l42.08-61.46c2.27-3.31,7.1-4.35,10.8-2.32,3.69,2.03,4.85,6.37,2.58,9.68l-42.08,61.46c-1.48,2.16-4.06,3.36-6.7,3.36Z"/>
+  </g>
+  <g class="pill-3">
+    <line class="st0" x1="144.24" y1="23.99" x2="103.65" y2="82.01"/>
+    <path class="st0" d="M103.36,88.9c-1.4,0-2.82-.34-4.1-1.04-3.69-2.03-4.85-6.37-2.58-9.68l40.58-58.02c2.27-3.31,7.1-4.35,10.8-2.32,3.69,2.03,4.85,6.37,2.58,9.68l-40.58,58.02c-1.48,2.16-4.06,3.36-6.7,3.36Z"/>
   </g>
 </svg>

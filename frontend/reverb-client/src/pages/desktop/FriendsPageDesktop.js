@@ -43,6 +43,15 @@ function FriendsPage() {
     getFriendsList();
   }, []);
 
+  // Disable body scroll on friends page
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
   useEffect(() => {
     if (query.trim() === "") {
       setSearchResults([]);   // clear results when field is empty
@@ -168,7 +177,7 @@ function FriendsPage() {
   }
   
   return (
-    <div className="friends-page">
+    <div className="friends-page page">
       <div className="friends-list-container round-outline blue-box-shadow">
         <div className="friends-header">
           <h2>Friends</h2>
@@ -195,11 +204,12 @@ function FriendsPage() {
           searchResults.length > 0 ? (
             <div className="data-container-list">
               {searchResults.map((result, index) => (
-                <AddFriendComponentDesktop
-                  key={result.userName || index}
-                  friendData={result}
-                  onFriendAdded={handleFriendAdded}
-                />
+                <div key={result.userName || index} className="fade-in-item">
+                  <AddFriendComponentDesktop
+                    friendData={result}
+                    onFriendAdded={handleFriendAdded}
+                  />
+                </div>
               ))}
             </div>
           ) : (
@@ -213,13 +223,14 @@ function FriendsPage() {
               <p>Loading friends...</p>
             ) : friends.length > 0 ? (
               friends.map((friend, index) => (
-                <FriendComponentDesktop
-                  key={friend.userName || index}
-                  friendData={friend}
-                  onClick={() => handleFriendClick(friend)}
-                  isSelected={selectedFriend?.userName === friend.userName}
-                  onRemoveFriend={handleRemoveFriend}
-                />
+                <div key={friend.userName || index} className="fade-in-item">
+                  <FriendComponentDesktop
+                    friendData={friend}
+                    onClick={() => handleFriendClick(friend)}
+                    isSelected={selectedFriend?.userName === friend.userName}
+                    onRemoveFriend={handleRemoveFriend}
+                  />
+                </div>
               ))
             ) : (
               <p>No friends yet. Add some friends!</p>
@@ -261,14 +272,15 @@ function FriendsPage() {
                 <div className="recent-songs-list">
                   {friendStats.recentSongs && friendStats.recentSongs.length > 0 ? (
                     friendStats.recentSongs.map((song, index) => (
-                      <SongComponent
-                        key={index}
-                        songData={{ ...song, rank: index + 1 }}
-                        showStar={false}
-                        showRank={true}
-                        showPlay={true}
-                        timestamp={getRelativeTime(song.playedAt)}
-                      />
+                      <div key={index} className="fade-in-item">
+                        <SongComponent
+                          songData={{ ...song, rank: index + 1 }}
+                          showStar={false}
+                          showRank={true}
+                          showPlay={true}
+                          timestamp={getRelativeTime(song.playedAt)}
+                        />
+                      </div>
                     ))
                   ) : (
                     <p>No recent songs found</p>
@@ -279,12 +291,13 @@ function FriendsPage() {
                   {isLoadingRatings ? (
                     <p>Loading ratings...</p>
                   ) : friendRatings.length > 0 ? (
-                    friendRatings.map((rating) => (
-                      <RatedSongComponentDesktop
-                        key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}`}
-                        songData={rating}
-                        type={rating.type}
-                      />
+                    friendRatings.map((rating, index) => (
+                      <div key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}`} className="fade-in-item">
+                        <RatedSongComponentDesktop
+                          songData={rating}
+                          type={rating.type}
+                        />
+                      </div>
                     ))
                   ) : (
                     <p className="empty-message">No ratings yet</p>
