@@ -2215,9 +2215,49 @@ nav {
  /* RATINGS DETAIL -------------------------------------------------------------------------------------  */
 
  .ratings-detail-page {
-    padding-top: 150px;
+    padding-top: 100px;
     height: 100vh;
-    overflow: hidden;
+    overflow-y: auto;
+  }
+
+  /* Header Nav with Back and Delete */
+  .rating-detail-header-nav-desktop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 500px;
+    margin: 0 auto 20px;
+    padding: 0 10px;
+  }
+
+  .back-button-desktop {
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #034078;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+  }
+
+  .back-button-desktop:hover {
+    background-color: #f0f0f0;
+  }
+
+  .delete-button-header-desktop {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .delete-button-header-desktop:hover {
+    background-color: #c82333;
   }
 
   .ratings-detail-container{
@@ -2267,6 +2307,13 @@ nav {
     justify-content: space-between;
   }
 
+.rating-label-desktop {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  margin: 15px 0 8px 0;
+}
+
 .ratings-detail-container textarea {
     height: 200px;
     width: 100%;
@@ -2277,23 +2324,169 @@ nav {
     box-sizing: border-box;
 }
 
-.ratings-detail-container button {
-  min-width: 100px;
-  padding: 12px 24px;
-  border: 1px solid black;
-  border-radius: 12px;
-  background-color: #034078;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-.ratings-detail-container button:hover{
-  opacity: 0.8;
+/* Inline Action Buttons */
+.rating-detail-actions-inline-desktop {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
 }
 
-.ratings-detail-container .delete-button:hover{
-  background-color: rgba(162, 18, 18,0.8)
-} 
+.save-button-desktop {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  background-color: #034078;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.save-button-desktop:hover:not(:disabled) {
+  background-color: #023056;
+}
+
+.save-button-desktop:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-button-desktop {
+  flex: 1;
+  padding: 12px 24px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancel-button-desktop:hover {
+  background-color: #f0f0f0;
+}
+
+/* Saved Message */
+.saved-message-desktop {
+  margin-top: 15px;
+  padding: 12px;
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Reviews Section on Rating Detail Page */
+.friends-ratings-section-desktop {
+  width: 500px;
+  margin: 30px auto 0;
+  padding: 25px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.friends-ratings-header-desktop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.friends-ratings-header-desktop h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #034078;
+}
+
+.average-rating-desktop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.average-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.average-number {
+  font-weight: 600;
+  font-size: 16px;
+  color: #ffa726;
+}
+
+.friends-ratings-list-desktop {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.friend-rating-item-desktop {
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e8e8e8;
+}
+
+.friend-rating-header-desktop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.friend-rating-avatar-desktop {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.friend-rating-user-desktop {
+  flex: 1;
+}
+
+.friend-name-desktop {
+  margin: 0 0 5px 0;
+  font-weight: 600;
+  font-size: 14px;
+  color: #000;
+}
+
+.friend-rating-stars-desktop {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.friend-rating-number-desktop {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+.friend-rating-comment-desktop {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  padding-left: 52px;
+}
 
 
 
