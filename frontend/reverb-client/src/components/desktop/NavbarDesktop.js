@@ -2,8 +2,6 @@ import { Link, NavLink } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import axios from 'axios';
 import config from '../../config';
-
-import tempLogo from "../../assets/pngegg.png";
 import tempProfile from "../../assets/istockphoto-2171382633-612x612.jpg";
 import logo from "../../assets/reverb-logo-type.svg";
 
