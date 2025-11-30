@@ -241,20 +241,21 @@ function RecommendationsPage() {
             {myFeaturedTab === 'artists' && (
               myFeaturedArtists.length > 0 ? (
                 myFeaturedArtists.map((artist, index) => (
-                  <SongComponent
-                    key={artist.id || index}
-                    songData={artist}
-                    showStar={true}
-                    isFeatured={true}
-                    showRank={false}
-                    onToggleFeatured={(spotifyArtistId, isNowFeatured) => {
-                      if (!isNowFeatured) {
-                        setMyFeaturedArtists(prev => prev.filter(a => a.spotifyArtistId !== spotifyArtistId));
-                      } else {
-                        fetchMyFeaturedArtists();
-                      }
-                    }}
-                  />
+                  <div key={artist.id || index} className="fade-in-item">
+                    <SongComponent
+                      songData={artist}
+                      showStar={true}
+                      isFeatured={true}
+                      showRank={false}
+                      onToggleFeatured={(spotifyArtistId, isNowFeatured) => {
+                        if (!isNowFeatured) {
+                          setMyFeaturedArtists(prev => prev.filter(a => a.spotifyArtistId !== spotifyArtistId));
+                        } else {
+                          fetchMyFeaturedArtists();
+                        }
+                      }}
+                    />
+                  </div>
                 ))
               ) : (
                 <p className="empty-message">No featured artists yet.</p>
@@ -264,20 +265,21 @@ function RecommendationsPage() {
             {myFeaturedTab === 'albums' && (
               myFeaturedAlbums.length > 0 ? (
                 myFeaturedAlbums.map((album, index) => (
-                  <SongComponent
-                    key={album.id || index}
-                    songData={album}
-                    showStar={true}
-                    isFeatured={true}
-                    showRank={false}
-                    onToggleFeatured={(spotifyAlbumId, isNowFeatured) => {
-                      if (!isNowFeatured) {
-                        setMyFeaturedAlbums(prev => prev.filter(a => a.spotifyAlbumId !== spotifyAlbumId));
-                      } else {
-                        fetchMyFeaturedAlbums();
-                      }
-                    }}
-                  />
+                  <div key={album.id || index} className="fade-in-item">
+                    <SongComponent
+                      songData={album}
+                      showStar={true}
+                      isFeatured={true}
+                      showRank={false}
+                      onToggleFeatured={(spotifyAlbumId, isNowFeatured) => {
+                        if (!isNowFeatured) {
+                          setMyFeaturedAlbums(prev => prev.filter(a => a.spotifyAlbumId !== spotifyAlbumId));
+                        } else {
+                          fetchMyFeaturedAlbums();
+                        }
+                      }}
+                    />
+                  </div>
                 ))
               ) : (
                 <p className="empty-message">No featured albums yet.</p>
@@ -355,7 +357,7 @@ function RecommendationsPage() {
                 <LoadingSpinner message="Loading..." />
               ) : friendsFeaturedSongs.length > 0 ? (
                 groupByFriend(friendsFeaturedSongs).map((friendGroup, index) => (
-                  <div key={friendGroup.userName || index} className="friend-group">
+                  <div key={friendGroup.userName || index} className="friend-group fade-in-item">
                     <div className="friend-info">
                       {friendGroup.profilePicture && (
                         <img src={friendGroup.profilePicture} alt={friendGroup.displayName} className="friend-profile-pic" />
@@ -383,7 +385,7 @@ function RecommendationsPage() {
             {friendsFeaturedTab === 'artists' && (
               friendsFeaturedArtists.length > 0 ? (
                 groupByFriend(friendsFeaturedArtists).map((friendGroup, index) => (
-                  <div key={friendGroup.userName || index} className="friend-group">
+                  <div key={friendGroup.userName || index} className="friend-group fade-in-item">
                     <div className="friend-info">
                       {friendGroup.profilePicture && (
                         <img src={friendGroup.profilePicture} alt={friendGroup.displayName} className="friend-profile-pic" />
@@ -419,7 +421,7 @@ function RecommendationsPage() {
             {friendsFeaturedTab === 'albums' && (
               friendsFeaturedAlbums.length > 0 ? (
                 groupByFriend(friendsFeaturedAlbums).map((friendGroup, index) => (
-                  <div key={friendGroup.userName || index} className="friend-group">
+                  <div key={friendGroup.userName || index} className="friend-group fade-in-item">
                     <div className="friend-info">
                       {friendGroup.profilePicture && (
                         <img src={friendGroup.profilePicture} alt={friendGroup.displayName} className="friend-profile-pic" />
