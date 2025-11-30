@@ -22,6 +22,7 @@ from friends import *
 from profile import *
 from recommendations import *
 from ratings import *
+from search import *
 
 # Configure Flask to serve React's static files
 app = Flask(__name__, static_folder='frontend_build/static', static_url_path='/static')
@@ -84,6 +85,7 @@ app.register_blueprint(featured_songs_bp)
 app.register_blueprint(featured_artists_bp)
 app.register_blueprint(featured_albums_bp)
 app.register_blueprint(ratings_bp)
+app.register_blueprint(search_bp)
 
 
 ### ----- INITIALIZE SCHEDULER ----- ###

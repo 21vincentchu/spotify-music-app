@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import config from "../../config";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import RatedSongComponentDesktop from "../../components/desktop/RatedSongComponentDesktop";
 
 function RatingsPage() {
@@ -13,12 +13,32 @@ function RatingsPage() {
   const [songRatings, setSongRatings] = useState([]);
   const [albumRatings, setAlbumRatings] = useState([]);
   const [friendsRatings, setFriendsRatings] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getSongRatings();
     getAlbumRatings();
     getFriendsRatings();
   }, []);
+
+  // Search handler with debounce
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setSearchResults([]);
+      setShowSearchResults(false);
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      handleSearch();
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, myFeaturedTab]);
 
   const getSongRatings = async () => {
 
@@ -61,6 +81,79 @@ function RatingsPage() {
     }
   };
 
+  const handleSearch = async () => {
+    if (searchQuery.trim() === "") return;
+
+    setIsSearching(true);
+    try {
+      // If on Friends tab, search through local friendsRatings
+      if (myFeaturedTab === "friends") {
+        const query = searchQuery.toLowerCase();
+        const filteredFriends = friendsRatings.filter(rating => {
+          const songName = (rating.songName || "").toLowerCase();
+          const albumName = (rating.albumName || "").toLowerCase();
+          const artistName = (rating.artistName || "").toLowerCase();
+          const userName = (rating.userName || "").toLowerCase();
+
+          return songName.includes(query) ||
+                 albumName.includes(query) ||
+                 artistName.includes(query) ||
+                 userName.includes(query);
+        });
+
+        setSearchResults(filteredFriends);
+        setShowSearchResults(true);
+        setIsSearching(false);
+        return;
+      }
+
+      // For songs/albums tabs, use API search
+      const response = await axios.get(
+        `${config.API_URL}/api/search`,
+        {
+          params: {
+            q: searchQuery,
+            limit: 20,
+          },
+          withCredentials: true,
+        }
+      );
+
+      console.log("Search results:", response.data);
+
+      // Filter results based on active tab
+      const filteredResults = response.data.filter(item => {
+        if (myFeaturedTab === "songs") return item.type === "song";
+        if (myFeaturedTab === "albums") return item.type === "album";
+        return false;
+      });
+
+      setSearchResults(filteredResults);
+      setShowSearchResults(true);
+    } catch (error) {
+      console.error("Error searching:", error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleResultClick = (item) => {
+    setShowSearchResults(false);
+    setSearchQuery("");
+
+    // For Friends tab, use the item's type and appropriate ID
+    if (myFeaturedTab === "friends") {
+      const type = item.type;
+      const id = type === "song" ? item.spotifyTrackId : item.spotifyAlbumId;
+      navigate(`/ratings/${type}/${id}`);
+    } else {
+      // For songs/albums tabs, use the tab to determine type
+      const type = myFeaturedTab === "songs" ? "song" : "album";
+      navigate(`/ratings/${type}/${item.spotifyId}`);
+    }
+  };
+
 
   return (
     <div className="recommendations-page">
@@ -75,6 +168,86 @@ function RatingsPage() {
             >Reviews
             </button>
           </div>
+
+          {/* Search Bar - Outside container, above it */}
+          <div className="ratings-search-container">
+              <input
+                type="text"
+                className="ratings-search-input round-outline"
+                placeholder={myFeaturedTab === 'friends' ? "Search friends' ratings..." : `Search for ${myFeaturedTab}...`}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+
+              {/* Clear search button */}
+              {(searchQuery || showSearchResults) && (
+                <button
+                  className="ratings-search-clear"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setShowSearchResults(false);
+                  }}
+                >
+                  ✕
+                </button>
+              )}
+
+              {/* Search Results Dropdown */}
+              {showSearchResults && searchResults.length > 0 && (
+                <div className="ratings-search-results-dropdown round-outline">
+                  {searchResults.map((item) => {
+                    // Handle different data structures for Friends vs Songs/Albums
+                    const isFriendsTab = myFeaturedTab === "friends";
+                    const itemKey = isFriendsTab
+                      ? `${item.type}-${item.spotifyTrackId || item.spotifyAlbumId}-${item.userName}`
+                      : item.spotifyId;
+                    const itemName = isFriendsTab
+                      ? (item.type === "song" ? item.songName : item.albumName)
+                      : item.name;
+                    const itemArtist = isFriendsTab ? item.artistName : item.artist;
+
+                    return (
+                      <div
+                        key={itemKey}
+                        className="ratings-search-result-item"
+                        onClick={() => handleResultClick(item)}
+                      >
+                        <img
+                          src={item.imageUrl}
+                          alt={itemName}
+                          className="search-result-image"
+                        />
+                        <div className="search-result-info">
+                          <p className="search-result-name">{itemName}</p>
+                          <p className="search-result-artist">{itemArtist}</p>
+                          {isFriendsTab && (
+                            <p className="search-result-user">by {item.userName}</p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {showSearchResults && searchResults.length === 0 && !isSearching && (
+                <div className="ratings-search-results-dropdown round-outline">
+                  <p className="search-no-results">No results found</p>
+                </div>
+              )}
+            </div>
+
+          {/* Backdrop to close search */}
+          {showSearchResults && (
+            <div
+              className="ratings-search-backdrop"
+              onClick={() => {
+                setShowSearchResults(false);
+                setSearchQuery("");
+              }}
+            />
+          )}
+
         <div className="ratings-container round-outline blue-box-shadow">
           <div className="featured-tabs">
               <button
@@ -96,7 +269,6 @@ function RatingsPage() {
                 Friends
               </button>
             </div>
-
 
             <div className="ratings-list">
             
