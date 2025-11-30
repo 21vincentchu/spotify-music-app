@@ -85,20 +85,27 @@ function RatingsPage() {
 
     setIsSearching(true);
     try {
-      const searchType = activeTab === "songs" ? "track" : "album";
       const response = await axios.get(
         `${config.API_URL}/api/search`,
         {
           params: {
             q: searchQuery,
-            type: searchType,
+            limit: 20,
           },
           withCredentials: true,
         }
       );
 
       console.log("Search results:", response.data);
-      setSearchResults(response.data);
+
+      // Filter results based on active tab
+      const filteredResults = response.data.filter(item => {
+        if (activeTab === "songs") return item.type === "song";
+        if (activeTab === "albums") return item.type === "album";
+        return false;
+      });
+
+      setSearchResults(filteredResults);
       setShowSearchResults(true);
     } catch (error) {
       console.error("Error searching:", error);
@@ -110,10 +117,9 @@ function RatingsPage() {
 
   const handleResultClick = (item) => {
     const type = activeTab === "songs" ? "song" : "album";
-    const id = activeTab === "songs" ? item.id : item.id;
     setShowSearchResults(false);
     setSearchQuery("");
-    navigate(`/ratings/${type}/${id}`);
+    navigate(`/ratings/${type}/${item.spotifyId}`);
   };
 
   const renderStars = (rating) => (
@@ -173,7 +179,8 @@ function RatingsPage() {
   return (
     <>
       <ProfileButtonMobile />
-      <div className="ratings-page">
+      <div className="mobile-layout">
+        <div className="ratings-page">
 
         {/* Tabs + Search Bar */}
         <div className="ratings-tabs-with-search">
@@ -212,26 +219,35 @@ function RatingsPage() {
             )}
           </div>
 
+          {/* Search Backdrop */}
+          {showSearchResults && (
+            <div
+              className="ratings-search-backdrop"
+              onClick={() => {
+                setShowSearchResults(false);
+                setSearchQuery("");
+              }}
+            />
+          )}
+
           {/* Search Results Dropdown */}
           {showSearchResults && searchResults.length > 0 && (
             <div className="ratings-search-results-tabs">
               {searchResults.map((item) => (
                 <div
-                  key={item.id}
+                  key={item.spotifyId}
                   className="ratings-search-result-item"
                   onClick={() => handleResultClick(item)}
                 >
                   <img
-                    src={item.album?.images?.[0]?.url || item.images?.[0]?.url}
+                    src={item.imageUrl}
                     alt={item.name}
                     className="ratings-search-result-image"
                   />
                   <div className="ratings-search-result-info">
                     <p className="ratings-search-result-name">{item.name}</p>
                     <p className="ratings-search-result-artist">
-                      {activeTab === "songs"
-                        ? item.artists?.[0]?.name
-                        : item.artists?.[0]?.name}
+                      {item.artist}
                     </p>
                   </div>
                 </div>
@@ -302,6 +318,7 @@ function RatingsPage() {
             )}
           </div>
         </div>
+      </div>
     </>
   );
 }

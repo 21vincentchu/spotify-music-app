@@ -59,49 +59,57 @@ def search_music_all(searchQuery: str, limit: int = 20) -> List[Dict]:
                        """, (search_pattern, limit))
         results.extend(cursor.fetchall())
                        
+        # If no DB results, fallback to Spotify Search API
         if not results:
-            sp, token_info = get_authenticated_spotify_client()
+            sp, _ = get_authenticated_spotify_client()
             if not sp:
                 return results
 
-            spotify_id = searchQuery.strip()
             try:
-                 song = fetch_song_from_spotify(sp, spotify_id)
-                 results.append({
-                      'name': song['songName'],
-                      'artist': song['artistName'],
-                      'spotifyId': song['spotifyTrackId'],
-                      'imageUrl': song['imageUrl'],
-                      'type': 'song'
-                 })
-                 return results
+                # Use Spotify's search API for tracks, albums, and artists
+                search_results = sp.search(q=searchQuery, type='track,album,artist', limit=limit)
+
+                # Parse track results
+                if 'tracks' in search_results and search_results['tracks']['items']:
+                    for track in search_results['tracks']['items']:
+                        artists = track.get('artists', [])
+                        album = track.get('album', {})
+                        images = album.get('images', [])
+                        results.append({
+                            'name': track.get('name'),
+                            'artist': artists[0]['name'] if artists else 'Unknown Artist',
+                            'spotifyId': track.get('id'),
+                            'imageUrl': images[0]['url'] if images else None,
+                            'type': 'song'
+                        })
+
+                # Parse album results
+                if 'albums' in search_results and search_results['albums']['items']:
+                    for album in search_results['albums']['items']:
+                        artists = album.get('artists', [])
+                        images = album.get('images', [])
+                        results.append({
+                            'name': album.get('name'),
+                            'artist': artists[0]['name'] if artists else 'Unknown Artist',
+                            'spotifyId': album.get('id'),
+                            'imageUrl': images[0]['url'] if images else None,
+                            'type': 'album'
+                        })
+
+                # Parse artist results
+                if 'artists' in search_results and search_results['artists']['items']:
+                    for artist in search_results['artists']['items']:
+                        images = artist.get('images', [])
+                        results.append({
+                            'name': artist.get('name'),
+                            'artist': None,
+                            'spotifyId': artist.get('id'),
+                            'imageUrl': images[0]['url'] if images else None,
+                            'type': 'artist'
+                        })
+
             except Exception as e:
-                 print(f"song search failed: {e}")
-            
-            try:
-                 album = fetch_album_from_spotify(sp, spotify_id)
-                 results.append({
-                      'name': album['albumName'],
-                      'artist': album['artistName'],
-                      'spotifyId': album['spotifyAlbumId'],
-                      'imageUrl': album['imageUrl'],
-                      'type': 'album'
-                        
-                 })
-                 return results
-            except Exception as e:
-                 print(f"album searched failed: {e}")
-            try:
-                 artist = fetch_artist_from_spotify(sp, spotify_id)
-                 results.append({
-                      'name': artist['artistName'],
-                      'spotifyId': artist['spotifyArtistId'],
-                      'imageUrl': artist['imageUrl'],
-                      'type': 'artist'
-                 })
-                 return results
-            except Exception as e:
-                 print(f"artist searched failed: {e}")
+                print(f"Spotify search failed: {e}")
                          
         return results
              

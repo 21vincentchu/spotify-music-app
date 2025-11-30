@@ -1938,8 +1938,11 @@
   gap: 12px;
   border-bottom: 2px solid #e0e0e0;
   background-color: #fff;
-  padding: 8px 4px;
+  padding: 8px 16px;
+  margin: 0 -16px;
   margin-top: 5px;
+  position: relative;
+  z-index: 1001;
 }
 
 .mobile-layout .ratings-tabs-buttons {
@@ -1997,6 +2000,18 @@
   border-color: #034078;
 }
 
+/* Search Backdrop - blurs background when search is active */
+.mobile-layout .ratings-search-backdrop {
+  position: fixed;
+  top: 120px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+}
+
 /* Search Results below tabs */
 .mobile-layout .ratings-search-results-tabs {
   position: absolute;
@@ -2004,11 +2019,20 @@
   left: 16px;
   right: 16px;
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   max-height: 400px;
   overflow-y: auto;
   z-index: 1000;
+
+  /* Hide scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.mobile-layout .ratings-search-results-tabs::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 
 /* Custom topbar for ratings page */
