@@ -19,7 +19,7 @@ import RatingDetailPageDesktop from "../pages/desktop/RatingDetailPageDesktop";
 function DesktopLayout() {
     const { isAuthenticated, userName } = useAuth();
     const location = useLocation();
-    const showNavbar = isAuthenticated && location.pathname !== '/' && location.pathname !== '/callback'  && location.pathname !== '/about';
+    const showNavbar = isAuthenticated && location.pathname !== '/' && location.pathname !== '/callback';
 
     return (
         <div className="desktop-layout">

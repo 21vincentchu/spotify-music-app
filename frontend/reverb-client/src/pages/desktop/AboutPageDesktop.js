@@ -11,14 +11,16 @@ function AboutPage() {
   return (
     <div className="about-page page">
         <div className="about-content">
-            <button
-              onClick={() => navigate(isAuthenticated ? '/home' : '/')}
-              className="back-button"
-            >
-              ← {isAuthenticated ? 'Back to Home' : 'Back to Sign In'}
-            </button>
+            {!isAuthenticated && (
+              <button
+                onClick={() => navigate('/')}
+                className="back-button"
+              >
+                ← Back to Sign In
+              </button>
+            )}
 
-            <div className="about-section">
+            <div className="about-section fade-in-item">
                 <h1>Reverb - A Social Music Analytics Platform</h1>
                 <p>A social music analytics platform that transforms your Spotify listening data into shareable insights! Share your favorite songs, artists, albums. Review songs and albums as well! Check out our{' '}
                     <a
@@ -32,7 +34,7 @@ function AboutPage() {
                 </p>
             </div>
 
-            <div className="about-section">
+            <div className="about-section fade-in-item">
                 <h2>Key Features</h2>
                 <ul>
                     <li><strong>Secure Spotify OAuth Login:</strong> Connect safely with your Spotify account using OAuth 2.0 authentication, the industry standard</li>
@@ -42,7 +44,7 @@ function AboutPage() {
                 </ul>
             </div>
 
-            <div className="about-section fun-info-section">
+            <div className="about-section fun-info-section fade-in-item">
                 <button
                     className="fun-info-toggle"
                     onClick={() => setShowDetailedGuide(!showDetailedGuide)}
@@ -112,7 +114,7 @@ function AboutPage() {
                 )}
             </div>
 
-            <div className="about-section">
+            <div className="about-section fade-in-item">
                 <h2>Technology Stack</h2>
                 <div className="tech-stack-visual">
                     <div className="stack-layer frontend">
@@ -142,7 +144,7 @@ function AboutPage() {
                 </div>
             </div>
 
-            <div className="about-section">
+            <div className="about-section fade-in-item">
                 <h2>Privacy & Security</h2>
                 <p>We use Spotify's secure OAuth 2.0 authentication to access your listening data. We never store your Spotify password, and you can revoke access at any time through your Spotify account settings.</p>
                 <p>For more information about how Spotify handles your data, please review{' '}
@@ -166,16 +168,49 @@ function AboutPage() {
                 </p>
             </div>
 
-            <div className="about-section">
+            <div className="about-section fade-in-item">
                 <h2>Team: Auralytics</h2>
-                <p><strong>Amanda Ngo</strong> - Team Leader, Frontend Desktop Developer</p>
-                <p><strong>Julie To</strong> - Frontend Mobile Develop</p>
-                <p><strong>Vincent Chu</strong> - Full Stack Developer</p>
-                <p><strong>Esther Brandwein</strong> - Backend Developer</p>
-                <p><strong>Kevin Lee</strong> - Backend Developer</p>
+                <div className="team-grid">
+                    <div className="team-member">
+                        <div className="team-member-info">
+                            <p className="team-member-name">Amanda Ngo</p>
+                            <p className="team-member-role">Team Leader, Frontend Desktop Developer</p>
+                        </div>
+                    </div>
+                    <div className="team-member">
+                        <div className="team-member-info">
+                            <p className="team-member-name">Julie To</p>
+                            <p className="team-member-role">Frontend Mobile Developer</p>
+                        </div>
+                    </div>
+                    <div className="team-member">
+                        <div className="team-member-info">
+                            <p className="team-member-name">Vincent Chu</p>
+                            <p className="team-member-role">Full Stack Developer</p>
+                        </div>
+                    </div>
+                    <div className="team-member">
+                        <div className="team-member-info">
+                            <p className="team-member-name">Esther Brandwein</p>
+                            <p className="team-member-role">Backend Developer</p>
+                        </div>
+                    </div>
+                    <div className="team-member">
+                        <div className="team-member-info">
+                            <p className="team-member-name">Kevin Lee</p>
+                            <p className="team-member-role">Backend Developer</p>
+                        </div>
+                    </div>
+                    <div className="team-member">
+                        <div className="team-member-info">
+                            <p className="team-member-name">Kristofferson Culmer</p>
+                            <p className="team-member-role">Mentor</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div className="about-section">
+            <div className="about-section fade-in-item">
                 <h2>Logo Design</h2>
                 <p>Logo commissioned by{' '}
                     <a
