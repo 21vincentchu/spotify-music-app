@@ -13,6 +13,7 @@ import RecommendationsPage from "../pages/mobile/RecommendationsPage";
 import FriendsPage from "../pages/mobile/FriendsPage";
 import ProfilePage from "../pages/mobile/ProfilePage";
 import AboutPage from "../pages/mobile/AboutPage";
+import ProtectedRoute from "../components/shared/ProtectedRoute";
 
 
 
@@ -92,15 +93,44 @@ function MobileLayout() {
         <Routes>
           <Route path="/" element={<SignInPage />} />
           <Route path="/callback" element={<CallbackPage />} />
-          <Route path="/home" element={<HomeMobile />} />
-          <Route path="/ratings" element={<RatingsPage />} />
-          <Route path="/ratings/:type/:spotifyId" element={<RatingDetailPageMobile />} />
-          <Route path="/statistics" element={<StatisticsPage />} />
-          <Route path="/recommendations" element={<RecommendationsPage />} />
-          <Route path="/friends" element={<FriendsPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/about" element={<AboutPage />} />
 
+          {/* Protected Routes */}
+          <Route path="/home" element={
+            <ProtectedRoute>
+              <HomeMobile />
+            </ProtectedRoute>
+          } />
+          <Route path="/ratings" element={
+            <ProtectedRoute>
+              <RatingsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/ratings/:type/:spotifyId" element={
+            <ProtectedRoute>
+              <RatingDetailPageMobile />
+            </ProtectedRoute>
+          } />
+          <Route path="/statistics" element={
+            <ProtectedRoute>
+              <StatisticsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/recommendations" element={
+            <ProtectedRoute>
+              <RecommendationsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/friends" element={
+            <ProtectedRoute>
+              <FriendsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          } />
         </Routes>
       </div>
 
