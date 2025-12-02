@@ -79,14 +79,15 @@ const HomeMobile = () => {
   return (
     <div className="mobile-layout">
       <ProfileButtonMobile />
-      <div className="mobile-content">
-        <div className="home-page page">
+      <div className="home-page page">
+        <div className="home-content">
 
           {/* ================================
               RECENTLY PLAYED SONGS
           ================================= */}
           <div className="home-featured-box round-outline blue-box-shadow">
             <h2>Recently Played Songs</h2>
+            <p className="section-hint">Tap a song to review • Star to recommend to friends</p>
 
             {isLoadingRecentData ? (
               <LoadingSpinner message="Loading your music..." />
@@ -122,6 +123,7 @@ const HomeMobile = () => {
           ================================= */}
           <div className="home-stats-box round-outline blue-box-shadow">
             <h2>Recent Statistics</h2>
+            <p className="section-hint">From your last 50 songs</p>
 
             {isLoadingRecentData ? (
               <LoadingSpinner message="Loading statistics..." />

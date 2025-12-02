@@ -223,12 +223,13 @@ function FriendsMobilePage() {
             <p>Loading friends...</p>
           ) : friends.length > 0 ? (
             friends.map((f, i) => (
-              <FriendComponentMobile
-                key={f.userName || i}
-                friendData={f}
-                onClick={() => handleFriendClick(f)}
-                onRemove={handleRemoveFriend}
-              />
+              <div key={f.userName || i} className="fade-in-item">
+                <FriendComponentMobile
+                  friendData={f}
+                  onClick={() => handleFriendClick(f)}
+                  onRemove={handleRemoveFriend}
+                />
+              </div>
             ))
           ) : (
             <p>No friends yet. Add some friends!</p>
@@ -246,11 +247,12 @@ function FriendsMobilePage() {
               <p>Searching...</p>
             ) : searchResults.length > 0 ? (
               searchResults.map((result, i) => (
-                <AddFriendComponentDesktop
-                  key={result.userName || i}
-                  friendData={result}
-                  onFriendAdded={getFriendsList}
-                />
+                <div key={result.userName || i} className="fade-in-item">
+                  <AddFriendComponentDesktop
+                    friendData={result}
+                    onFriendAdded={getFriendsList}
+                  />
+                </div>
               ))
             ) : (
               <p>No search results found.</p>
@@ -299,14 +301,15 @@ function FriendsMobilePage() {
                     <div className="mobile-recent-songs-list">
                       {friendStats.recentSongs && friendStats.recentSongs.length > 0 ? (
                         friendStats.recentSongs.map((song, index) => (
-                          <SongComponent
-                            key={index}
-                            songData={{ ...song, rank: index + 1 }}
-                            showStar={false}
-                            showRank={true}
-                            showPlay={true}
-                            timestamp={getRelativeTime(song.playedAt)}
-                          />
+                          <div key={index} className="fade-in-item">
+                            <SongComponent
+                              songData={{ ...song, rank: index + 1 }}
+                              showStar={false}
+                              showRank={true}
+                              showPlay={true}
+                              timestamp={getRelativeTime(song.playedAt)}
+                            />
+                          </div>
                         ))
                       ) : (
                         <p>No recent songs found</p>
@@ -318,11 +321,12 @@ function FriendsMobilePage() {
                         <p>Loading ratings...</p>
                       ) : friendRatings.length > 0 ? (
                         friendRatings.map((rating) => (
-                          <RatedSongComponentDesktop
-                            key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}`}
-                            songData={rating}
-                            type={rating.type}
-                          />
+                          <div key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}`} className="fade-in-item">
+                            <RatedSongComponentDesktop
+                              songData={rating}
+                              type={rating.type}
+                            />
+                          </div>
                         ))
                       ) : (
                         <p className="empty-message">No ratings yet</p>

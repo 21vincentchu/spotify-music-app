@@ -193,6 +193,9 @@ function RecommendationsPage() {
         {/* Your Featured Section - Tabbed Interface */}
         <div className="featured-section round-outline blue-box-shadow">
           <h2>Your Featured</h2>
+          <p className="section-hint">
+            Your recommended {myFeaturedTab} • Click {myFeaturedTab === 'songs' ? 'a song' : myFeaturedTab === 'albums' ? 'an album' : 'an artist'} to review them
+          </p>
 
           {/* Tab Buttons */}
           <div className="featured-tabs">
@@ -291,6 +294,7 @@ function RecommendationsPage() {
         {/* Friends' Featured Feed - Tabbed Interface */}
         <div className="friends-featured-section round-outline blue-box-shadow">
           <h2>Friends' Featured</h2>
+          <p className="section-hint">Click to review or press play to listen</p>
 
           {/* Tab Buttons with Filter */}
           <div className="featured-tabs">

@@ -185,6 +185,9 @@ function MobileRecommendationsPage() {
           {/* Your Featured Section */}
           <div className="mobile-recommendations-box round-outline blue-box-shadow">
             <h2>Your Featured</h2>
+            <p className="section-hint">
+              Your recommended {myFeaturedTab} • Tap {myFeaturedTab === 'songs' ? 'a song' : myFeaturedTab === 'albums' ? 'an album' : 'an artist'} to review them
+            </p>
 
             <div className="featured-tabs">
               <button
@@ -213,14 +216,15 @@ function MobileRecommendationsPage() {
                   <LoadingSpinner message="Loading..." />
                 ) : myFeaturedSongs.length > 0 ? (
                   myFeaturedSongs.map((song, index) => (
-                    <SongComponent
-                      key={song.id || index}
-                      songData={song}
-                      showStar={true}
-                      isFeatured={true}
-                      showRank={false}
-                      onToggleFeatured={handleToggleFeatured}
-                    />
+                    <div key={song.id || index} className="fade-in-item">
+                      <SongComponent
+                        songData={song}
+                        showStar={true}
+                        isFeatured={true}
+                        showRank={false}
+                        onToggleFeatured={handleToggleFeatured}
+                      />
+                    </div>
                   ))
                 ) : (
                   <p className="empty-message">No featured songs yet. Star songs from the Statistics page!</p>
@@ -230,20 +234,21 @@ function MobileRecommendationsPage() {
               {myFeaturedTab === 'artists' && (
                 myFeaturedArtists.length > 0 ? (
                   myFeaturedArtists.map((artist, index) => (
-                    <SongComponent
-                      key={artist.id || index}
-                      songData={artist}
-                      showStar={true}
-                      isFeatured={true}
-                      showRank={false}
-                      onToggleFeatured={(spotifyArtistId, isNowFeatured) => {
-                        if (!isNowFeatured) {
-                          setMyFeaturedArtists(prev => prev.filter(a => a.spotifyArtistId !== spotifyArtistId));
-                        } else {
-                          fetchMyFeaturedArtists();
-                        }
-                      }}
-                    />
+                    <div key={artist.id || index} className="fade-in-item">
+                      <SongComponent
+                        songData={artist}
+                        showStar={true}
+                        isFeatured={true}
+                        showRank={false}
+                        onToggleFeatured={(spotifyArtistId, isNowFeatured) => {
+                          if (!isNowFeatured) {
+                            setMyFeaturedArtists(prev => prev.filter(a => a.spotifyArtistId !== spotifyArtistId));
+                          } else {
+                            fetchMyFeaturedArtists();
+                          }
+                        }}
+                      />
+                    </div>
                   ))
                 ) : (
                   <p className="empty-message">No featured artists yet.</p>
@@ -253,20 +258,21 @@ function MobileRecommendationsPage() {
               {myFeaturedTab === 'albums' && (
                 myFeaturedAlbums.length > 0 ? (
                   myFeaturedAlbums.map((album, index) => (
-                    <SongComponent
-                      key={album.id || index}
-                      songData={album}
-                      showStar={true}
-                      isFeatured={true}
-                      showRank={false}
-                      onToggleFeatured={(spotifyAlbumId, isNowFeatured) => {
-                        if (!isNowFeatured) {
-                          setMyFeaturedAlbums(prev => prev.filter(a => a.spotifyAlbumId !== spotifyAlbumId));
-                        } else {
-                          fetchMyFeaturedAlbums();
-                        }
-                      }}
-                    />
+                    <div key={album.id || index} className="fade-in-item">
+                      <SongComponent
+                        songData={album}
+                        showStar={true}
+                        isFeatured={true}
+                        showRank={false}
+                        onToggleFeatured={(spotifyAlbumId, isNowFeatured) => {
+                          if (!isNowFeatured) {
+                            setMyFeaturedAlbums(prev => prev.filter(a => a.spotifyAlbumId !== spotifyAlbumId));
+                          } else {
+                            fetchMyFeaturedAlbums();
+                          }
+                        }}
+                      />
+                    </div>
                   ))
                 ) : (
                   <p className="empty-message">No featured albums yet.</p>
@@ -278,6 +284,7 @@ function MobileRecommendationsPage() {
           {/* Friends' Featured Section */}
           <div className="mobile-recommendations-box round-outline blue-box-shadow">
             <h2>Friends' Featured</h2>
+            <p className="section-hint">Tap to review or press play to listen</p>
 
             <div className="featured-tabs">
               <button
@@ -342,7 +349,7 @@ function MobileRecommendationsPage() {
                   <LoadingSpinner message="Loading..." />
                 ) : friendsFeaturedSongs.length > 0 ? (
                   groupByFriend(friendsFeaturedSongs).map((friendGroup, index) => (
-                    <div key={friendGroup.userName || index} className="mobile-friend-group">
+                    <div key={friendGroup.userName || index} className="mobile-friend-group fade-in-item">
                       <div className="mobile-friend-info">
                         {friendGroup.profilePicture && (
                           <img src={friendGroup.profilePicture} alt={friendGroup.displayName} className="mobile-friend-profile-pic" />
@@ -370,7 +377,7 @@ function MobileRecommendationsPage() {
               {friendsFeaturedTab === 'artists' && (
                 friendsFeaturedArtists.length > 0 ? (
                   groupByFriend(friendsFeaturedArtists).map((friendGroup, index) => (
-                    <div key={friendGroup.userName || index} className="mobile-friend-group">
+                    <div key={friendGroup.userName || index} className="mobile-friend-group fade-in-item">
                       <div className="mobile-friend-info">
                         {friendGroup.profilePicture && (
                           <img src={friendGroup.profilePicture} alt={friendGroup.displayName} className="mobile-friend-profile-pic" />
@@ -408,7 +415,7 @@ function MobileRecommendationsPage() {
               {friendsFeaturedTab === 'albums' && (
                 friendsFeaturedAlbums.length > 0 ? (
                   groupByFriend(friendsFeaturedAlbums).map((friendGroup, index) => (
-                    <div key={friendGroup.userName || index} className="mobile-friend-group">
+                    <div key={friendGroup.userName || index} className="mobile-friend-group fade-in-item">
                       <div className="mobile-friend-info">
                         {friendGroup.profilePicture && (
                           <img src={friendGroup.profilePicture} alt={friendGroup.displayName} className="mobile-friend-profile-pic" />

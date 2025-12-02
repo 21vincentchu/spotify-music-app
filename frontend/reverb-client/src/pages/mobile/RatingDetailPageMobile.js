@@ -231,7 +231,7 @@ function RatingDetailPageMobile() {
 
                     {/* Header with Back and Delete */}
                     <div className="rating-detail-header-nav">
-                        <button className="back-button-mobile" onClick={() => navigate('/ratings')}>
+                        <button className="back-button-mobile" onClick={() => navigate(-1)}>
                             ← Back
                         </button>
                         {isRated && !hasChanges && (

@@ -28,7 +28,19 @@ function MobileLayout() {
   const hideNavbar = location.pathname === "/";
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showPageTitle, setShowPageTitle] = useState(false);
   const menuRef = useRef(null);
+
+  // Show page title when location changes
+  useEffect(() => {
+    if (!hideNavbar) {
+      setShowPageTitle(true);
+      const timer = setTimeout(() => {
+        setShowPageTitle(false);
+      }, 2100); // 
+      return () => clearTimeout(timer);
+    }
+  }, [location.pathname, hideNavbar]);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -45,6 +57,28 @@ function MobileLayout() {
     navigate("/");
   };
 
+  // Get current page name
+  const getPageName = () => {
+    switch (location.pathname) {
+      case "/recommendations":
+        return "Recommended";
+      case "/statistics":
+        return "Statistics";
+      case "/home":
+        return "Home";
+      case "/friends":
+        return "Friends";
+      case "/ratings":
+        return "Ratings";
+      case "/profile":
+        return "Profile";
+      case "/about":
+        return "About";
+      default:
+        return "";
+    }
+  };
+
   return (
     <div className="mobile-layout">
       {/* SCROLL-AWAY TOP BAR */}
@@ -53,6 +87,11 @@ function MobileLayout() {
           <Link to="/home">
             <img src={logo} alt="Logo" className="mobile-logo" />
           </Link>
+
+          <div className={`mobile-topbar-title ${showPageTitle ? 'show' : ''}`}>
+            <div>{getPageName()}</div>
+            <div className="page-subtitle">page</div>
+          </div>
 
           <div className="profile-menu-wrapper" ref={menuRef}>
             <button

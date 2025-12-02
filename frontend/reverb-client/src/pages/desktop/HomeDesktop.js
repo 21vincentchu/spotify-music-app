@@ -118,6 +118,7 @@ function HomeDesktop() {
     <div className="home-page page">
         <div className="home-recommended round-outline blue-box-shadow">
             <h2>Recently Played Songs</h2>
+            <p className="section-hint">Click a song to review • Star to recommend to friends</p>
             <div className="home-recommended-songs">
             {isLoadingRecentData ? (
             <LoadingSpinner message="Loading statistics..." />
@@ -148,6 +149,7 @@ function HomeDesktop() {
         </div>
         <div className="home-stats round-outline blue-box-shadow">
             <h2>Recent Statistics</h2>
+            <p className="section-hint">From your last 50 songs</p>
 
         {isLoadingRecentData ? (
             <LoadingSpinner message="Loading statistics..." />

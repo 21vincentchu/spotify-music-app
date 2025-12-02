@@ -109,7 +109,10 @@ function StatisticsPage() {
     <div className="stats-page page">
       <div className="stats-content">
         <div className="stats-data round-outline blue-box-shadow">
-            <h2>Top {category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+            <h2 key={category} className="stats-title-animated">Top {category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+            <p className="stats-hint-text">
+              Click {category === 'songs' ? 'a song' : category === 'albums' ? 'an album' : 'an artist'} to review • Star to recommend to friends
+            </p>
             <div className="featured-tabs">
               <button
                 className={category === 'songs' ? 'active' : ''}

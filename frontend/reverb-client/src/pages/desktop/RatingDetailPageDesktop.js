@@ -204,7 +204,7 @@ function RatingsDetailPageDesktop() {
         <div className='ratings-detail-page page'>
             {/* Header with Back and Delete */}
             <div className="rating-detail-header-nav-desktop">
-                <button className="back-button-desktop" onClick={() => navigate('/ratings')}>
+                <button className="back-button-desktop" onClick={() => navigate(-1)}>
                     ← Back
                 </button>
                 {!isLoadingData && isRated && !hasChanges && (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import config from "../../config";
@@ -11,18 +11,31 @@ function RatingsPage() {
   const [songRatings, setSongRatings] = useState([]);
   const [albumRatings, setAlbumRatings] = useState([]);
   const [friendsRatings, setFriendsRatings] = useState([]);
+  const [friendsFilter, setFriendsFilter] = useState("all"); // all, songs, albums
+  const [friends, setFriends] = useState([]);
+  const [selectedFriends, setSelectedFriends] = useState([]);
+  const [showFriendFilter, setShowFriendFilter] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const filterRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     getSongRatings();
     getAlbumRatings();
     getFriendsRatings();
+    getFriends();
   }, []);
+
+  // Close filter dropdown when switching away from Friends tab
+  useEffect(() => {
+    if (activeTab !== "friends") {
+      setShowFriendFilter(false);
+    }
+  }, [activeTab]);
 
   // Disable body scroll when search results are showing
   useEffect(() => {
@@ -37,6 +50,23 @@ function RatingsPage() {
       document.body.style.overflow = 'unset';
     };
   }, [showSearchResults]);
+
+  // Close filter dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setShowFriendFilter(false);
+      }
+    };
+
+    if (showFriendFilter) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showFriendFilter]);
 
   // Search handler with debounce
   useEffect(() => {
@@ -92,6 +122,31 @@ function RatingsPage() {
     } catch (error) {
       console.error("Error fetching friends ratings:", error);
     }
+  };
+
+  const getFriends = async () => {
+    try {
+      const response = await axios.get(`${config.API_URL}/api/friends/`, {
+        withCredentials: true
+      });
+      setFriends(response.data.friends || []);
+    } catch (error) {
+      console.error('Error fetching friends:', error);
+    }
+  };
+
+  const toggleFriendSelection = (userName) => {
+    setSelectedFriends(prev => {
+      if (prev.includes(userName)) {
+        return prev.filter(u => u !== userName);
+      } else {
+        return [...prev, userName];
+      }
+    });
+  };
+
+  const clearFriendFilter = () => {
+    setSelectedFriends([]);
   };
 
   const handleSearch = async () => {
@@ -177,7 +232,7 @@ function RatingsPage() {
     </div>
   );
 
-  const RatingCard = ({ item, type }) => {
+  const RatingCard = ({ item, type, showTypeBadge = false }) => {
     const hasComment = item.comment && item.comment.trim() !== "";
 
     return (
@@ -186,9 +241,14 @@ function RatingsPage() {
         className="rating-card-link"
       >
         <div className="rating-card">
-          {/* Header: User info */}
+          {/* Header: User info + Type Badge (only for friends tab) */}
           <div className="rating-card-header">
             <span className="rating-card-username">{item.displayName || "You"}</span>
+            {showTypeBadge && (
+              <span className={`rating-type-badge ${type === "song" ? "song-badge" : "album-badge"}`}>
+                {type === "song" ? "Song" : "Album"}
+              </span>
+            )}
           </div>
 
           {/* Body: Song/Album info + Rating */}
@@ -248,6 +308,89 @@ function RatingsPage() {
               >
                 Friends
               </button>
+
+              {/* Filter Button (Friends Tab Only) - Always rendered for smooth animation */}
+              <div
+                className={`filter-by-friend-container-inline ${activeTab === "friends" ? "visible" : "hidden"}`}
+                ref={filterRef}
+              >
+                <button
+                  className="filter-button-mobile"
+                  onClick={() => setShowFriendFilter(!showFriendFilter)}
+                  title="Filter ratings"
+                  disabled={activeTab !== "friends"}
+                >
+                  <svg className="filter-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 4H21V6.5L14 13.5V20L10 22V13.5L3 6.5V4Z" fill="currentColor"/>
+                  </svg>
+                  {(selectedFriends.length > 0 || friendsFilter !== "all") && (
+                    <span className="filter-count">
+                      {selectedFriends.length > 0 ? selectedFriends.length : "•"}
+                    </span>
+                  )}
+                </button>
+                {showFriendFilter && (
+                  <div className="filter-dropdown-mobile">
+                    {/* Type Filter Section */}
+                    <div className="filter-section">
+                      <div className="filter-section-header">Type</div>
+                      <div className="filter-section-options">
+                        <label className="filter-option">
+                          <input
+                            type="radio"
+                            name="typeFilter"
+                            checked={friendsFilter === "all"}
+                            onChange={() => setFriendsFilter("all")}
+                          />
+                          <span>All</span>
+                        </label>
+                        <label className="filter-option">
+                          <input
+                            type="radio"
+                            name="typeFilter"
+                            checked={friendsFilter === "songs"}
+                            onChange={() => setFriendsFilter("songs")}
+                          />
+                          <span>Songs</span>
+                        </label>
+                        <label className="filter-option">
+                          <input
+                            type="radio"
+                            name="typeFilter"
+                            checked={friendsFilter === "albums"}
+                            onChange={() => setFriendsFilter("albums")}
+                          />
+                          <span>Albums</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Friends Filter Section */}
+                    <div className="filter-section">
+                      <div className="filter-dropdown-header">
+                        <span>Friends</span>
+                        {selectedFriends.length > 0 && (
+                          <button className="clear-filter-btn" onClick={clearFriendFilter}>
+                            Clear
+                          </button>
+                        )}
+                      </div>
+                      <div className="filter-options">
+                        {friends.map(friend => (
+                          <label key={friend.userName} className="filter-option">
+                            <input
+                              type="checkbox"
+                              checked={selectedFriends.includes(friend.userName)}
+                              onChange={() => toggleFriendSelection(friend.userName)}
+                            />
+                            <span>{friend.displayName || friend.userName}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Search Input */}
@@ -255,7 +398,13 @@ function RatingsPage() {
               <input
                 type="text"
                 className="ratings-search-tabs-input"
-                placeholder={activeTab === "friends" ? "Search..." : "Search..."}
+                placeholder={
+                  activeTab === "songs"
+                    ? "Search any songs.."
+                    : activeTab === "albums"
+                    ? "Search any albums.."
+                    : "Search..."
+                }
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -342,7 +491,7 @@ function RatingsPage() {
                     {songRatings.length === 0 ? (
                       <p className="empty-text">No rated songs yet</p>
                     ) : (
-                      songRatings.map((rating, index) => (
+                      songRatings.map((rating) => (
                         <div key={rating.spotifyTrackId} className="fade-in-item">
                           <RatingCard
                             item={rating}
@@ -359,7 +508,7 @@ function RatingsPage() {
                     {albumRatings.length === 0 ? (
                       <p className="empty-text">No rated albums yet</p>
                     ) : (
-                      albumRatings.map((rating, index) => (
+                      albumRatings.map((rating) => (
                         <div key={rating.spotifyAlbumId} className="fade-in-item">
                           <RatingCard
                             item={rating}
@@ -376,14 +525,27 @@ function RatingsPage() {
                     {friendsRatings.length === 0 ? (
                       <p className="empty-text">No friends have rated anything yet.</p>
                     ) : (
-                      friendsRatings.map((rating, index) => (
-                        <div key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`} className="fade-in-item">
-                          <RatingCard
-                            item={rating}
-                            type={rating.type}
-                          />
-                        </div>
-                      ))
+                      friendsRatings
+                        .filter(rating => {
+                          // Filter by type
+                          let typeMatch = true;
+                          if (friendsFilter === "songs") typeMatch = rating.type === "song";
+                          else if (friendsFilter === "albums") typeMatch = rating.type === "album";
+
+                          // Filter by selected friends
+                          const friendMatch = selectedFriends.length === 0 || selectedFriends.includes(rating.userName);
+
+                          return typeMatch && friendMatch;
+                        })
+                        .map((rating) => (
+                          <div key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`} className="fade-in-item">
+                            <RatingCard
+                              item={rating}
+                              type={rating.type}
+                              showTypeBadge={true}
+                            />
+                          </div>
+                        ))
                     )}
                   </>
                 )}

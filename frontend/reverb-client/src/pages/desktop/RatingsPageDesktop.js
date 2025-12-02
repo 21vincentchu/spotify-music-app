@@ -1,6 +1,5 @@
 import Footer from "../../components/shared/Footer";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import config from "../../config";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,16 +12,22 @@ function RatingsPage() {
   const [songRatings, setSongRatings] = useState([]);
   const [albumRatings, setAlbumRatings] = useState([]);
   const [friendsRatings, setFriendsRatings] = useState([]);
+  const [friendsFilter, setFriendsFilter] = useState("all"); // all, songs, albums
+  const [friends, setFriends] = useState([]);
+  const [selectedFriends, setSelectedFriends] = useState([]);
+  const [showFriendFilter, setShowFriendFilter] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const filterRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     getSongRatings();
     getAlbumRatings();
     getFriendsRatings();
+    getFriends();
   }, []);
 
   // Disable body scroll on ratings page
@@ -33,6 +38,23 @@ function RatingsPage() {
       document.body.style.overflow = 'unset';
     };
   }, []);
+
+  // Close filter dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setShowFriendFilter(false);
+      }
+    };
+
+    if (showFriendFilter) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showFriendFilter]);
 
   // Search handler with debounce
   useEffect(() => {
@@ -88,6 +110,31 @@ function RatingsPage() {
     } catch (error) {
       console.error('Error fetching friends ratings:', error);
     }
+  };
+
+  const getFriends = async () => {
+    try {
+      const response = await axios.get(`${config.API_URL}/api/friends/`, {
+        withCredentials: true
+      });
+      setFriends(response.data.friends || []);
+    } catch (error) {
+      console.error('Error fetching friends:', error);
+    }
+  };
+
+  const toggleFriendSelection = (userName) => {
+    setSelectedFriends(prev => {
+      if (prev.includes(userName)) {
+        return prev.filter(u => u !== userName);
+      } else {
+        return [...prev, userName];
+      }
+    });
+  };
+
+  const clearFriendFilter = () => {
+    setSelectedFriends([]);
   };
 
   const handleSearch = async () => {
@@ -183,7 +230,11 @@ function RatingsPage() {
               <input
                 type="text"
                 className="ratings-search-input round-outline"
-                placeholder={myFeaturedTab === 'friends' ? "Search friends' ratings..." : `Search for ${myFeaturedTab}...`}
+                placeholder={
+                  myFeaturedTab === 'friends'
+                    ? "Search friends' ratings..."
+                    : `Search any ${myFeaturedTab}..`
+                }
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -277,12 +328,93 @@ function RatingsPage() {
               >
                 Friends
               </button>
+
+              {/* Filter Button (Friends Tab Only) */}
+              {myFeaturedTab === 'friends' && (
+                <div className="filter-container" ref={filterRef}>
+                  <button
+                    className="filter-button"
+                    onClick={() => setShowFriendFilter(!showFriendFilter)}
+                    title="Filter ratings"
+                  >
+                    <svg className="filter-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3 4H21V6.5L14 13.5V20L10 22V13.5L3 6.5V4Z" fill="currentColor"/>
+                    </svg>
+                    {(selectedFriends.length > 0 || friendsFilter !== "all") && (
+                      <span className="filter-count">
+                        {selectedFriends.length > 0 ? selectedFriends.length : "•"}
+                      </span>
+                    )}
+                  </button>
+                  {showFriendFilter && (
+                    <div className="filter-dropdown">
+                      {/* Type Filter Section */}
+                      <div className="filter-section">
+                        <div className="filter-section-header">Type</div>
+                        <div className="filter-section-options">
+                          <label className="filter-option">
+                            <input
+                              type="radio"
+                              name="typeFilter"
+                              checked={friendsFilter === "all"}
+                              onChange={() => setFriendsFilter("all")}
+                            />
+                            <span>All</span>
+                          </label>
+                          <label className="filter-option">
+                            <input
+                              type="radio"
+                              name="typeFilter"
+                              checked={friendsFilter === "songs"}
+                              onChange={() => setFriendsFilter("songs")}
+                            />
+                            <span>Songs</span>
+                          </label>
+                          <label className="filter-option">
+                            <input
+                              type="radio"
+                              name="typeFilter"
+                              checked={friendsFilter === "albums"}
+                              onChange={() => setFriendsFilter("albums")}
+                            />
+                            <span>Albums</span>
+                          </label>
+                        </div>
+                      </div>
+
+                      {/* Friends Filter Section */}
+                      <div className="filter-section">
+                        <div className="filter-dropdown-header">
+                          <span>Friends</span>
+                          {selectedFriends.length > 0 && (
+                            <button className="clear-filter-btn" onClick={clearFriendFilter}>
+                              Clear
+                            </button>
+                          )}
+                        </div>
+                        <div className="filter-options">
+                          {friends.map(friend => (
+                            <label key={friend.userName} className="filter-option">
+                              <input
+                                type="checkbox"
+                                checked={selectedFriends.includes(friend.userName)}
+                                onChange={() => toggleFriendSelection(friend.userName)}
+                              />
+                              <span>{friend.displayName || friend.userName}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="ratings-list">
             
             {myFeaturedTab === 'songs' && typeTab === 'ratings' && (
-              songRatings.map((rating, index) => (
+              songRatings.map((rating) => (
                 <div key={rating.spotifyTrackId} className="fade-in-item">
                   <RatedSongComponentDesktop
                     songData={rating}
@@ -293,7 +425,7 @@ function RatingsPage() {
             )}
 
             {myFeaturedTab === 'albums' && typeTab === 'ratings' && (
-              albumRatings.map((rating, index) => (
+              albumRatings.map((rating) => (
                 <div key={rating.spotifyAlbumId} className="fade-in-item">
                   <RatedSongComponentDesktop
                     songData={rating}
@@ -306,7 +438,7 @@ function RatingsPage() {
             {myFeaturedTab === 'songs' && typeTab === 'reviews' && (
               songRatings
                 .filter(rating => rating.comment && rating.comment.trim() !== "")
-                .map((rating, index) => (
+                .map((rating) => (
                   <div className="song-component fade-in-item" key={rating.spotifyTrackId}>
                     <img className="circle stats-circle" src={rating?.imageUrl} alt="{rating.spotifyTrackId}" />
                     <div className="song-info">
@@ -326,7 +458,7 @@ function RatingsPage() {
             {myFeaturedTab === 'albums' && typeTab === 'reviews' && (
               albumRatings
                 .filter(rating => rating.comment && rating.comment.trim() !== "")
-                .map((rating, index) => (
+                .map((rating) => (
                   <div className="song-component fade-in-item" key={rating.spotifyTrackId}>
                     <img className="circle stats-circle" src={rating?.imageUrl} alt="{rating.spotifyAlbumId}" />
                     <div className="song-info">
@@ -344,25 +476,40 @@ function RatingsPage() {
             )}
 
             {myFeaturedTab === 'friends' && typeTab === 'ratings' && (
-              friendsRatings.length > 0 ? (
-                friendsRatings.map((rating, index) => (
-                  <div key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`} className="fade-in-item">
-                    <RatedSongComponentDesktop
-                      songData={rating}
-                      type={rating.type}
-                    />
-                  </div>
-                ))
-              ) : (
-                <p className="empty-message">No friends have rated anything yet.</p>
-              )
+              <>
+                {friendsRatings.length > 0 ? (
+                  friendsRatings
+                    .filter(rating => {
+                      // Filter by type
+                      let typeMatch = true;
+                      if (friendsFilter === "songs") typeMatch = rating.type === "song";
+                      else if (friendsFilter === "albums") typeMatch = rating.type === "album";
+
+                      // Filter by selected friends
+                      const friendMatch = selectedFriends.length === 0 || selectedFriends.includes(rating.userName);
+
+                      return typeMatch && friendMatch;
+                    })
+                    .map((rating) => (
+                      <div key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`} className="fade-in-item">
+                        <RatedSongComponentDesktop
+                          songData={rating}
+                          type={rating.type}
+                          showTypeBadge={true}
+                        />
+                      </div>
+                    ))
+                ) : (
+                  <p className="empty-message">No friends have rated anything yet.</p>
+                )}
+              </>
             )}
 
             {myFeaturedTab === 'friends' && typeTab === 'reviews' && (
               friendsRatings.filter(rating => rating.comment && rating.comment.trim() !== "").length > 0 ? (
                 friendsRatings
                   .filter(rating => rating.comment && rating.comment.trim() !== "")
-                  .map((rating, index) => (
+                  .map((rating) => (
                     <div className="song-component rated-song-desktop fade-in-item" key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`}>
                       <p className="user-name-header">{rating.displayName}</p>
                       <div className="song-content-row">

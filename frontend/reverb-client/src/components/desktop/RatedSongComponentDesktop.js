@@ -2,7 +2,7 @@
 import { Rating } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-function RatedSongComponentDesktop({songData,type}){
+function RatedSongComponentDesktop({songData, type, showTypeBadge = false}){
 
 
     let url = '';
@@ -15,7 +15,14 @@ function RatedSongComponentDesktop({songData,type}){
     return (
         <div className="song-component-container">
             <div className="song-component rated-song-desktop">
-                <p className="user-name-header">{songData.displayName}</p>
+                <div className="user-name-header-row">
+                    <p className="user-name-header">{songData.displayName}</p>
+                    {showTypeBadge && (
+                        <span className={`rating-type-badge ${type === "song" ? "song-badge" : "album-badge"}`}>
+                            {type === "song" ? "Song" : "Album"}
+                        </span>
+                    )}
+                </div>
                 <div className="song-content-row">
                     <img className="circle stats-circle" src={songData?.imageUrl} />
                     <div className="song-info">
