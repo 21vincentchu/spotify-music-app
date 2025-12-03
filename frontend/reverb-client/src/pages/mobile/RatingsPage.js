@@ -23,6 +23,9 @@ function RatingsPage() {
   const [editingRatingValue, setEditingRatingValue] = useState(0);
   const [editingComment, setEditingComment] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [dragStartY, setDragStartY] = useState(0);
+  const [dragCurrentY, setDragCurrentY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
   const filterRef = useRef(null);
   const filterModalRef = useRef(null);
   const textareaRef = useRef(null);
@@ -99,6 +102,27 @@ function RatingsPage() {
       textarea.setSelectionRange(length, length);
     }
   }, [editingRatingId]);
+
+  // Touch handlers for drag-to-close modal
+  const handleTouchStart = (e) => {
+    setDragStartY(e.touches[0].clientY);
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging) return;
+    setDragCurrentY(e.touches[0].clientY);
+  };
+
+  const handleTouchEnd = () => {
+    const dragDistance = dragCurrentY - dragStartY;
+    if (dragDistance > 100) {
+      setShowFriendFilter(false);
+    }
+    setIsDragging(false);
+    setDragStartY(0);
+    setDragCurrentY(0);
+  };
 
   const getSongRatings = async () => {
     try {
@@ -338,8 +362,8 @@ function RatingsPage() {
     return (
       <div
         className={`rating-card ${isEditing ? 'editing' : ''}`}
-        onClick={!isEditing && isOwnRating ? () => navigate(`/ratings/${type}/${itemId}`) : undefined}
-        style={{ cursor: !isEditing && isOwnRating ? 'pointer' : 'default' }}
+        onClick={!isEditing ? () => navigate(`/ratings/${type}/${itemId}`) : undefined}
+        style={{ cursor: !isEditing ? 'pointer' : 'default' }}
       >
         {/* Header: User info + Type Badge (only for friends tab) */}
         <div className="rating-card-header">
@@ -350,7 +374,7 @@ function RatingsPage() {
                 {type === "song" ? "Song" : "Album"}
               </span>
             )}
-            {isOwnRating && !isEditing && (
+            {!isEditing && (
               <span className="rating-card-hint">More details →</span>
             )}
           </div>
@@ -538,7 +562,13 @@ function RatingsPage() {
 
           {/* Filter Modal */}
           {showFriendFilter && (
-            <div className="filter-dropdown-mobile" ref={filterModalRef}>
+            <div
+              className="filter-dropdown-mobile"
+              ref={filterModalRef}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
               {/* Type Filter Section */}
               <div className="filter-section">
                 <div className="filter-section-header">Type</div>

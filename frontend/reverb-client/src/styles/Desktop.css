@@ -2794,6 +2794,25 @@ nav {
     white-space: nowrap;
   }
 
+  .rating-type-badge {
+    font-size: 0.7em;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 12px;
+    white-space: nowrap;
+    text-transform: capitalize;
+  }
+
+  .song-badge {
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }
+
+  .album-badge {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+  }
+
   .rated-song-desktop .song-content-row {
     display: flex;
     flex-direction: row;

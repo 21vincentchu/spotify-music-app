@@ -698,7 +698,15 @@ function RatingsPage() {
                   .map((rating) => (
                     <Link to={`/ratings/${rating.type}/${rating.type === 'song' ? rating.spotifyTrackId : rating.spotifyAlbumId}`} className="song-component-link" key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`}>
                       <div className="song-component rated-song-desktop fade-in-item">
-                        <p className="user-name-header">{rating.displayName}</p>
+                        <div className="user-name-header-row">
+                          <p className="user-name-header">{rating.displayName}</p>
+                          <div className="header-row-right">
+                            <span className={`rating-type-badge ${rating.type === "song" ? "song-badge" : "album-badge"}`}>
+                              {rating.type === "song" ? "Song" : "Album"}
+                            </span>
+                            <span className="more-details-hint">More details →</span>
+                          </div>
+                        </div>
                         <div className="song-content-row">
                           <img className="circle stats-circle" src={rating?.imageUrl} alt={rating.type} />
                           <div className="song-info">
