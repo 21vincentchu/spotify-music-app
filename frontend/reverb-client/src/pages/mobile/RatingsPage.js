@@ -24,6 +24,7 @@ function RatingsPage() {
   const [editingComment, setEditingComment] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const filterRef = useRef(null);
+  const filterModalRef = useRef(null);
   const textareaRef = useRef(null);
   const navigate = useNavigate();
 
@@ -41,24 +42,25 @@ function RatingsPage() {
     }
   }, [activeTab]);
 
-  // Disable body scroll when search results are showing
+  // Disable body scroll when search results or filter are showing
   useEffect(() => {
-    if (showSearchResults) {
+    if (showSearchResults || showFriendFilter) {
       document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+      return () => {
+        document.body.style.overflow = '';
+      };
     }
-
-    // Cleanup on unmount
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [showSearchResults]);
+  }, [showSearchResults, showFriendFilter]);
 
   // Close filter dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (filterRef.current && !filterRef.current.contains(event.target)) {
+      if (
+        filterRef.current &&
+        !filterRef.current.contains(event.target) &&
+        filterModalRef.current &&
+        !filterModalRef.current.contains(event.target)
+      ) {
         setShowFriendFilter(false);
       }
     };
@@ -490,67 +492,6 @@ function RatingsPage() {
                     </span>
                   )}
                 </button>
-                {showFriendFilter && (
-                  <div className="filter-dropdown-mobile">
-                    {/* Type Filter Section */}
-                    <div className="filter-section">
-                      <div className="filter-section-header">Type</div>
-                      <div className="filter-section-options">
-                        <label className="filter-option">
-                          <input
-                            type="radio"
-                            name="typeFilter"
-                            checked={friendsFilter === "all"}
-                            onChange={() => setFriendsFilter("all")}
-                          />
-                          <span>All</span>
-                        </label>
-                        <label className="filter-option">
-                          <input
-                            type="radio"
-                            name="typeFilter"
-                            checked={friendsFilter === "songs"}
-                            onChange={() => setFriendsFilter("songs")}
-                          />
-                          <span>Songs</span>
-                        </label>
-                        <label className="filter-option">
-                          <input
-                            type="radio"
-                            name="typeFilter"
-                            checked={friendsFilter === "albums"}
-                            onChange={() => setFriendsFilter("albums")}
-                          />
-                          <span>Albums</span>
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Friends Filter Section */}
-                    <div className="filter-section">
-                      <div className="filter-dropdown-header">
-                        <span>Friends</span>
-                        {selectedFriends.length > 0 && (
-                          <button className="clear-filter-btn" onClick={clearFriendFilter}>
-                            Clear
-                          </button>
-                        )}
-                      </div>
-                      <div className="filter-options">
-                        {friends.map(friend => (
-                          <label key={friend.userName} className="filter-option">
-                            <input
-                              type="checkbox"
-                              checked={selectedFriends.includes(friend.userName)}
-                              onChange={() => toggleFriendSelection(friend.userName)}
-                            />
-                            <span>{friend.displayName || friend.userName}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
@@ -593,6 +534,69 @@ function RatingsPage() {
                 setSearchQuery("");
               }}
             />
+          )}
+
+          {/* Filter Modal */}
+          {showFriendFilter && (
+            <div className="filter-dropdown-mobile" ref={filterModalRef}>
+              {/* Type Filter Section */}
+              <div className="filter-section">
+                <div className="filter-section-header">Type</div>
+                <div className="filter-section-options">
+                  <label className="filter-option">
+                    <input
+                      type="radio"
+                      name="typeFilter"
+                      checked={friendsFilter === "all"}
+                      onChange={() => setFriendsFilter("all")}
+                    />
+                    <span>All</span>
+                  </label>
+                  <label className="filter-option">
+                    <input
+                      type="radio"
+                      name="typeFilter"
+                      checked={friendsFilter === "songs"}
+                      onChange={() => setFriendsFilter("songs")}
+                    />
+                    <span>Songs</span>
+                  </label>
+                  <label className="filter-option">
+                    <input
+                      type="radio"
+                      name="typeFilter"
+                      checked={friendsFilter === "albums"}
+                      onChange={() => setFriendsFilter("albums")}
+                    />
+                    <span>Albums</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Friends Filter Section */}
+              <div className="filter-section">
+                <div className="filter-dropdown-header">
+                  <span>Friends</span>
+                  {selectedFriends.length > 0 && (
+                    <button className="clear-filter-btn" onClick={clearFriendFilter}>
+                      Clear
+                    </button>
+                  )}
+                </div>
+                <div className="filter-options">
+                  {friends.map(friend => (
+                    <label key={friend.userName} className="filter-option">
+                      <input
+                        type="checkbox"
+                        checked={selectedFriends.includes(friend.userName)}
+                        onChange={() => toggleFriendSelection(friend.userName)}
+                      />
+                      <span>{friend.displayName || friend.userName}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
           )}
 
           {/* Search Results Dropdown */}

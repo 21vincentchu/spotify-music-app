@@ -8,6 +8,13 @@
     overscroll-behavior: none;
     overflow-x: hidden;
     background-color: #ffffff;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -146,6 +153,12 @@
   background-color: #ffffff;
   overscroll-behavior: none;
   overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.mobile-layout::-webkit-scrollbar {
+  display: none;
 }
 
 /* Remove min-height from nested mobile-layout divs to prevent extra white space */
@@ -765,7 +778,6 @@
 
 .mobile-layout .mobile-friends.page {
   width: 100%;
-  min-height: calc(100vh - 60px);
   display: flex;
   flex-direction: column;
   padding: 0 12px 80px 12px;
@@ -982,7 +994,6 @@
   justify-content: flex-start;
   gap: 32px;
   width: 100%;
-  min-height: calc(100vh - 120px);
 }
 
 .mobile-layout .home-content {
@@ -1394,7 +1405,6 @@
 /* ===================== FRIENDS MOBILE PAGE ================= */
 .mobile-layout .mobile-friends {
   width: 100%;
-  min-height: calc(100vh - 60px);
   display: flex;
   flex-direction: column;
   padding: 0 12px 80px 12px;
@@ -1990,16 +2000,68 @@
 }
 
 .mobile-layout .filter-dropdown-mobile {
-  position: absolute;
-  top: calc(100% + 8px);
+  position: fixed;
+  bottom: 0;
+  left: 0;
   right: 0;
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  width: 200px;
-  max-height: 300px;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+  max-height: 70vh;
   overflow-y: auto;
-  z-index: 1000;
+  overflow-x: hidden;
+  z-index: 1002;
+  animation: slideUpModal 0.3s ease-out;
+  padding-bottom: 20px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.mobile-layout .filter-dropdown-mobile::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes slideUpModal {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Filter Modal Backdrop */
+.mobile-layout .filter-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Handle */
+.mobile-layout .filter-dropdown-mobile::before {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 4px;
+  background: #d0d0d0;
+  border-radius: 2px;
+  margin: 12px auto 16px;
 }
 
 .mobile-layout .filter-dropdown-header {
