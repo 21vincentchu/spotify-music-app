@@ -3,7 +3,6 @@ import { useEffect, useState, useRef } from 'react';
 
 import SongComponent from '../../components/shared/SongComponent';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
-import ProfileButtonMobile from '../../components/mobile/ProfileButtonMobile';
 import config from '../../config';
 
 function StatisticsPage() {
@@ -113,7 +112,6 @@ function StatisticsPage() {
 
   return (
     <div className="mobile-layout">
-      <ProfileButtonMobile />
       <div className="stats-page-single page">
         <div className="stats-single-box round-outline blue-box-shadow">
           <h2 key={category} className="stats-title-animated">Top {category.charAt(0).toUpperCase() + category.slice(1)}</h2>

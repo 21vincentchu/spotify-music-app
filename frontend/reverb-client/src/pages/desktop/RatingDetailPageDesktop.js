@@ -202,24 +202,23 @@ function RatingsDetailPageDesktop() {
 
     return (
         <div className='ratings-detail-page page'>
-            {/* Header with Back and Delete */}
-            <div className="rating-detail-header-nav-desktop">
-                <button className="back-button-desktop" onClick={() => navigate(-1)}>
-                    ← Back
-                </button>
-                {!isLoadingData && isRated && !hasChanges && (
-                    <button className="delete-button-header-desktop fade-in-item" onClick={handleDelete}>
-                        Delete Review
-                    </button>
-                )}
-            </div>
-
             {isLoadingData ? (
                 <div className='ratings-detail-container round-outline blue-box-shadow'>
                     <p className="loading-text" style={{ textAlign: 'center', padding: '40px' }}>Loading...</p>
                 </div>
             ) : (
             <div className='ratings-detail-container round-outline blue-box-shadow fade-in-item'>
+                {/* Header with Back and Delete */}
+                <div className="rating-detail-header-nav-desktop">
+                    <button className="back-button-desktop" onClick={() => navigate(-1)}>
+                        ← Back
+                    </button>
+                    {isRated && !hasChanges && (
+                        <button className="delete-button-header-desktop fade-in-item" onClick={handleDelete}>
+                            Delete Review
+                        </button>
+                    )}
+                </div>
 
                 <div className='ratings-detail-info'>
                     <img

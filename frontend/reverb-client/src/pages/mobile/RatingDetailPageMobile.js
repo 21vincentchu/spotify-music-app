@@ -3,7 +3,6 @@ import { Rating } from '@mui/material';
 import axios from 'axios';
 import config from '../../config';
 import { useParams, useNavigate } from 'react-router-dom';
-import ProfileButtonMobile from '../../components/mobile/ProfileButtonMobile';
 import StarIcon from '../../components/mobile/StarIcon';
 import '../../styles/Mobile.css';
 
@@ -208,7 +207,6 @@ function RatingDetailPageMobile() {
     if (isLoading) {
         return (
             <div className="mobile-layout">
-                <ProfileButtonMobile />
                 <div className="mobile-content">
                     <p className="loading-text">Loading...</p>
                 </div>
@@ -225,7 +223,6 @@ function RatingDetailPageMobile() {
 
     return (
         <div className="mobile-layout">
-            <ProfileButtonMobile />
             <div className="mobile-content">
                 <div className="rating-detail-page-mobile">
 

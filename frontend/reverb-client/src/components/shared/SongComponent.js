@@ -48,6 +48,7 @@ function SongComponent({songData, showStar, isFeatured, onToggleFeatured, showRa
 
     const handleStarToggle = async (e) => {
         e.stopPropagation();
+        e.preventDefault();
         setIsLoading(true);
         try {
             if (isStarred) {
@@ -130,7 +131,7 @@ function SongComponent({songData, showStar, isFeatured, onToggleFeatured, showRa
                     <p className="artist-name">{artistName}</p>
                     {timestamp && <p className="played-at-time">{timestamp}</p>}
                 </div>
-                {showPlay && spotifyUrl && (
+                {spotifyUrl && (
                     <a
                         href={spotifyUrl}
                         target="_blank"

@@ -34,10 +34,10 @@ def fetch_top_genres_from_recent(sp: spotipy.Spotify, recent_tracks: list) -> di
         recent_tracks: List of recently played items from Spotify API
 
     Returns:
-        Dictionary with top genre information:
+        Dictionary with top genre information and artist genre mapping:
         {
-            'top_genre': str (most common genre),
-            'genre_count': int (number of tracks with that genre)
+            'top_genres': list of {'genre': str, 'count': int},
+            'artist_genres': dict mapping artist_id to list of genres
         }
     """
     artist_ids = set()
@@ -52,31 +52,66 @@ def fetch_top_genres_from_recent(sp: spotipy.Spotify, recent_tracks: list) -> di
                 artist_ids.add(artist_id)
 
     if not artist_ids:
-        return {'top_genre': 'Unknown', 'genre_count': 0}
+        return {'top_genres': [], 'artist_genres': {}}
 
     # Fetch artist details in batches (Spotify allows up to 50 at a time)
     artist_ids_list = list(artist_ids)
     all_genres = []
+    artist_genres_map = {}
 
     for i in range(0, len(artist_ids_list), 50):
         batch = artist_ids_list[i:i+50]
         try:
             artists_data = sp.artists(batch)
             for artist in artists_data.get('artists', []):
-                if artist and artist.get('genres'):
-                    all_genres.extend(artist['genres'])
+                if artist:
+                    artist_id = artist.get('id')
+                    genres = artist.get('genres', [])
+                    if artist_id:
+                        artist_genres_map[artist_id] = genres
+                    if genres:
+                        all_genres.extend(genres)
         except Exception as e:
             print(f"Error fetching artist data: {e}", flush=True)
 
     if not all_genres:
-        return {'top_genres': []}
+        return {'top_genres': [], 'artist_genres': artist_genres_map}
 
-    # Count genres and get top 5
-    genre_counter = Counter(all_genres)
-    top_5 = genre_counter.most_common(5)
+    # Count how many songs have each genre
+    genre_song_counter = Counter()
+    # Track unique songs per genre to avoid counting duplicates
+    genre_unique_tracks = {}
+
+    for item in recent_tracks:
+        track = item.get('track', {})
+        track_id = track.get('id')
+        if not track_id:
+            continue
+
+        artists = track.get('artists', [])
+
+        # Get all unique genres for this track
+        track_genres = set()
+        for artist in artists:
+            artist_id = artist.get('id')
+            if artist_id and artist_id in artist_genres_map:
+                track_genres.update(artist_genres_map[artist_id])
+
+        # Count each genre once per unique track
+        for genre in track_genres:
+            if genre not in genre_unique_tracks:
+                genre_unique_tracks[genre] = set()
+            # Only count if this track hasn't been counted for this genre yet
+            if track_id not in genre_unique_tracks[genre]:
+                genre_unique_tracks[genre].add(track_id)
+                genre_song_counter[genre] += 1
+
+    # Get top 5 genres by song count
+    top_5 = genre_song_counter.most_common(5)
 
     return {
-        'top_genres': [{'genre': genre.title(), 'count': count} for genre, count in top_5]
+        'top_genres': [{'genre': genre.title(), 'count': count} for genre, count in top_5],
+        'artist_genres': artist_genres_map
     }
 
 def calculate_listening_minutes(recent_tracks: list) -> dict:

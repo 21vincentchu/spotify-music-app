@@ -1,14 +1,9 @@
-import { NavLink } from "react-router-dom";
-
 function Footer() {
   return (
     <footer className="app-footer">
       <div className="footer-content">
         <div className="footer-left">
           <span>© 2025 Reverb</span>
-        </div>
-        <div className="footer-center">
-          <NavLink to="/about" className="footer-link">About</NavLink>
         </div>
         <div className="footer-right">
           <a

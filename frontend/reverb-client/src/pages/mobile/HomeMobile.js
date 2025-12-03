@@ -5,13 +5,14 @@ import axios from "axios";
 import LoadingSpinner from "../../components/shared/LoadingSpinner";
 import SongComponent from "../../components/shared/SongComponent";
 import StatsDashboard from "../../components/shared/StatsDashboard";
-import ProfileButtonMobile from "../../components/mobile/ProfileButtonMobile";
 import config from "../../config";
 
 const HomeMobile = () => {
   const [isLoadingRecentData, setIsLoadingRecentData] = useState(true);
   const [recentData, setRecentData] = useState([]);
   const [featuredSongs, setFeaturedSongs] = useState([]);
+  const [selectedGenre, setSelectedGenre] = useState(null);
+  const [genreSongs, setGenreSongs] = useState([]);
 
   // Load data when screen loads
   useEffect(() => {
@@ -76,9 +77,62 @@ const HomeMobile = () => {
     return featuredSongs.some(song => song.spotifyTrackId === spotifyTrackId);
   };
 
+  // ===============================
+  // Genre Functions
+  // ===============================
+  const getGenreCount = (genreName) => {
+    if (!recentData.recent_tracks) return 0;
+
+    const normalizedGenre = genreName.toLowerCase();
+    const uniqueTrackIds = new Set();
+
+    recentData.recent_tracks.forEach(item => {
+      const track = item.track;
+      const hasGenre = track.artists?.some(artist => {
+        if (!artist.genres || !Array.isArray(artist.genres)) return false;
+        return artist.genres.some(g => g.toLowerCase() === normalizedGenre);
+      });
+
+      if (hasGenre && track.id) {
+        uniqueTrackIds.add(track.id);
+      }
+    });
+
+    return uniqueTrackIds.size;
+  };
+
+  const handleGenreClick = (genreName) => {
+    if (!recentData.recent_tracks) return;
+
+    const normalizedGenre = genreName.toLowerCase();
+    const seenTrackIds = new Set();
+    const uniqueSongsWithGenre = [];
+
+    recentData.recent_tracks.forEach(item => {
+      const track = item.track;
+      const hasGenre = track.artists?.some(artist => {
+        if (!artist.genres || !Array.isArray(artist.genres)) return false;
+        return artist.genres.some(g => g.toLowerCase() === normalizedGenre);
+      });
+
+      // Only add if this track hasn't been added yet
+      if (hasGenre && track.id && !seenTrackIds.has(track.id)) {
+        seenTrackIds.add(track.id);
+        uniqueSongsWithGenre.push(item);
+      }
+    });
+
+    setSelectedGenre(genreName);
+    setGenreSongs(uniqueSongsWithGenre);
+  };
+
+  const handleCloseGenreModal = () => {
+    setSelectedGenre(null);
+    setGenreSongs([]);
+  };
+
   return (
     <div className="mobile-layout">
-      <ProfileButtonMobile />
       <div className="home-page page">
         <div className="home-content">
 
@@ -144,12 +198,19 @@ const HomeMobile = () => {
                 <div className="mobile-genre-section">
                   <h3>Top Genres</h3>
                   <ol className="mobile-genre-list">
-                    {recentData.genre_stats?.top_genres?.map((item, index) => (
-                      <li key={index}>
-                        <span className="genre-name">{item.genre}</span>
-                        <span className="genre-count">{item.count} song{item.count !== 1 ? 's' : ''}</span>
-                      </li>
-                    )) || <li>No genres found</li>}
+                    {recentData.genre_stats?.top_genres?.map((item, index) => {
+                      const actualCount = getGenreCount(item.genre);
+                      return (
+                        <li
+                          key={index}
+                          className="mobile-genre-item-clickable"
+                          onClick={() => handleGenreClick(item.genre)}
+                        >
+                          <span className="genre-name">{item.genre}</span>
+                          <span className="genre-count">{actualCount} song{actualCount !== 1 ? 's' : ''}</span>
+                        </li>
+                      );
+                    }) || <li>No genres found</li>}
                   </ol>
                 </div>
                 <StatsDashboard recentTracks={recentData.recent_tracks} />
@@ -159,6 +220,46 @@ const HomeMobile = () => {
 
         </div>
       </div>
+
+      {/* Genre Modal */}
+      {selectedGenre && (
+        <div className="genre-modal-overlay" onClick={handleCloseGenreModal}>
+          <div className="genre-modal mobile-genre-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="genre-modal-header">
+              <h2>{selectedGenre}</h2>
+              <button className="close-modal-btn" onClick={handleCloseGenreModal}>×</button>
+            </div>
+            <p className="genre-modal-hint">Songs from your recent plays</p>
+            <div className="genre-modal-songs">
+              {genreSongs.length > 0 ? (
+                genreSongs.map((item, index) => {
+                  const track = item.track;
+                  const songData = {
+                    songName: track.name,
+                    artistName: track.artists?.[0]?.name || 'Unknown Artist',
+                    spotifyTrackId: track.id,
+                    imageUrl: track.album?.images?.[0]?.url,
+                    playedAt: item.played_at,
+                    rank: index + 1
+                  };
+                  return (
+                    <div key={`${track.id}-${index}`} className="fade-in-item">
+                      <SongComponent
+                        songData={songData}
+                        showStar={true}
+                        isFeatured={isSongFeatured(track.id)}
+                        timestamp={getRelativeTime(item.played_at)}
+                      />
+                    </div>
+                  );
+                })
+              ) : (
+                <p className="no-songs-message">No songs found for this genre</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,6 +1,8 @@
 // src/layouts/MobileLayout.js
 import { Routes, Route, useLocation, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import axios from 'axios';
+import config from '../config';
 
 import SignInPage from "../pages/mobile/SignInPage";
 import CallbackPage from "../pages/mobile/CallbackPage";
@@ -15,9 +17,6 @@ import ProfilePage from "../pages/mobile/ProfilePage";
 import AboutPage from "../pages/mobile/AboutPage";
 import ProtectedRoute from "../components/shared/ProtectedRoute";
 
-
-
-import profileButton from "../assets/istockphoto-2171382633-612x612.jpg";
 import logo from "../assets/reverb-logo.svg";
 
 import "../styles/Mobile.css";
@@ -29,7 +28,28 @@ function MobileLayout() {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [showPageTitle, setShowPageTitle] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(null);
   const menuRef = useRef(null);
+
+  // Fetch user profile picture
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await axios.get(`${config.API_URL}/api/profile/`, {
+          withCredentials: true
+        });
+        if (response.data.profilePicture) {
+          setProfilePicture(response.data.profilePicture);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+
+    if (!hideNavbar) {
+      fetchUserProfile();
+    }
+  }, [hideNavbar]);
 
   // Show page title when location changes
   useEffect(() => {
@@ -37,7 +57,7 @@ function MobileLayout() {
       setShowPageTitle(true);
       const timer = setTimeout(() => {
         setShowPageTitle(false);
-      }, 2100); // 
+      }, 2100); //
       return () => clearTimeout(timer);
     }
   }, [location.pathname, hideNavbar]);
@@ -59,6 +79,14 @@ function MobileLayout() {
 
   // Get current page name
   const getPageName = () => {
+    // Handle dynamic rating detail page
+    if (location.pathname.startsWith("/ratings/")) {
+      const pathParts = location.pathname.split("/");
+      if (pathParts.length > 2) {
+        return "Rating Detail";
+      }
+    }
+
     switch (location.pathname) {
       case "/recommendations":
         return "Recommended";
@@ -93,37 +121,39 @@ function MobileLayout() {
             <div className="page-subtitle">page</div>
           </div>
 
-          <div className="profile-menu-wrapper" ref={menuRef}>
-            <button
-              className="profile-button"
-              onClick={() => setMenuOpen((prev) => !prev)}
-            >
-              <img src={profileButton} alt="Profile" />
-            </button>
+          {profilePicture && (
+            <div className="profile-menu-wrapper" ref={menuRef}>
+              <button
+                className="profile-button"
+                onClick={() => setMenuOpen((prev) => !prev)}
+              >
+                <img src={profilePicture} alt="Profile" />
+              </button>
 
-            {menuOpen && (
-              <div className="profile-dropdown">
-                <Link
-                  to="/profile"
-                  className="dropdown-item"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  View Profile
-                </Link>
-                <Link
-                    to="/about"
+              {menuOpen && (
+                <div className="profile-dropdown">
+                  <Link
+                    to="/profile"
                     className="dropdown-item"
                     onClick={() => setMenuOpen(false)}
                   >
-                    About
+                    View Profile
                   </Link>
+                  <Link
+                      to="/about"
+                      className="dropdown-item"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      About
+                    </Link>
 
-                <button className="dropdown-item signout" onClick={handleSignOut}>
-                  Sign Out
-                </button>
-              </div>
-            )}
-          </div>
+                  <button className="dropdown-item signout" onClick={handleSignOut}>
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 

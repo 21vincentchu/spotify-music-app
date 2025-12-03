@@ -69,10 +69,25 @@ const StatsDashboard = ({ recentTracks }) => {
           label: 'Songs Played',
           data: data,
           borderColor: '#1282A2',
-          backgroundColor: 'rgba(18, 130, 162, 0.2)',
-          borderWidth: 3,
+          backgroundColor: (context) => {
+            const ctx = context.chart.ctx;
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(18, 130, 162, 0.6)');
+            gradient.addColorStop(0.5, 'rgba(18, 130, 162, 0.3)');
+            gradient.addColorStop(1, 'rgba(18, 130, 162, 0.05)');
+            return gradient;
+          },
+          borderWidth: 2.5,
           tension: 0.4,
           fill: true,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointBackgroundColor: '#1282A2',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointHoverBackgroundColor: '#1282A2',
+          pointHoverBorderColor: '#fff',
+          pointHoverBorderWidth: 2.5,
         },
       ],
     };
@@ -103,8 +118,8 @@ const StatsDashboard = ({ recentTracks }) => {
           weight: 'bold'
         },
         padding: {
-          top: 10,
-          bottom: 25
+          top: 5,
+          bottom: 10
         }
       },
       tooltip: {
@@ -183,20 +198,66 @@ const StatsDashboard = ({ recentTracks }) => {
   const simpleOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 1500,
+      easing: 'easeInOutQuart',
+    },
     plugins: {
       title: {
         display: true,
         text: 'Listening Activity',
-        color: '#1a1a2e',
+        color: '#2c3e50',
         font: {
           size: 20,
-          weight: 'bold'
+          weight: '600',
+          family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+        },
+        padding: {
+          top: 5,
+          bottom: 10
         }
       },
       legend: {
         display: true,
+        position: 'bottom',
         labels: {
-          color: '#1a1a2e'
+          color: '#2c3e50',
+          font: {
+            size: 12,
+            weight: '500'
+          },
+          usePointStyle: true,
+          pointStyle: 'circle',
+          padding: 20,
+          boxWidth: 6,
+          boxHeight: 6
+        }
+      },
+      tooltip: {
+        enabled: true,
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        titleColor: '#2c3e50',
+        bodyColor: '#2c3e50',
+        borderColor: '#e0e0e0',
+        borderWidth: 1,
+        titleFont: {
+          size: 13,
+          weight: 'bold'
+        },
+        bodyFont: {
+          size: 12
+        },
+        padding: 10,
+        cornerRadius: 6,
+        displayColors: true,
+        callbacks: {
+          title: function(context) {
+            return `Time: ${context[0].label}`;
+          },
+          label: function(context) {
+            const value = context.parsed.y;
+            return `${value} song${value !== 1 ? 's' : ''} played`;
+          }
         }
       }
     },
@@ -205,33 +266,51 @@ const StatsDashboard = ({ recentTracks }) => {
         beginAtZero: true,
         max: yAxisMax,
         title: {
-          display: true,
-          text: 'Plays',
-          color: '#1a1a2e',
-          font: {
-            size: 15,
-            weight: 'bold'
-          }
+          display: false
         },
         ticks: {
-          color: '#1a1a2e',
-          stepSize: 2
+          color: '#95a5a6',
+          stepSize: 2,
+          font: {
+            size: 11
+          },
+          padding: 10
+        },
+        grid: {
+          color: 'rgba(0, 0, 0, 0.05)',
+          drawBorder: false,
+          lineWidth: 1
+        },
+        border: {
+          display: false,
+          dash: [5, 5]
         }
       },
       x: {
         title: {
-          display: true,
-          text: 'Time',
-          color: '#1a1a2e',
-          font: {
-            size: 15,
-            weight: 'bold'
-          }
+          display: false
         },
         ticks: {
-          color: '#1a1a2e'
+          color: '#95a5a6',
+          font: {
+            size: 11
+          },
+          padding: 10
+        },
+        grid: {
+          display: false,
+          drawBorder: true,
+          borderColor: 'rgba(0, 0, 0, 0.1)'
+        },
+        border: {
+          display: true,
+          color: 'rgba(0, 0, 0, 0.1)'
         }
       }
+    },
+    interaction: {
+      intersect: false,
+      mode: 'index'
     }
   };
 

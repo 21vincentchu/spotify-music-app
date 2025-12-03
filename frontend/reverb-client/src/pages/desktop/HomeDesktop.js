@@ -13,6 +13,8 @@ function HomeDesktop() {
     const [featuredSongs, setFeaturedSongs] = useState([]);
     const [featuredArtists, setFeaturedArtists] = useState([]);
     const [featuredAlbums, setFeaturedAlbums] = useState([]);
+    const [selectedGenre, setSelectedGenre] = useState(null);
+    const [genreSongs, setGenreSongs] = useState([]);
 
     useEffect(() => {
         getRecentData();
@@ -113,6 +115,61 @@ function HomeDesktop() {
         return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`;
     };
 
+    const getGenreCount = (genreName) => {
+        if (!recentData.recent_tracks) return 0;
+
+        const normalizedGenre = genreName.toLowerCase();
+        const uniqueTrackIds = new Set();
+
+        recentData.recent_tracks.forEach(item => {
+            const track = item.track;
+            const hasGenre = track.artists?.some(artist => {
+                if (!artist.genres || !Array.isArray(artist.genres)) return false;
+                return artist.genres.some(g => g.toLowerCase() === normalizedGenre);
+            });
+
+            if (hasGenre && track.id) {
+                uniqueTrackIds.add(track.id);
+            }
+        });
+
+        return uniqueTrackIds.size;
+    };
+
+    const handleGenreClick = (genreName) => {
+        if (!recentData.recent_tracks) return;
+
+        // Normalize genre name for comparison (lowercase)
+        const normalizedGenre = genreName.toLowerCase();
+        const seenTrackIds = new Set();
+        const uniqueSongsWithGenre = [];
+
+        // Filter songs that have this genre, removing duplicates
+        recentData.recent_tracks.forEach(item => {
+            const track = item.track;
+            // Check if any of the track's artists have this genre
+            const hasGenre = track.artists?.some(artist => {
+                if (!artist.genres || !Array.isArray(artist.genres)) return false;
+                // Genre data from Spotify is lowercase, so compare with lowercase
+                return artist.genres.some(g => g.toLowerCase() === normalizedGenre);
+            });
+
+            // Only add if this track hasn't been added yet
+            if (hasGenre && track.id && !seenTrackIds.has(track.id)) {
+                seenTrackIds.add(track.id);
+                uniqueSongsWithGenre.push(item);
+            }
+        });
+
+        setSelectedGenre(genreName);
+        setGenreSongs(uniqueSongsWithGenre);
+    };
+
+    const handleCloseGenreModal = () => {
+        setSelectedGenre(null);
+        setGenreSongs([]);
+    };
+
 
   return (
     <div className="home-page page">
@@ -168,12 +225,19 @@ function HomeDesktop() {
                 <div className='genre-section'>
                     <h3>Top Genres</h3>
                     <ol className='genre-list'>
-                        {recentData.genre_stats?.top_genres?.map((item, index) => (
-                            <li key={index} className="fade-in-item">
-                                <span className='genre-name'>{item.genre}</span>
-                                <span className='genre-count'>{item.count} song{item.count !== 1 ? 's' : ''}</span>
-                            </li>
-                        )) || <li>No genres found</li>}
+                        {recentData.genre_stats?.top_genres?.map((item, index) => {
+                            const actualCount = getGenreCount(item.genre);
+                            return (
+                                <li
+                                    key={index}
+                                    className="fade-in-item genre-item-clickable"
+                                    onClick={() => handleGenreClick(item.genre)}
+                                >
+                                    <span className='genre-name'>{item.genre}</span>
+                                    <span className='genre-count'>{actualCount} song{actualCount !== 1 ? 's' : ''}</span>
+                                </li>
+                            );
+                        }) || <li>No genres found</li>}
                     </ol>
                 </div>
                 <StatsDashboard recentTracks={recentData.recent_tracks} />
@@ -182,6 +246,46 @@ function HomeDesktop() {
           </div>
 
         <Footer />
+
+        {/* Genre Modal */}
+        {selectedGenre && (
+            <div className="genre-modal-overlay" onClick={handleCloseGenreModal}>
+                <div className="genre-modal" onClick={(e) => e.stopPropagation()}>
+                    <div className="genre-modal-header">
+                        <h2>{selectedGenre}</h2>
+                        <button className="close-modal-btn" onClick={handleCloseGenreModal}>×</button>
+                    </div>
+                    <p className="genre-modal-hint">Songs from your recent plays</p>
+                    <div className="genre-modal-songs">
+                        {genreSongs.length > 0 ? (
+                            genreSongs.map((item, index) => {
+                                const track = item.track;
+                                const songData = {
+                                    songName: track.name,
+                                    artistName: track.artists?.[0]?.name || 'Unknown Artist',
+                                    spotifyTrackId: track.id,
+                                    imageUrl: track.album?.images?.[0]?.url,
+                                    playedAt: item.played_at,
+                                    rank: index + 1
+                                };
+                                return (
+                                    <div key={`${track.id}-${index}`} className="fade-in-item">
+                                        <SongComponent
+                                            songData={songData}
+                                            showStar={true}
+                                            isFeatured={getIsFeatured(songData)}
+                                            timestamp={getRelativeTime(item.played_at)}
+                                        />
+                                    </div>
+                                );
+                            })
+                        ) : (
+                            <p className="no-songs-message">No songs found for this genre</p>
+                        )}
+                    </div>
+                </div>
+            </div>
+        )}
     </div>
     )
 }

@@ -2,7 +2,6 @@ import axios from 'axios';
 import { useEffect, useState, useRef } from 'react';
 import SongComponent from '../../components/shared/SongComponent';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
-import ProfileButtonMobile from '../../components/mobile/ProfileButtonMobile';
 import config from '../../config';
 import "../../styles/Mobile.css";
 
@@ -178,7 +177,6 @@ function MobileRecommendationsPage() {
 
   return (
     <div className="mobile-layout">
-      <ProfileButtonMobile />
       <div className="mobile-recommendations page">
         <div className="mobile-recommendations-content">
 

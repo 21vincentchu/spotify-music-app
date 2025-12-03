@@ -10,15 +10,21 @@
 
 .single-chart-container {
   height: 25rem;
-  padding: 1.125rem;
+  padding: 2rem;
   margin: 0 auto;
   position: relative;
-  background-color: #f8f9fa;
-  border-radius: 0.75rem;
-  border: 2px solid #1282A2;
+  background-color: #fafbfc;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   box-sizing: border-box;
   max-width: 100%;
   width: 100%;
+  transition: all 0.3s ease;
+}
+
+.single-chart-container:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 /* Responsive adjustments */
@@ -30,16 +36,18 @@
 
 @media (max-width: 768px) {
   .stats-dashboard {
-    padding: 10px;
+    padding: 0px;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
   }
 
   .single-chart-container {
-    padding: 20px 20px;
+    padding: 5px 5px;
   }
 }
 
 @media (max-width: 480px) {
   .single-chart-container {
-    padding: 10px 1px;
+    padding: 5px 2px;
   }
 }

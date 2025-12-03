@@ -4,7 +4,6 @@ import config from "../../config";
 
 import FriendComponentMobile from "../../components/mobile/FriendComponentMobile";
 import AddFriendComponentDesktop from "../../components/desktop/AddFriendComponentDesktop";
-import ProfileButtonMobile from "../../components/mobile/ProfileButtonMobile";
 import SongComponent from "../../components/shared/SongComponent";
 import RatedSongComponentDesktop from "../../components/desktop/RatedSongComponentDesktop";
 
@@ -181,7 +180,6 @@ function FriendsMobilePage() {
 
   return (
     <div className="mobile-layout">
-      <ProfileButtonMobile />
       <div className="mobile-friends page">
         <div className="mobile-friends-content">
 

@@ -20,7 +20,11 @@ function RatingsPage() {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [editingReviewId, setEditingReviewId] = useState(null);
+  const [editingComment, setEditingComment] = useState("");
+  const [isSavingReview, setIsSavingReview] = useState(false);
   const filterRef = useRef(null);
+  const textareaRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -70,6 +74,17 @@ function RatingsPage() {
 
     return () => clearTimeout(timeoutId);
   }, [searchQuery, myFeaturedTab]);
+
+  // Auto-focus textarea when entering edit mode
+  useEffect(() => {
+    if (editingReviewId && textareaRef.current) {
+      const textarea = textareaRef.current;
+      textarea.focus();
+      // Move cursor to end of text
+      const length = textarea.value.length;
+      textarea.setSelectionRange(length, length);
+    }
+  }, [editingReviewId]);
 
   const getSongRatings = async () => {
 
@@ -210,6 +225,55 @@ function RatingsPage() {
     }
   };
 
+  const handleEditReview = (rating, type) => {
+    const id = type === 'song' ? rating.spotifyTrackId : rating.spotifyAlbumId;
+    setEditingReviewId(id);
+    setEditingComment(rating.comment || '');
+  };
+
+  const handleSaveReview = async (rating, type) => {
+    setIsSavingReview(true);
+    try {
+      if (type === 'song') {
+        await axios.patch(`${config.API_URL}/api/ratings/song`, {
+          spotifyTrackId: rating.spotifyTrackId,
+          rating: rating.rating,
+          comment: editingComment
+        }, {
+          withCredentials: true
+        });
+      } else if (type === 'album') {
+        await axios.patch(`${config.API_URL}/api/ratings/album`, {
+          spotifyAlbumId: rating.spotifyAlbumId,
+          rating: rating.rating,
+          comment: editingComment
+        }, {
+          withCredentials: true
+        });
+      }
+
+      setEditingReviewId(null);
+      setEditingComment("");
+
+      // Refresh ratings
+      if (type === 'song') {
+        getSongRatings();
+      } else {
+        getAlbumRatings();
+      }
+      getFriendsRatings();
+    } catch (error) {
+      console.error('Error saving review:', error);
+    } finally {
+      setIsSavingReview(false);
+    }
+  };
+
+  const handleCancelReview = () => {
+    setEditingReviewId(null);
+    setEditingComment("");
+  };
+
 
   return (
     <div className="recommendations-page ratings-page page">
@@ -233,7 +297,9 @@ function RatingsPage() {
                 placeholder={
                   myFeaturedTab === 'friends'
                     ? "Search friends' ratings..."
-                    : `Search any ${myFeaturedTab}..`
+                    : myFeaturedTab === 'songs'
+                    ? "Search any song to review it..."
+                    : "Search any album to review it..."
                 }
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -419,6 +485,10 @@ function RatingsPage() {
                   <RatedSongComponentDesktop
                     songData={rating}
                     type={"song"}
+                    onRatingUpdated={() => {
+                      getSongRatings();
+                      getFriendsRatings();
+                    }}
                   />
                 </div>
               ))
@@ -430,6 +500,10 @@ function RatingsPage() {
                   <RatedSongComponentDesktop
                     songData={rating}
                     type={"album"}
+                    onRatingUpdated={() => {
+                      getAlbumRatings();
+                      getFriendsRatings();
+                    }}
                   />
                 </div>
               ))
@@ -438,41 +512,153 @@ function RatingsPage() {
             {myFeaturedTab === 'songs' && typeTab === 'reviews' && (
               songRatings
                 .filter(rating => rating.comment && rating.comment.trim() !== "")
-                .map((rating) => (
-                  <div className="song-component fade-in-item" key={rating.spotifyTrackId}>
-                    <img className="circle stats-circle" src={rating?.imageUrl} alt="{rating.spotifyTrackId}" />
-                    <div className="song-info">
-                        <p className="song-name">
-                            <Link to={`/ratings/song/${rating?.spotifyTrackId}`}>
-                                {rating?.songName}
-                            </Link>
-                        </p>
-                        <p className="song-name">{rating?.displayName}</p>
-                        <p className="artist-name">{rating?.artistName}</p>
-                        <p className="round-outline ratings-comment">{rating?.comment}</p>
+                .map((rating) => {
+                  const isEditing = editingReviewId === rating.spotifyTrackId;
+
+                  return (
+                    <div
+                      key={rating.spotifyTrackId}
+                      className={`song-component rated-song-desktop fade-in-item ${isEditing ? 'review-editing' : ''}`}
+                      onClick={!isEditing ? () => navigate(`/ratings/song/${rating?.spotifyTrackId}`) : undefined}
+                      style={{ cursor: !isEditing ? 'pointer' : 'default' }}
+                    >
+                      <div className="user-name-header-row">
+                        <p className="user-name-header">{rating?.displayName}</p>
+                        {!isEditing && (
+                          <span className="more-details-hint">More details →</span>
+                        )}
+                      </div>
+                      <div className="song-content-row">
+                        <img className="circle stats-circle" src={rating?.imageUrl} alt={rating.spotifyTrackId} />
+                        <div className="song-info">
+                          <p className="song-name">{rating?.songName}</p>
+                          <p className="artist-name">{rating?.artistName}</p>
+
+                        {isEditing ? (
+                          <>
+                            <textarea
+                              ref={textareaRef}
+                              className="round-outline ratings-comment-edit"
+                              value={editingComment}
+                              onChange={(e) => setEditingComment(e.target.value)}
+                              placeholder="Share your thoughts..."
+                              onClick={(e) => e.stopPropagation()}
+                            />
+                            <div className="review-edit-actions">
+                              <button
+                                className="save-review-btn"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleSaveReview(rating, 'song');
+                                }}
+                                disabled={isSavingReview}
+                              >
+                                {isSavingReview ? 'Saving...' : 'Save'}
+                              </button>
+                              <button
+                                className="cancel-review-btn"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleCancelReview();
+                                }}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          <p
+                            className="round-outline ratings-comment"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditReview(rating, 'song');
+                            }}
+                            style={{ cursor: 'text' }}
+                          >
+                            {rating?.comment}
+                          </p>
+                        )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
             )}
 
             {myFeaturedTab === 'albums' && typeTab === 'reviews' && (
               albumRatings
                 .filter(rating => rating.comment && rating.comment.trim() !== "")
-                .map((rating) => (
-                  <div className="song-component fade-in-item" key={rating.spotifyTrackId}>
-                    <img className="circle stats-circle" src={rating?.imageUrl} alt="{rating.spotifyAlbumId}" />
-                    <div className="song-info">
-                        <p className="song-name">
-                            <Link to={`/ratings/album/${rating?.spotifyAlbumId}`}>
-                                {rating?.albumName}
-                            </Link>
-                        </p>
-                        <p className="song-name">{rating?.displayName}</p>
-                        <p className="artist-name">{rating?.artistName}</p>
-                        <p className="round-outline ratings-comment">{rating?.comment}</p>
+                .map((rating) => {
+                  const isEditing = editingReviewId === rating.spotifyAlbumId;
+
+                  return (
+                    <div
+                      key={rating.spotifyAlbumId}
+                      className={`song-component rated-song-desktop fade-in-item ${isEditing ? 'review-editing' : ''}`}
+                      onClick={!isEditing ? () => navigate(`/ratings/album/${rating?.spotifyAlbumId}`) : undefined}
+                      style={{ cursor: !isEditing ? 'pointer' : 'default' }}
+                    >
+                      <div className="user-name-header-row">
+                        <p className="user-name-header">{rating?.displayName}</p>
+                        {!isEditing && (
+                          <span className="more-details-hint">More details →</span>
+                        )}
+                      </div>
+                      <div className="song-content-row">
+                        <img className="circle stats-circle" src={rating?.imageUrl} alt={rating.spotifyAlbumId} />
+                        <div className="song-info">
+                          <p className="song-name">{rating?.albumName}</p>
+                          <p className="artist-name">{rating?.artistName}</p>
+
+                        {isEditing ? (
+                          <>
+                            <textarea
+                              ref={textareaRef}
+                              className="round-outline ratings-comment-edit"
+                              value={editingComment}
+                              onChange={(e) => setEditingComment(e.target.value)}
+                              placeholder="Share your thoughts..."
+                              onClick={(e) => e.stopPropagation()}
+                            />
+                            <div className="review-edit-actions">
+                              <button
+                                className="save-review-btn"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleSaveReview(rating, 'album');
+                                }}
+                                disabled={isSavingReview}
+                              >
+                                {isSavingReview ? 'Saving...' : 'Save'}
+                              </button>
+                              <button
+                                className="cancel-review-btn"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleCancelReview();
+                                }}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          <p
+                            className="round-outline ratings-comment"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditReview(rating, 'album');
+                            }}
+                            style={{ cursor: 'text' }}
+                          >
+                            {rating?.comment}
+                          </p>
+                        )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
             )}
 
             {myFeaturedTab === 'friends' && typeTab === 'ratings' && (
@@ -510,21 +696,21 @@ function RatingsPage() {
                 friendsRatings
                   .filter(rating => rating.comment && rating.comment.trim() !== "")
                   .map((rating) => (
-                    <div className="song-component rated-song-desktop fade-in-item" key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`}>
-                      <p className="user-name-header">{rating.displayName}</p>
-                      <div className="song-content-row">
-                        <img className="circle stats-circle" src={rating?.imageUrl} alt={rating.type} />
-                        <div className="song-info">
-                            <p className="song-name">
-                                <Link to={`/ratings/${rating.type}/${rating.type === 'song' ? rating.spotifyTrackId : rating.spotifyAlbumId}`}>
-                                    {rating.type === 'song' ? rating.songName : rating.albumName}
-                                </Link>
-                            </p>
-                            <p className="artist-name">{rating?.artistName}</p>
-                            <p className="round-outline ratings-comment">{rating?.comment}</p>
+                    <Link to={`/ratings/${rating.type}/${rating.type === 'song' ? rating.spotifyTrackId : rating.spotifyAlbumId}`} className="song-component-link" key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}-${rating.userName}`}>
+                      <div className="song-component rated-song-desktop fade-in-item">
+                        <p className="user-name-header">{rating.displayName}</p>
+                        <div className="song-content-row">
+                          <img className="circle stats-circle" src={rating?.imageUrl} alt={rating.type} />
+                          <div className="song-info">
+                              <p className="song-name">
+                                  {rating.type === 'song' ? rating.songName : rating.albumName}
+                              </p>
+                              <p className="artist-name">{rating?.artistName}</p>
+                              <p className="round-outline ratings-comment">{rating?.comment}</p>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   ))
               ) : (
                 <p className="empty-message">No friends have written reviews yet.</p>

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ProfileButtonMobile from "../../components/mobile/ProfileButtonMobile";
 import { useAuth } from "../../context/AuthContext";
 
 function AboutPage() {
@@ -10,7 +9,6 @@ function AboutPage() {
 
   return (
     <div className="mobile-layout">
-      <ProfileButtonMobile />
       <div className="mobile-content about-mobile-content">
         <div className="about-page page">
           <div className="about-content">

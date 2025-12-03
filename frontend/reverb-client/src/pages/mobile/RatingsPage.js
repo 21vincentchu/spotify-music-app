@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import config from "../../config";
 import "../../styles/Mobile.css";
 import StarIcon from "../../components/mobile/StarIcon";
-import ProfileButtonMobile from "../../components/mobile/ProfileButtonMobile";
 
 function RatingsPage() {
   const [activeTab, setActiveTab] = useState("songs");
@@ -20,7 +19,12 @@ function RatingsPage() {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [editingRatingId, setEditingRatingId] = useState(null);
+  const [editingRatingValue, setEditingRatingValue] = useState(0);
+  const [editingComment, setEditingComment] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   const filterRef = useRef(null);
+  const textareaRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,6 +86,17 @@ function RatingsPage() {
 
     return () => clearTimeout(timeoutId);
   }, [searchQuery, activeTab]);
+
+  // Auto-focus textarea when entering edit mode
+  useEffect(() => {
+    if (editingRatingId && textareaRef.current) {
+      const textarea = textareaRef.current;
+      textarea.focus();
+      // Move cursor to end of text
+      const length = textarea.value.length;
+      textarea.setSelectionRange(length, length);
+    }
+  }, [editingRatingId]);
 
   const getSongRatings = async () => {
     try {
@@ -222,6 +237,58 @@ function RatingsPage() {
     }
   };
 
+  const handleEditRating = (item, type) => {
+    const id = type === 'song' ? item.spotifyTrackId : item.spotifyAlbumId;
+    setEditingRatingId(id);
+    setEditingRatingValue(item.rating);
+    setEditingComment(item.comment || '');
+  };
+
+  const handleSaveRating = async (item, type) => {
+    setIsSaving(true);
+    try {
+      if (type === 'song') {
+        await axios.patch(`${config.API_URL}/api/ratings/song`, {
+          spotifyTrackId: item.spotifyTrackId,
+          rating: editingRatingValue,
+          comment: editingComment
+        }, {
+          withCredentials: true
+        });
+      } else if (type === 'album') {
+        await axios.patch(`${config.API_URL}/api/ratings/album`, {
+          spotifyAlbumId: item.spotifyAlbumId,
+          rating: editingRatingValue,
+          comment: editingComment
+        }, {
+          withCredentials: true
+        });
+      }
+
+      setEditingRatingId(null);
+      setEditingRatingValue(0);
+      setEditingComment("");
+
+      // Refresh ratings
+      if (type === 'song') {
+        getSongRatings();
+      } else {
+        getAlbumRatings();
+      }
+      getFriendsRatings();
+    } catch (error) {
+      console.error('Error saving rating:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingRatingId(null);
+    setEditingRatingValue(0);
+    setEditingComment("");
+  };
+
   const renderStars = (rating) => (
     <div className="rating-stars">
       {Array(5)
@@ -234,56 +301,150 @@ function RatingsPage() {
 
   const RatingCard = ({ item, type, showTypeBadge = false }) => {
     const hasComment = item.comment && item.comment.trim() !== "";
+    const itemId = type === "song" ? item.spotifyTrackId : item.spotifyAlbumId;
+    const isEditing = editingRatingId === itemId;
+    const isOwnRating = activeTab !== "friends";
+
+    const renderEditableStars = () => (
+      <div className="rating-stars editable-stars">
+        {Array(5)
+          .fill(0)
+          .map((_, i) => {
+            const starValue = i + 1;
+            const isHalf = editingRatingValue === starValue - 0.5;
+            const isFilled = editingRatingValue >= starValue;
+
+            return (
+              <div
+                key={i}
+                className="star-container"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const clickX = e.clientX - rect.left;
+                  const isLeftHalf = clickX < rect.width / 2;
+                  setEditingRatingValue(isLeftHalf ? starValue - 0.5 : starValue);
+                }}
+              >
+                <StarIcon filled={isFilled || isHalf} size={20} />
+              </div>
+            );
+          })}
+      </div>
+    );
 
     return (
-      <Link
-        to={`/ratings/${type}/${type === "song" ? item.spotifyTrackId : item.spotifyAlbumId}`}
-        className="rating-card-link"
+      <div
+        className={`rating-card ${isEditing ? 'editing' : ''}`}
+        onClick={!isEditing && isOwnRating ? () => navigate(`/ratings/${type}/${itemId}`) : undefined}
+        style={{ cursor: !isEditing && isOwnRating ? 'pointer' : 'default' }}
       >
-        <div className="rating-card">
-          {/* Header: User info + Type Badge (only for friends tab) */}
-          <div className="rating-card-header">
-            <span className="rating-card-username">{item.displayName || "You"}</span>
+        {/* Header: User info + Type Badge (only for friends tab) */}
+        <div className="rating-card-header">
+          <span className="rating-card-username">{item.displayName || "You"}</span>
+          <div className="rating-card-header-right">
             {showTypeBadge && (
               <span className={`rating-type-badge ${type === "song" ? "song-badge" : "album-badge"}`}>
                 {type === "song" ? "Song" : "Album"}
               </span>
             )}
+            {isOwnRating && !isEditing && (
+              <span className="rating-card-hint">More details →</span>
+            )}
           </div>
-
-          {/* Body: Song/Album info + Rating */}
-          <div className="rating-card-body">
-            <img
-              src={item.imageUrl}
-              alt={type === "song" ? item.songName : item.albumName}
-              className="rating-card-image"
-            />
-            <div className="rating-card-info">
-              <p className="rating-card-title">
-                {type === "song" ? item.songName : item.albumName}
-              </p>
-              <p className="rating-card-artist">{item.artistName}</p>
-              <div className="rating-card-rating">
-                {renderStars(item.rating)}
-                <span className="rating-value">{item.rating}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Comment/Review */}
-          {hasComment && (
-            <div className="rating-card-comment">
-              <p>{item.comment}</p>
-            </div>
-          )}
         </div>
-      </Link>
+
+        {/* Body: Song/Album info + Rating */}
+        <div className="rating-card-body">
+          <img
+            src={item.imageUrl}
+            alt={type === "song" ? item.songName : item.albumName}
+            className="rating-card-image"
+          />
+          <div className="rating-card-info">
+            <p className="rating-card-title">
+              {type === "song" ? item.songName : item.albumName}
+            </p>
+            <p className="rating-card-artist">{item.artistName}</p>
+            <div
+              className="rating-card-rating"
+              onClick={(e) => {
+                if (!isEditing && isOwnRating) {
+                  e.stopPropagation();
+                  handleEditRating(item, type);
+                }
+              }}
+            >
+              {isEditing ? (
+                <>
+                  {renderEditableStars()}
+                  <span className="rating-value">{editingRatingValue}</span>
+                </>
+              ) : (
+                <>
+                  {renderStars(item.rating)}
+                  <span className="rating-value">{item.rating}</span>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Comment/Review */}
+        {isEditing ? (
+          <div className="rating-card-comment-edit">
+            <textarea
+              ref={textareaRef}
+              className="rating-comment-textarea"
+              value={editingComment}
+              onChange={(e) => setEditingComment(e.target.value)}
+              placeholder="Share your thoughts..."
+              onClick={(e) => e.stopPropagation()}
+            />
+            <div className="rating-edit-actions-mobile">
+              <button
+                className="save-btn-mobile"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSaveRating(item, type);
+                }}
+                disabled={isSaving}
+              >
+                {isSaving ? 'Saving...' : 'Save'}
+              </button>
+              <button
+                className="cancel-btn-mobile"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCancelEdit();
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          (hasComment || isOwnRating) && (
+            <div
+              className="rating-card-comment"
+              onClick={(e) => {
+                if (isOwnRating) {
+                  e.stopPropagation();
+                  handleEditRating(item, type);
+                }
+              }}
+              style={{ cursor: isOwnRating ? 'text' : 'default' }}
+            >
+              <p>{item.comment || (isOwnRating ? 'Add a review...' : '')}</p>
+            </div>
+          )
+        )}
+      </div>
     );
   };
 
   return (
     <>
-      <ProfileButtonMobile />
       <div className="mobile-layout">
         <div className="ratings-page page">
 

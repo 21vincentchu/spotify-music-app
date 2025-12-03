@@ -253,8 +253,19 @@ def api_recently_played():
     # Calculate listening statistics
     listening_stats = calculate_listening_minutes(recent_tracks)
 
-    # Fetch top genre from recent tracks
+    # Fetch top genre from recent tracks (includes artist_genres mapping)
     genre_stats = fetch_top_genres_from_recent(sp, recent_tracks)
+
+    # Attach genre information to each track
+    artist_genres = genre_stats.get('artist_genres', {})
+    for item in recent_tracks:
+        track = item.get('track', {})
+        artists = track.get('artists', [])
+        # Add genres to each artist
+        for artist in artists:
+            artist_id = artist.get('id')
+            if artist_id and artist_id in artist_genres:
+                artist['genres'] = artist_genres[artist_id]
 
     # Fetch top songs/artists/albums from recently played tracks
     top_songs_recent = fetch_recently_played_top_songs(sp)

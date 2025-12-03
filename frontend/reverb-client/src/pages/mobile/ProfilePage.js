@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import config from '../../config';
-import ProfileButtonMobile from '../../components/mobile/ProfileButtonMobile';
 
 function ProfilePage() {
     const [profile, setProfile] = useState(null);
@@ -103,7 +102,6 @@ function ProfilePage() {
 
     return (
         <>
-            <ProfileButtonMobile />
             <div className="profile-page">
                 <div className="profile-page-container round-outline blue-box-shadow">
                         <h2>Profile</h2>
