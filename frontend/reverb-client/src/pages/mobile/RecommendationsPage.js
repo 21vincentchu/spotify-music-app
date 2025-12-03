@@ -184,7 +184,9 @@ function MobileRecommendationsPage() {
 
           {/* Your Featured Section */}
           <div className="mobile-recommendations-box round-outline blue-box-shadow">
-            <h2>Your Featured</h2>
+            <h2 key={myFeaturedTab} className="stats-title-animated">
+              Your Featured {myFeaturedTab.charAt(0).toUpperCase() + myFeaturedTab.slice(1)}
+            </h2>
             <p className="section-hint">
               Your recommended {myFeaturedTab} • Tap {myFeaturedTab === 'songs' ? 'a song' : myFeaturedTab === 'albums' ? 'an album' : 'an artist'} to review them
             </p>
@@ -283,7 +285,9 @@ function MobileRecommendationsPage() {
 
           {/* Friends' Featured Section */}
           <div className="mobile-recommendations-box round-outline blue-box-shadow">
-            <h2>Friends' Featured</h2>
+            <h2 key={friendsFeaturedTab} className="stats-title-animated">
+              Friends' Featured {friendsFeaturedTab.charAt(0).toUpperCase() + friendsFeaturedTab.slice(1)}
+            </h2>
             <p className="section-hint">Tap to review or press play to listen</p>
 
             <div className="featured-tabs">

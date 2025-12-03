@@ -205,6 +205,7 @@ nav {
     width: 45px;
     border-radius: 50%;
     object-fit: cover;
+    border: 2px solid black;
   }
 
   .profile-container {
@@ -1509,6 +1510,21 @@ nav {
     flex-shrink: 0;
   }
 
+  .song-component-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .song-component {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .song-component:hover {
+    background-color: rgba(3, 64, 120, 0.05);
+  }
+
   .desktop-layout .friend-component:hover {
     background-color: #e8e8e8;
     transform: translateX(2px);
@@ -2596,18 +2612,19 @@ nav {
   }
 
   .back-button-desktop {
-    background: none;
+    background-color: #034078;
     border: none;
     font-size: 16px;
-    color: #034078;
+    color: white;
     cursor: pointer;
-    padding: 8px 16px;
-    border-radius: 8px;
+    padding: 8px 20px;
+    border-radius: 24px;
+    font-weight: 600;
     transition: background-color 0.2s;
   }
 
   .back-button-desktop:hover {
-    background-color: #f0f0f0;
+    background-color: #023056;
   }
 
   .delete-button-header-desktop {
@@ -2615,7 +2632,7 @@ nav {
     color: white;
     border: none;
     padding: 8px 20px;
-    border-radius: 8px;
+    border-radius: 24px;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.2s;
@@ -2701,7 +2718,7 @@ nav {
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
-  background-color: #034078;
+  background-color: #28a745;
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -2709,7 +2726,7 @@ nav {
 }
 
 .save-button-desktop:hover:not(:disabled) {
-  background-color: #023056;
+  background-color: #218838;
 }
 
 .save-button-desktop:disabled {

@@ -269,7 +269,9 @@ function FriendsMobilePage() {
         <div className="mobile-friend-stats-modal" onClick={handleCloseStats}>
           <div className="mobile-friend-stats-content" onClick={(e) => e.stopPropagation()}>
             <div className="mobile-stats-header">
-              <h2>{selectedFriend.displayName || selectedFriend.userName}'s Stats</h2>
+              <h2 key={activeTab} className="stats-title-animated">
+                {selectedFriend.displayName || selectedFriend.userName}'s {activeTab === 'recents' ? 'Recent Listens' : 'Ratings'}
+              </h2>
               <button className="close-stats-btn" onClick={handleCloseStats}>
                 ✕
               </button>

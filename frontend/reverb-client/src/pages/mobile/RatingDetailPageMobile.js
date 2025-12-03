@@ -229,81 +229,82 @@ function RatingDetailPageMobile() {
             <div className="mobile-content">
                 <div className="rating-detail-page-mobile">
 
-                    {/* Header with Back and Delete */}
+                    {/* Header with Back, Save/Cancel, and Delete */}
                     <div className="rating-detail-header-nav">
                         <button className="back-button-mobile" onClick={() => navigate(-1)}>
                             ← Back
                         </button>
-                        {isRated && !hasChanges && (
+
+                        {hasChanges ? (
+                            <div className="save-cancel-buttons">
+                                <button
+                                    className="cancel-button-inline"
+                                    onClick={() => {
+                                        setRating(originalRating);
+                                        setComment(originalComment);
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    className="save-button-inline"
+                                    onClick={handleSave}
+                                    disabled={isSaving}
+                                >
+                                    {isSaving ? 'Saving...' : 'Save'}
+                                </button>
+                            </div>
+                        ) : isRated && (
                             <button className="delete-button-header" onClick={handleDelete}>
-                                Delete
+                                Delete Review
                             </button>
                         )}
                     </div>
 
-                    {/* Album Art & Info */}
-                    <div className="rating-detail-header-mobile">
-                        <img
-                            src={ratingData?.imageUrl}
-                            alt={type === 'song' ? ratingData?.songName : ratingData?.albumName}
-                            className="rating-detail-image-mobile"
-                        />
-                        <div className="rating-detail-text-mobile">
-                            <h2 className="rating-detail-title-mobile">
-                                {type === 'song' ? ratingData?.songName : ratingData?.albumName}
-                            </h2>
-                            <p className="rating-detail-artist-mobile">{ratingData?.artistName}</p>
-                        </div>
-                    </div>
-
-                    {/* Rating Stars */}
-                    <div className="rating-detail-rating-mobile">
-                        <p className="rating-label-mobile">Your Rating</p>
-                        <div className="star-rating-component-mobile">
-                            <Rating
-                                name="mobile-rating"
-                                value={rating}
-                                precision={0.5}
-                                size="large"
-                                onChange={(event, newValue) => setRating(newValue)}
+                    {/* Combined Card: Album Art, Info, Rating & Review */}
+                    <div className="rating-detail-card-mobile">
+                        {/* Album Art & Info */}
+                        <div className="rating-detail-header-mobile">
+                            <img
+                                src={ratingData?.imageUrl}
+                                alt={type === 'song' ? ratingData?.songName : ratingData?.albumName}
+                                className="rating-detail-image-mobile"
                             />
-                            <p className="rating-number-mobile">{rating}</p>
+                            <div className="rating-detail-text-mobile">
+                                <h2 className="rating-detail-title-mobile">
+                                    {type === 'song' ? ratingData?.songName : ratingData?.albumName}
+                                </h2>
+                                <p className="rating-detail-artist-mobile">{ratingData?.artistName}</p>
+                            </div>
+                        </div>
+
+                        {/* Rating Stars */}
+                        <div className="rating-detail-rating-mobile">
+                            <p className="rating-label-mobile">Your Rating</p>
+                            <div className="star-rating-component-mobile">
+                                <Rating
+                                    name="mobile-rating"
+                                    value={rating}
+                                    precision={0.5}
+                                    size="large"
+                                    onChange={(event, newValue) => setRating(newValue)}
+                                />
+                                <p className="rating-number-mobile">{rating}</p>
+                            </div>
+                        </div>
+
+                        {/* Review/Comment */}
+                        <div className="rating-detail-comment-mobile">
+                            <label className="rating-label-mobile">Your Review</label>
+                            <textarea
+                                className="rating-textarea-mobile"
+                                value={comment}
+                                onChange={(e) => setComment(e.target.value)}
+                                placeholder="Share your thoughts about this song..."
+                                rows={6}
+                            />
                         </div>
                     </div>
-
-                    {/* Review/Comment */}
-                    <div className="rating-detail-comment-mobile">
-                        <label className="rating-label-mobile">Your Review</label>
-                        <textarea
-                            className="rating-textarea-mobile"
-                            value={comment}
-                            onChange={(e) => setComment(e.target.value)}
-                            placeholder="Share your thoughts about this song..."
-                            rows={6}
-                        />
-                    </div>
-
-                    {/* Action Buttons - Only show when there are changes */}
-                    {hasChanges && (
-                        <div className="rating-detail-actions-inline">
-                            <button
-                                className="save-button-inline"
-                                onClick={handleSave}
-                                disabled={isSaving}
-                            >
-                                {isSaving ? 'Saving...' : 'Save Changes'}
-                            </button>
-                            <button
-                                className="cancel-button-inline"
-                                onClick={() => {
-                                    setRating(originalRating);
-                                    setComment(originalComment);
-                                }}
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    )}
 
                     {/* Saved Message */}
                     {justSaved && !hasChanges && (

@@ -121,46 +121,43 @@ function SongComponent({songData, showStar, isFeatured, onToggleFeatured, showRa
     const spotifyUrl = getSpotifyUrl();
 
     return (
-        <div className="song-component">
-            {showRank && <div className="song-rank">#{songData?.rank}</div>}
-            <img className="circle stats-circle" src={songData?.imageUrl} />
-            <div className="song-info">
-                <p className="song-name">
-                <Link 
-                to={getRatingLink()}
-                >
-                    {displayName}
-                </Link>
-                </p>
-                <p className="artist-name">{artistName}</p>
-                {timestamp && <p className="played-at-time">{timestamp}</p>}
+        <Link to={getRatingLink()} className="song-component-link">
+            <div className="song-component">
+                {showRank && <div className="song-rank">#{songData?.rank}</div>}
+                <img className="circle stats-circle" src={songData?.imageUrl} />
+                <div className="song-info">
+                    <p className="song-name">{displayName}</p>
+                    <p className="artist-name">{artistName}</p>
+                    {timestamp && <p className="played-at-time">{timestamp}</p>}
+                </div>
+                {showPlay && spotifyUrl && (
+                    <a
+                        href={spotifyUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="play-button"
+                        title="Open in Spotify"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                    </a>
+                )}
+                {showStar && (
+                    <button
+                        className={`star-button ${isStarred ? 'starred' : ''}`}
+                        onClick={handleStarToggle}
+                        disabled={isLoading}
+                        title={isStarred ? 'Remove from featured' : 'Add to featured'}
+                    >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill={isStarred ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    </button>
+                )}
             </div>
-            {showPlay && spotifyUrl && (
-                <a
-                    href={spotifyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="play-button"
-                    title="Open in Spotify"
-                >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                </a>
-            )}
-            {showStar && (
-                <button
-                    className={`star-button ${isStarred ? 'starred' : ''}`}
-                    onClick={handleStarToggle}
-                    disabled={isLoading}
-                    title={isStarred ? 'Remove from featured' : 'Add to featured'}
-                >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill={isStarred ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                </button>
-            )}
-        </div>
+        </Link>
       )}
 
 export default SongComponent;

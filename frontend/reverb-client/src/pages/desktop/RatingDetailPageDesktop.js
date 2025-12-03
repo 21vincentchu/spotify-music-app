@@ -209,7 +209,7 @@ function RatingsDetailPageDesktop() {
                 </button>
                 {!isLoadingData && isRated && !hasChanges && (
                     <button className="delete-button-header-desktop fade-in-item" onClick={handleDelete}>
-                        Delete
+                        Delete Review
                     </button>
                 )}
             </div>

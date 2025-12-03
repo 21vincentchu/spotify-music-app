@@ -777,11 +777,23 @@
   gap: 10px;
 }
 
+.mobile-layout .song-component-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
 .mobile-layout .song-component {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-layout .song-component:hover {
+  background-color: rgba(3, 64, 120, 0.05);
 }
 
 .mobile-layout .song-image {
@@ -1667,6 +1679,7 @@
   height: 60px;
   object-fit: cover;
   border-radius: 50%;
+  border: 2px solid black;
 }
 
 .mobile-layout .profile-dropdown {
@@ -2710,17 +2723,19 @@
 /* ============== RATING DETAIL PAGE (MOBILE) ============= */
 /* ========================================================= */
 .mobile-layout .rating-detail-page-mobile {
-  padding: 0 16px 100px;
+  padding: 0 0 100px;
   max-width: 600px;
   margin: 0 auto;
 }
 
-/* Header Navigation - Back and Delete */
+/* Header Navigation - Back, Save/Cancel, and Delete */
 .mobile-layout .rating-detail-header-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 /* Back Button */
@@ -2728,9 +2743,9 @@
   background-color: #034078;
   border: 1px solid #034078;
   color: white;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 600;
-  padding: 10px 18px;
+  padding: 8px 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -2743,39 +2758,67 @@
   background-color: #022d5a;
 }
 
+/* Save/Cancel Buttons Group */
+.mobile-layout .save-cancel-buttons {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  animation: fadeSlideIn 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Delete Button in Header */
 .mobile-layout .delete-button-header {
   background-color: #d32f2f;
   border: 1px solid #d32f2f;
   color: white;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  padding: 10px 18px;
+  padding: 8px 14px;
   cursor: pointer;
   transition: background-color 0.2s;
   border-radius: 24px;
+  animation: fadeSlideIn 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fade and slide animation for button transitions */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .mobile-layout .delete-button-header:active {
   background-color: #b71c1c;
 }
 
-/* Header with Album Art - Centered */
+/* Combined Card Wrapper */
+.mobile-layout .rating-detail-card-mobile {
+  background: white;
+  border-radius: 12px;
+  padding: 20px 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Header with Album Art */
 .mobile-layout .rating-detail-header-mobile {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  align-items: flex-start;
   gap: 16px;
-  margin-bottom: 32px;
-  text-align: center;
+  margin-bottom: 20px;
 }
 
 .mobile-layout .rating-detail-image-mobile {
-  width: 180px;
-  height: 180px;
-  border-radius: 12px;
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
   object-fit: cover;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   flex-shrink: 0;
 }
 
@@ -2783,31 +2826,33 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+  min-width: 0;
 }
 
 .mobile-layout .rating-detail-title-mobile {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 700;
   color: #034078;
   margin: 0;
   line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .mobile-layout .rating-detail-artist-mobile {
-  font-size: 16px;
+  font-size: 14px;
   color: #666;
   margin: 0;
 }
 
-/* Rating Section - Clean, no box */
+/* Rating Section */
 .mobile-layout .rating-detail-rating-mobile {
-  background: transparent;
-  border-radius: 0;
-  padding: 0;
-  margin-bottom: 32px;
-  border: none;
-  box-shadow: none;
+  margin-bottom: 20px;
 }
 
 .mobile-layout .rating-label-mobile {
@@ -2835,14 +2880,9 @@
   margin: 0;
 }
 
-/* Comment/Review Section - Clean, no box */
+/* Comment/Review Section */
 .mobile-layout .rating-detail-comment-mobile {
-  background: transparent;
-  border-radius: 0;
-  padding: 0;
-  margin-bottom: 32px;
-  border: none;
-  box-shadow: none;
+  margin-bottom: 0;
 }
 
 .mobile-layout .rating-textarea-mobile {
@@ -2876,20 +2916,19 @@
 }
 
 .mobile-layout .save-button-inline {
-  flex: 1;
-  padding: 12px;
-  background-color: #034078;
+  padding: 8px 14px;
+  background-color: #28a745;
   color: #fff;
   border: none;
-  border-radius: 8px;
-  font-size: 15px;
+  border-radius: 24px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .mobile-layout .save-button-inline:active {
-  background-color: #022d5a;
+  background-color: #218838;
 }
 
 .mobile-layout .save-button-inline:disabled {
@@ -2898,12 +2937,12 @@
 }
 
 .mobile-layout .cancel-button-inline {
-  padding: 12px 20px;
+  padding: 8px 14px;
   background-color: #f5f5f5;
   color: #666;
   border: none;
-  border-radius: 8px;
-  font-size: 15px;
+  border-radius: 24px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;

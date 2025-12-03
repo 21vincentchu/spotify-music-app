@@ -251,7 +251,9 @@ function FriendsPage() {
         ) : friendStats ? (
           <>
             <div className="stats-header">
-              <h2>{selectedFriend.displayName || selectedFriend.userName}'s Stats</h2>
+              <h2 key={activeTab} className="stats-title-animated">
+                {selectedFriend.displayName || selectedFriend.userName}'s {activeTab === 'recents' ? 'Recent Listens' : 'Ratings'}
+              </h2>
             </div>
             <div className="featured-tabs">
               <button
