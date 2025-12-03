@@ -2935,7 +2935,7 @@
   background-color: #034078;
   border: 1px solid #034078;
   color: white;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   padding: 8px 14px;
   cursor: pointer;
@@ -3006,6 +3006,13 @@
   margin-bottom: 20px;
 }
 
+.mobile-layout .rating-detail-album-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
 .mobile-layout .rating-detail-image-mobile {
   width: 100px;
   height: 100px;
@@ -3023,7 +3030,7 @@
 }
 
 .mobile-layout .rating-detail-title-mobile {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: #034078;
   margin: 0;
@@ -3040,6 +3047,33 @@
   font-size: 14px;
   color: #666;
   margin: 0;
+}
+
+.mobile-layout .spotify-button-mobile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 5px 1px;
+  background-color: #1DB954;
+  color: white;
+  border-radius: 14px;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  font-size: 10px;
+  font-weight: 600;
+  margin-top: 5px;
+  white-space: nowrap;
+  max-width: 95px;
+}
+
+.mobile-layout .spotify-button-mobile:hover {
+  background-color: #1ed760;
+}
+
+.mobile-layout .spotify-button-mobile .spotify-icon {
+  width: 16px;
+  height: 16px;
 }
 
 /* Rating Section */

@@ -1709,6 +1709,30 @@ nav {
     margin: 0;
   }
 
+  .spotify-button-desktop {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background-color: #1DB954;
+    color: white;
+    border-radius: 16px;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+  }
+
+  .spotify-button-desktop:hover {
+    background-color: #1ed760;
+  }
+
+  .spotify-button-desktop .spotify-icon {
+    width: 18px;
+    height: 18px;
+  }
+
   .song-artist {
     color: #666;
     margin: 0 0 4px 0;
@@ -2842,7 +2866,7 @@ nav {
   .back-button-desktop {
     background-color: #034078;
     border: none;
-    font-size: 16px;
+    font-size: 14px;
     color: white;
     cursor: pointer;
     padding: 8px 20px;
@@ -2884,10 +2908,17 @@ nav {
   .ratings-detail-info{
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
     gap: 30px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+  }
+
+  .album-art-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
   }
 
   .star-rating-comp{
@@ -2921,7 +2952,7 @@ nav {
   font-weight: 600;
   font-size: 14px;
   color: #333;
-  margin: 15px 0 8px 0;
+  margin: 8px 0 4px 0;
 }
 
 .ratings-detail-container textarea {
