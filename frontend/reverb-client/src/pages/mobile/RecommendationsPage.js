@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useEffect, useState, useRef } from 'react';
 import SongComponent from '../../components/shared/SongComponent';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
+import SearchBar from '../../components/shared/SearchBar';
 import config from '../../config';
 import "../../styles/Mobile.css";
 
@@ -178,8 +179,20 @@ function MobileRecommendationsPage() {
   return (
     <div className="mobile-layout">
       <div className="mobile-recommendations page">
-        <div className="mobile-recommendations-content">
+        {/* Search Bar at top */}
+        <SearchBar
+          featuredSongs={myFeaturedSongs}
+          featuredArtists={myFeaturedArtists}
+          featuredAlbums={myFeaturedAlbums}
+          onToggleFeatured={(itemId, isNowFeatured) => {
+            // Refresh the appropriate list when an item is starred/unstarred
+            fetchMyFeaturedSongs();
+            fetchMyFeaturedArtists();
+            fetchMyFeaturedAlbums();
+          }}
+        />
 
+        <div className="mobile-recommendations-content">
           {/* Your Featured Section */}
           <div className="mobile-recommendations-box round-outline blue-box-shadow">
             <h2 key={myFeaturedTab} className="stats-title-animated">

@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import SongComponent from '../../components/shared/SongComponent';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
 import Footer from '../../components/shared/Footer';
+import SearchBar from '../../components/shared/SearchBar';
 import config from '../../config';
 
 function RecommendationsPage() {
@@ -189,6 +190,19 @@ function RecommendationsPage() {
 
   return (
     <div className="recommendations-page page">
+      {/* Search Bar at top */}
+      <SearchBar
+        featuredSongs={myFeaturedSongs}
+        featuredArtists={myFeaturedArtists}
+        featuredAlbums={myFeaturedAlbums}
+        onToggleFeatured={(itemId, isNowFeatured) => {
+          // Refresh the appropriate list when an item is starred/unstarred
+          fetchMyFeaturedSongs();
+          fetchMyFeaturedArtists();
+          fetchMyFeaturedAlbums();
+        }}
+      />
+
       <div className="recommendations-content">
         {/* Your Featured Section - Tabbed Interface */}
         <div className="featured-section round-outline blue-box-shadow">

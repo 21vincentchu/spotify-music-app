@@ -1847,7 +1847,7 @@ nav {
 
   .featured-section {
     flex: 1;
-    margin: 5%;
+    margin: 0 5% 5% 5%;
     padding: 20px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -1859,7 +1859,7 @@ nav {
 
   .friends-featured-section {
     flex: 1;
-    margin: 5%;
+    margin: 0 5% 5% 5%;
     padding: 20px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -3409,4 +3409,174 @@ nav {
   font-size: 1rem;
   padding: 2rem;
   margin: 0;
+}
+
+/* Search Backdrop Blur */
+.search-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1005;
+}
+
+/* Search Bar Wrapper */
+.recommendations-page .search-bar-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 60px auto 25px auto;
+  padding: 0 10px;
+  box-sizing: border-box;
+  z-index: 1010;
+  flex-shrink: 0;
+}
+
+/* Search Pill */
+.search-pill-container {
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.search-pill {
+  width: 100%;
+  padding: 15px 45px 15px 25px;
+  border: none;
+  border-radius: 30px;
+  background-color: white;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-pill:focus {
+  box-shadow: 0 4px 12px rgba(18, 130, 162, 0.2);
+  background-color: white;
+}
+
+.search-pill::placeholder {
+  color: #999;
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #999;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.search-clear-btn:hover {
+  color: #333;
+}
+
+/* Search Results Dropdown */
+.search-results-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  max-height: 500px;
+  overflow-y: auto;
+  animation: expandDown 0.3s ease;
+  z-index: 1015;
+  box-sizing: border-box;
+}
+
+@keyframes expandDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 500px;
+  }
+}
+
+.search-loading {
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-filter-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 15px 15px 10px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.search-filter-tab {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background-color: #f5f5f5;
+  color: #666;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.search-filter-tab:hover {
+  background-color: #e0e0e0;
+}
+
+.search-filter-tab.active {
+  background-color: #1282a2;
+  color: white;
+}
+
+.search-dropdown-results {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.search-results-dropdown .empty-message {
+  padding: 40px;
+  text-align: center;
+  color: #999;
+}
+
+.search-results-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-results-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 10px 0;
+}
+
+.search-results-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+}
+
+.search-results-dropdown::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
 }

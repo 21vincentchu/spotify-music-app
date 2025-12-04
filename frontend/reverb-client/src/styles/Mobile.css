@@ -706,9 +706,8 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: white;
+  background: transparent;
   padding: 10px 12px;
-  border-bottom: 1px solid #ddd;
 }
 
 .mobile-layout .search-bar button:hover {
@@ -3461,4 +3460,179 @@
   font-size: 1rem;
   padding: 2rem;
   margin: 0;
+}
+
+/* Search Backdrop Blur */
+.mobile-layout .search-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2005;
+}
+
+/* Search Bar Wrapper */
+.mobile-layout .search-bar-wrapper {
+  position: relative;
+  width: 100%;
+  margin: 0 0 15px 0;
+  padding: 0 10px;
+  box-sizing: border-box;
+  z-index: 2010;
+  flex-shrink: 0;
+  background: transparent;
+}
+
+/* Search Pill */
+.mobile-layout .search-pill-container {
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.mobile-layout .search-pill {
+  width: 100%;
+  padding: 10px 40px 10px 18px;
+  border: 1px solid #ddd;
+  border-radius: 22px;
+  background-color: white;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  box-shadow: none;
+}
+
+.mobile-layout .search-pill:focus {
+  border-color: #1282A2;
+  box-shadow: none;
+  background-color: white;
+}
+
+.mobile-layout .search-pill::placeholder {
+  color: #999;
+}
+
+.mobile-layout .search-clear-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #999;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.mobile-layout .search-clear-btn:active {
+  color: #333;
+}
+
+/* Search Results Dropdown */
+.mobile-layout .search-results-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 10px;
+  right: 10px;
+  width: auto;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  max-height: 400px;
+  overflow-y: auto;
+  animation: expandDown 0.3s ease;
+  z-index: 2015;
+}
+
+@keyframes expandDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 400px;
+  }
+}
+
+.mobile-layout .search-loading {
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mobile-layout .search-filter-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 10px 12px 8px 12px;
+  border-bottom: 1px solid #eee;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-layout .search-filter-tab {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 16px;
+  background-color: #f5f5f5;
+  color: #666;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.mobile-layout .search-filter-tab:active {
+  background-color: #e0e0e0;
+}
+
+.mobile-layout .search-filter-tab.active {
+  background-color: #1282a2;
+  color: white;
+}
+
+.mobile-layout .search-dropdown-results {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mobile-layout .search-results-dropdown .empty-message {
+  padding: 30px;
+  text-align: center;
+  color: #999;
+}
+
+.mobile-layout .search-results-dropdown::-webkit-scrollbar {
+  width: 4px;
+}
+
+.mobile-layout .search-results-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 10px 0;
+}
+
+.mobile-layout .search-results-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+}
+
+.mobile-layout .search-results-dropdown::-webkit-scrollbar-thumb:active {
+  background: rgba(0, 0, 0, 0.25);
 }
