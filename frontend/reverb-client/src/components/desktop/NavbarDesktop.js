@@ -60,9 +60,9 @@ function NavbarDesktop() {
 
   return (
     <nav>
-      <a href="/home">
-        <img src={logo} className="nav-logo" />
-      </a>
+      <Link to="/home" className="logo-link">
+        <img src={logo} alt="Reverb logo" className="nav-logo" />
+      </Link>
       
       <div className="nav-links">
         <NavLink to="/home" className={({ isActive }) => (isActive ? "active" : "")}>

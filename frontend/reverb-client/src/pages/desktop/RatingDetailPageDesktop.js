@@ -4,6 +4,7 @@ import axios from 'axios';
 import config from '../../config';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
+import LoadingSpinner from '../../components/shared/LoadingSpinner';
 
 function RatingsDetailPageDesktop() {
 
@@ -204,7 +205,7 @@ function RatingsDetailPageDesktop() {
         <div className='ratings-detail-page page'>
             {isLoadingData ? (
                 <div className='ratings-detail-container round-outline blue-box-shadow'>
-                    <p className="loading-text" style={{ textAlign: 'center', padding: '40px' }}>Loading...</p>
+                    <LoadingSpinner message="Loading..." />
                 </div>
             ) : (
             <div className='ratings-detail-container round-outline blue-box-shadow fade-in-item'>
@@ -328,7 +329,7 @@ function RatingsDetailPageDesktop() {
 
                         <div className="friends-ratings-list-desktop">
                             {isLoadingFriendsRatings ? (
-                                <p className="loading-text">Loading reviews...</p>
+                                <LoadingSpinner message="Loading reviews..." />
                             ) : (
                                 ratingsWithReviews.map((userRating, index) => (
                                     <div key={index} className="friend-rating-item-desktop fade-in-item">

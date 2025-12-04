@@ -6,6 +6,7 @@ import FriendComponentDesktop from "../../components/desktop/FriendComponentDesk
 import AddFriendComponentDesktop from '../../components/desktop/AddFriendComponentDesktop';
 import SongComponent from '../../components/shared/SongComponent';
 import RatedSongComponentDesktop from '../../components/desktop/RatedSongComponentDesktop';
+import LoadingSpinner from '../../components/shared/LoadingSpinner';
 import Footer from '../../components/shared/Footer';
 
 function FriendsPage() {
@@ -169,11 +170,10 @@ function FriendsPage() {
   }
 
   const handleFriendAdded = () => {
-    // Refresh both the friends list AND search results
+    // Refresh the friends list and clear search
     getFriendsList();
-    if (query.trim()) {
-      getSearchResults(query);
-    }
+    setQuery('');
+    setSearchResults([]);
   }
   
   return (
@@ -220,7 +220,7 @@ function FriendsPage() {
         ) : (
           <div className="data-container-list">
             {isLoadingFriends ? (
-              <p>Loading friends...</p>
+              <LoadingSpinner message="Loading friends..." />
             ) : friends.length > 0 ? (
               friends.map((friend, index) => (
                 <div key={friend.userName || index} className="fade-in-item">
@@ -245,9 +245,7 @@ function FriendsPage() {
             <p>Click a friend to see their stats</p>
           </div>
         ) : isLoadingStats ? (
-          <div className="stats-loading">
-            <p>Loading stats...</p>
-          </div>
+          <LoadingSpinner message="Loading stats..." />
         ) : friendStats ? (
           <>
             <div className="stats-header">
@@ -291,7 +289,7 @@ function FriendsPage() {
               ) : (
                 <div className="ratings-list">
                   {isLoadingRatings ? (
-                    <p>Loading ratings...</p>
+                    <LoadingSpinner message="Loading ratings..." />
                   ) : friendRatings.length > 0 ? (
                     friendRatings.map((rating, index) => (
                       <div key={`${rating.type}-${rating.spotifyTrackId || rating.spotifyAlbumId}`} className="fade-in-item">
