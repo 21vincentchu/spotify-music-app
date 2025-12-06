@@ -1024,20 +1024,18 @@ nav {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    padding-top: 35px;
-    padding-bottom: 60px;
-    min-height: fit-content;
-    overflow: visible;
+    padding-top: 40px;
+    height: 100vh;
+    overflow: hidden;
   }
 
   .profile-page-container {
-    width: 80vw;
-    height: auto !important;
-    max-height: none !important;
-    min-height: fit-content;
+    width: 50vw;
+    height: 70vh;
+    max-height: 70vh;
     margin: 5%;
     padding: 20px 20px 10px 20px;
-    overflow: visible;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     background-color: white;
@@ -1045,8 +1043,8 @@ nav {
 
   .profile-page-container.round-outline,
   .profile-page-container.blue-box-shadow {
-    height: auto !important;
-    max-height: none !important;
+    height: 70vh;
+    max-height: 70vh;
   }
 
   .profile-page-container h2 {
@@ -1055,14 +1053,14 @@ nav {
   }
 
   .profile-content {
-    overflow-y: visible;
+    overflow: hidden;
     padding-right: 8px;
     width: 100%;
     padding-bottom: 0px;
     display: flex;
     flex-direction: column;
-    flex: 1 1 auto;
-    height: auto;
+    flex: 1;
+    min-height: 0;
     gap: 10px;
   }
 
@@ -1070,10 +1068,9 @@ nav {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
-    padding: 15px;
-    height: auto;
-    flex: 1 1 auto;
+    gap: 10px;
+    padding: 10px;
+    flex: 0 0 auto;
   }
 
   .profile-picture-container {
@@ -1084,8 +1081,8 @@ nav {
   }
 
   .profile-picture {
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid #034078;
@@ -1115,7 +1112,7 @@ nav {
     max-width: 500px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
   }
 
   .profile-field label {
@@ -1125,7 +1122,7 @@ nav {
   }
 
   .profile-username {
-    font-size: 18px;
+    font-size: 14px;
     padding: 10px;
     background-color: #e9ecef;
     border-radius: 12px;
@@ -1134,7 +1131,7 @@ nav {
   }
 
   .profile-display-name {
-    font-size: 18px;
+    font-size: 14px;
     padding: 10px;
     background-color: #f8f9fa;
     border-radius: 12px;
@@ -1219,7 +1216,7 @@ nav {
   }
 
   .spotify-status {
-    font-size: 16px;
+    font-size: 14px;
     padding: 10px;
     background-color: #f8f9fa;
     border-radius: 12px;
@@ -1237,7 +1234,7 @@ nav {
   /* Profile Stats */
   .profile-stats {
     width: 100%;
-    max-width: 450px;
+    max-width: 600px;
     margin-top: 20px;
     padding: 20px;
     background-color: #f8f9fa;
