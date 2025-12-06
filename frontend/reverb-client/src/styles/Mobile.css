@@ -2613,14 +2613,14 @@
   padding: 16px;
   margin: 0 0 20px 0;
   border: 1px solid black;
-  box-shadow: 10px 10px 0 #1282A280;
+  box-shadow: 10px 10px 0 #93c1d1;
   transition: transform 0.2s, box-shadow 0.2s;
   width: calc(100% - 4px);
 }
 
 .mobile-layout .rating-card:active {
   transform: translate(5px, 5px);
-  box-shadow: 5px 5px 0 #1282A280;
+  box-shadow: 5px 5px 0 #93c1d1;
 }
 
 /* Card Header (Username) */

@@ -1,6 +1,31 @@
 .desktop-layout{
   height: 100%;
+
+  background-color: rgba(255, 255, 255, 0.25);
+  opacity: 1;
+  background-image:
+    linear-gradient(to bottom, white 0%, rgba(255, 255, 255, 0.8) 70px, transparent 200px),
+    linear-gradient(to top, white 0%, rgba(255, 255, 255, 0.8) 70px, transparent 200px),
+    radial-gradient(rgba(244,158,76,1) 1.3px, rgba(255, 255, 255, 0.25) 1.3px);
+  background-size: 100% 100%, 100% 100%, 26px 26px;
+
+  /* background-color: #FFFEFB;
+  background-image:
+    linear-gradient(to bottom, white 0%, rgba(255, 255, 255, 0.95) 70px, transparent 200px),
+    repeating-linear-gradient(0deg, rgba(80, 70, 60, 0.025) 0px, transparent 1px, transparent 2px, rgba(80, 70, 60, 0.025) 3px),
+    repeating-linear-gradient(90deg, rgba(80, 70, 60, 0.025) 0px, transparent 1px, transparent 2px, rgba(80, 70, 60, 0.025) 3px),
+    repeating-linear-gradient(45deg, rgba(80, 70, 60, 0.018) 0px, transparent 1px, transparent 2px, rgba(80, 70, 60, 0.018) 3px),
+    repeating-linear-gradient(135deg, rgba(80, 70, 60, 0.018) 0px, transparent 1px, transparent 2px, rgba(80, 70, 60, 0.018) 3px);
+  background-size: 100% 100%, 3px 3px, 3px 3px, 5px 5px, 5px 5px;
+  opacity: 1; */
+
+  z-index: -10;
 }
+
+.about-page{
+  background-color: rgba(255, 255, 255, 1);
+}
+
 
 /* ANIMATIONS ------------------------------------------------------------------------------*/
 
@@ -662,6 +687,7 @@ nav {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    background-color: white;
   }
   
   .home-recommended h2 {
@@ -703,6 +729,7 @@ nav {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    background-color: white;
 }
 
 .home-stats::-webkit-scrollbar {
@@ -943,6 +970,7 @@ nav {
     display: flex;
     flex-direction: column;
     min-height: 0;
+    background-color: white;
   }
 
   .stats-data .song-list{
@@ -1012,6 +1040,7 @@ nav {
     overflow: visible;
     display: flex;
     flex-direction: column;
+    background-color: white;
   }
 
   .profile-page-container.round-outline,
@@ -1411,6 +1440,7 @@ nav {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    background-color: white;
   }
 
   .friends-header {
@@ -1452,6 +1482,7 @@ nav {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    background-color: white;
   }
 
   .search-bar {
@@ -1469,6 +1500,7 @@ nav {
     height: 100%;
     display: flex;
     justify-content: center;
+    background-color: white;
   }
 
   .desktop-layout .search-input {
@@ -1628,6 +1660,7 @@ nav {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    background-color: white;
   }
 
   .stats-placeholder,
@@ -1741,6 +1774,7 @@ nav {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    background-color: white;
   }
 
   .data-container h2 {
@@ -1829,6 +1863,7 @@ nav {
     flex-direction: column;
     min-height: 0;
     max-height: 70vh;
+    background-color: white;
   }
 
   .friends-featured-section {
@@ -1841,6 +1876,7 @@ nav {
     flex-direction: column;
     min-height: 0;
     max-height: 70vh;
+    background-color: white;
   }
 
   .featured-section h2,
@@ -2439,7 +2475,7 @@ nav {
   }
 
   .type-tabs button.active{
-    background-color: rgba(18,130,162,.5);
+    background-color: #93c1d1;
     color: black;
   }
 
@@ -2860,6 +2896,7 @@ nav {
     flex-direction: column;
     padding: 40px;
     box-sizing: border-box;
+    background-color: white;
   }
 
   .ratings-detail-info{
@@ -3084,24 +3121,27 @@ nav {
 /* Desktop Ratings Search */
 .ratings-search-container {
   position: relative;
-  width: calc(40vw - 20px);
+  width: 40vw;
   margin: 80px auto 20px auto;
-  transform: translateX(-20px);
   z-index: 1001;
+  box-sizing: border-box;
 }
 
 .ratings-search-input {
   width: 100%;
-  padding: 12px 20px;
-  font-size: 15px;
-  border: 2px solid #e0e0e0;
-  border-radius: 25px;
-  transition: border-color 0.2s;
+  padding: 15px 45px 15px 25px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  outline: none;
+  background-color: #fff;
+  transition: all 0.2s ease;
 }
 
 .ratings-search-input:focus {
-  outline: none;
-  border-color: #e0e0e0;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
 }
 
 .ratings-search-clear {
@@ -3111,30 +3151,27 @@ nav {
   transform: translateY(-50%);
   background: none;
   border: none;
-  font-size: 20px;
-  color: #666;
+  font-size: 1.25rem;
+  color: #999;
   cursor: pointer;
   padding: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  transition: background-color 0.2s, color 0.2s;
+  transition: color 0.2s ease;
 }
 
 .ratings-search-clear:hover {
-  background-color: #f0f0f0;
-  color: #000;
+  color: #666;
 }
 
 /* Search Results Dropdown */
 .ratings-search-results-dropdown {
   position: absolute;
   top: 60px;
-  left: 20px;
-  right: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 105%;
   background: #fff;
   border: none;
   border-radius: 12px;
