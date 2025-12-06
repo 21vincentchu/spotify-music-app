@@ -224,6 +224,7 @@ function HomeDesktop() {
                 </div>
                 <div className='genre-section'>
                     <h3>Top Genres</h3>
+                    <p className='genre-hint'>Click to see the songs</p>
                     <ol className='genre-list'>
                         {recentData.genre_stats?.top_genres?.map((item, index) => {
                             const actualCount = getGenreCount(item.genre);

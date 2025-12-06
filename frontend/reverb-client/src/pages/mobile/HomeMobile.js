@@ -197,6 +197,7 @@ const HomeMobile = () => {
 
                 <div className="mobile-genre-section">
                   <h3>Top Genres</h3>
+                  <p className="mobile-genre-hint">Tap to see the songs</p>
                   <ol className="mobile-genre-list">
                     {recentData.genre_stats?.top_genres?.map((item, index) => {
                       const actualCount = getGenreCount(item.genre);
