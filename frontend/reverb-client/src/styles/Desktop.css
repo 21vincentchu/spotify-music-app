@@ -4,10 +4,11 @@
   background-color: rgba(255, 255, 255, 0.25);
   opacity: 1;
   background-image:
-    linear-gradient(to bottom, white 0%, rgba(255, 255, 255, 0.8) 70px, transparent 200px),
-    linear-gradient(to top, white 0%, rgba(255, 255, 255, 0.8) 70px, transparent 200px),
-    radial-gradient(rgba(244,158,76,1) 1.3px, rgba(255, 255, 255, 0.25) 1.3px);
+    linear-gradient(to bottom, white 0%, rgba(255, 255, 255, 0.8) 60px, transparent 200px),
+    linear-gradient(to top, white 0%, rgba(255, 255, 255, 0.8) 10px, transparent 200px),
+    radial-gradient(rgb(22,156,194) 1.3px, rgba(255, 255, 255, 0.25) 1.3px);
   background-size: 100% 100%, 100% 100%, 26px 26px;
+  animation: driftDots 10s linear infinite;
 
   /* background-color: #FFFEFB;
   background-image:
@@ -28,6 +29,16 @@
 
 
 /* ANIMATIONS ------------------------------------------------------------------------------*/
+
+/* Drifting dots background */
+@keyframes driftDots {
+  from {
+    background-position: 0 0, 0 0, 0 0;
+  }
+  to {
+    background-position: 0 0, 0 0, 26px 26px;
+  }
+}
 
 /* Page transition fade in */
 @keyframes pageTransitionFadeIn {
