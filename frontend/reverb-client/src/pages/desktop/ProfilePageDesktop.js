@@ -170,12 +170,12 @@ function ProfilePageDesktop(){
                             </div>
 
                             {/* Spotify Connection Status */}
-                            <div className="profile-field">
+                            {/* <div className="profile-field">
                                 <label>Spotify Account:</label>
                                 <span className="spotify-status">
                                     {profile.spotifyId ? '✓ Connected' : '✗ Not Connected'}
                                 </span>
-                            </div>
+                            </div> */}
 
                             {/* Profile Stats */}
                             {stats && (
