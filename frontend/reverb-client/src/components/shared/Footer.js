@@ -1,4 +1,6 @@
-function Footer() {
+import { Link } from "react-router-dom";
+
+function Footer({ showAboutLink = false }) {
   return (
     <footer className="app-footer">
       <div className="footer-content">
@@ -6,6 +8,11 @@ function Footer() {
           <span>© 2025 Reverb</span>
         </div>
         <div className="footer-right">
+          {showAboutLink && (
+            <Link to="/about" className="footer-link">
+              About
+            </Link>
+          )}
           <a
             href="https://github.com/21vincentchu/spotify-music-app"
             target="_blank"

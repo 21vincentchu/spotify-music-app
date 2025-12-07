@@ -58,7 +58,7 @@ function SignInPage() {
           </p>
         </div>
       </div>
-      <Footer />
+      <Footer showAboutLink={true} />
     </div>
     )
 }

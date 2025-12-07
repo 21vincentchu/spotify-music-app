@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import config from '../../config';
 import { useAuth } from '../../context/AuthContext';
 
 import logo from "../../assets/reverb-logo-type.svg";
+import Footer from "../../components/shared/Footer";
 
 function SignInPage() {
     const navigate = useNavigate();
@@ -65,12 +66,9 @@ function SignInPage() {
           <p className="signin-footer">
             Powered by Spotify • Secure OAuth Authentication
           </p>
-
-          <Link to="/about" className="signin-about-link">
-            About Reverb
-          </Link>
         </div>
       </div>
+      <Footer showAboutLink={true} />
     </div>
     )
 }

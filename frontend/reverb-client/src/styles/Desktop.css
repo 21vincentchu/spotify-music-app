@@ -23,6 +23,14 @@
   z-index: -10;
 }
 
+.desktop-layout:has(.signin-page) {
+  background-image:
+    linear-gradient(to top, white 0%, rgba(255, 255, 255, 0.8) 10px, transparent 200px),
+    radial-gradient(rgb(22,156,194) 1.3px, rgba(255, 255, 255, 0.25) 1.3px);
+  overflow: hidden;
+  height: 100vh;
+}
+
 .about-page{
   background-color: rgba(255, 255, 255, 1);
 }
@@ -311,12 +319,45 @@ nav {
 /* SIGN IN PAGE-------------------------------------------------------------------------------------  */
 
 .signin-page {
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    /* background: linear-gradient(135deg, #034078 0%, #1282A2 100%); */
     padding: 20px;
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.25);
+    background-image:
+      linear-gradient(to bottom, transparent, transparent),
+      linear-gradient(to top, transparent, transparent),
+      radial-gradient(rgb(22,156,194) 1.3px, rgba(255, 255, 255, 0.25) 1.3px);
+    background-size: 100% 100%, 100% 100%, 26px 26px;
+    animation: driftDots 5s linear infinite;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .signin-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(to bottom, white, transparent);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .signin-page::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(to top, white, transparent);
+    pointer-events: none;
+    z-index: 0;
   }
 
   .signin-container {
@@ -325,6 +366,8 @@ nav {
     width: 100%;
     padding: 40px;
     border-radius: 12px;
+    position: relative;
+    z-index: 1;
   }
 
   .signin-content {
@@ -2518,7 +2561,7 @@ nav {
 
   .footer-left {
     position: absolute;
-    right: calc(50% + 10px);
+    right: calc(50% + 40px);
   }
 
   .footer-center {
@@ -2529,7 +2572,9 @@ nav {
 
   .footer-right {
     position: absolute;
-    left: calc(50% + 10px);
+    left: calc(50% - 10px);
+    display: flex;
+    gap: 15px;
   }
 
   .footer-link {
