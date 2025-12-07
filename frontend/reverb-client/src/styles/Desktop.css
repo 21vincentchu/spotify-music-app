@@ -2561,7 +2561,7 @@ nav {
 
   .footer-left {
     position: absolute;
-    right: calc(50% + 40px);
+    right: calc(50% + 8px);
   }
 
   .footer-center {
@@ -2572,9 +2572,18 @@ nav {
 
   .footer-right {
     position: absolute;
-    left: calc(50% - 10px);
+    left: calc(50% + 8px);
     display: flex;
     gap: 15px;
+  }
+
+  /* Adjust positioning when footer has About link (2 links in footer-right) */
+  .signin-page .footer-left {
+    right: calc(50% + 40px);
+  }
+
+  .signin-page .footer-right {
+    left: calc(50% - 10px);
   }
 
   .footer-link {
