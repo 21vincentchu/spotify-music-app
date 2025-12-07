@@ -347,7 +347,7 @@ function RatingsPage() {
                           <p className="search-result-name">{itemName}</p>
                           <p className="search-result-artist">{itemArtist}</p>
                           {isFriendsTab && (
-                            <p className="search-result-user">by {item.userName}</p>
+                            <p className="search-result-user">by {item.displayName || item.userName}</p>
                           )}
                         </div>
                       </div>

@@ -30,7 +30,7 @@ function AboutPage() {
                         className="spotify-link"
                     >
                         GitHub repository
-                    </a>!
+                    </a>
                 </p>
             </div>
 
@@ -175,36 +175,54 @@ function AboutPage() {
                         <div className="team-member-info">
                             <p className="team-member-name">Amanda Ngo</p>
                             <p className="team-member-role">Team Leader, Frontend Desktop Developer</p>
+                            <p className="team-member-linkedin">
+                                LinkedIn: <a href="https://www.linkedin.com/in/amandanngo/" target="_blank" rel="noopener noreferrer" className="linkedin-link">amandanngo</a>
+                            </p>
                         </div>
                     </div>
                     <div className="team-member">
                         <div className="team-member-info">
                             <p className="team-member-name">Julie To</p>
                             <p className="team-member-role">Frontend Mobile Developer</p>
+                            <p className="team-member-linkedin">
+                                LinkedIn: <a href="https://www.linkedin.com/in/julianneto801/" target="_blank" rel="noopener noreferrer" className="linkedin-link">julianneto801</a>
+                            </p>
                         </div>
                     </div>
                     <div className="team-member">
                         <div className="team-member-info">
                             <p className="team-member-name">Vincent Chu</p>
                             <p className="team-member-role">Full Stack Developer</p>
+                            <p className="team-member-linkedin">
+                                LinkedIn: <a href="https://www.linkedin.com/in/vincent-chu1/" target="_blank" rel="noopener noreferrer" className="linkedin-link">vincent-chu1</a>
+                            </p>
                         </div>
                     </div>
                     <div className="team-member">
                         <div className="team-member-info">
                             <p className="team-member-name">Esther Brandwein</p>
                             <p className="team-member-role">Backend Developer</p>
+                            <p className="team-member-linkedin">
+                                LinkedIn: <a href="https://www.linkedin.com/in/estherbrandwein/" target="_blank" rel="noopener noreferrer" className="linkedin-link">estherbrandwein</a>
+                            </p>
                         </div>
                     </div>
                     <div className="team-member">
                         <div className="team-member-info">
                             <p className="team-member-name">Kevin Lee</p>
                             <p className="team-member-role">Backend Developer</p>
+                            <p className="team-member-linkedin">
+                                LinkedIn: <a href="https://www.linkedin.com/in/kevin-lee-190646353/" target="_blank" rel="noopener noreferrer" className="linkedin-link">kevin-lee-190646353</a>
+                            </p>
                         </div>
                     </div>
                     <div className="team-member">
                         <div className="team-member-info">
                             <p className="team-member-name">Kristofferson Culmer</p>
                             <p className="team-member-role">Mentor</p>
+                            <p className="team-member-linkedin">
+                                LinkedIn: <a href="https://www.linkedin.com/in/kristofferson/" target="_blank" rel="noopener noreferrer" className="linkedin-link">kristofferson</a>
+                            </p>
                         </div>
                     </div>
                 </div>
